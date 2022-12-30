@@ -1099,7 +1099,58 @@ TEST_CASE("BSA")
 
     SECTION("extract compressed files from v105 archive")
     {
-      // TODO!
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_idx_with_compression_v105.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x69\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0\0\0\0\0m\0\0\0\0\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0\0\0\0\0\x89\0\0\0\0\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95#\0\0\0\xB9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xDC\0\0\0oo\x03\x66\xC2\xA6\xD0\x95!\0\0\0\xE3\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0\x04\"M\x18`@\x82\x10\0\0\x80This is a test.\x0A\0\0\0\0foobar\x0A\x0E\0\0\0\x04\"M\x18`@\x82\x0E\0\0\x80\x66oo was here.\x0A\0\0\0\0"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const char eof = static_cast<char>(std::char_traits<char>::eof());
+
+      // extract test.txt
+      {
+        const auto path { std::filesystem::temp_directory_path() / "extract_test_v105.txt" };
+        FileGuard guard{path};
+        // File is compressed.
+        REQUIRE( bsa.isFileCompressed(0, 0) );
+        REQUIRE( bsa.extractFile(0, 0, path.string()) );
+
+        std::ifstream stream(path, std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "This is a test.\n" );
+      }
+
+      // extract bar.txt
+      {
+        const auto path { std::filesystem::temp_directory_path() / "extract_bar_v105.txt" };
+        FileGuard guard{path};
+        // File is not compressed, because compression is toggled.
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 0) );
+        REQUIRE( bsa.extractFile(1, 0, path.string()) );
+
+        std::ifstream stream(path, std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foobar\n" );
+      }
+
+      // extract foo.txt
+      {
+        const auto path { std::filesystem::temp_directory_path() / "extract_foo_v105.txt" };
+        FileGuard guard{path};
+        // File is compressed.
+        REQUIRE( bsa.isFileCompressed(1, 1) );
+        REQUIRE( bsa.extractFile(1, 1, path.string()) );
+
+        std::ifstream stream(path, std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foo was here.\n" );
+      }
     }
   }
 
@@ -1229,6 +1280,66 @@ TEST_CASE("BSA")
         REQUIRE_FALSE( bsa.extractFile("something\\else\\not-found.txt", path.string()) );
       }
     }
+
+    SECTION("extract compressed files from v105 archive")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_by_name_with_compression_v105.bsa"};
+      FileGuard guard_bsa{bsa_path};
+      const auto data = "BSA\0\x69\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0\0\0\0\0m\0\0\0\0\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0\0\0\0\0\x89\0\0\0\0\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95#\0\0\0\xB9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xDC\0\0\0oo\x03\x66\xC2\xA6\xD0\x95!\0\0\0\xE3\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0\x04\"M\x18`@\x82\x10\0\0\x80This is a test.\x0A\0\0\0\0foobar\x0A\x0E\0\0\0\x04\"M\x18`@\x82\x0E\0\0\x80\x66oo was here.\x0A\0\0\0\0"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const char eof = static_cast<char>(std::char_traits<char>::eof());
+
+      // extract test.txt
+      {
+        const auto path { std::filesystem::temp_directory_path() / "v105_extract_test.txt" };
+        FileGuard guard{path};
+        REQUIRE( bsa.isFileCompressed(0, 0) );
+        REQUIRE( bsa.extractFile("some\\thing\\test.txt", path.string()) );
+
+        std::ifstream stream(path, std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "This is a test.\n" );
+      }
+
+      // extract foo.txt
+      {
+        const auto path { std::filesystem::temp_directory_path() / "v105_extract_foo.txt" };
+        FileGuard guard{path};
+        REQUIRE( bsa.isFileCompressed(1, 1) );
+        REQUIRE( bsa.extractFile("something\\else\\foo.txt", path.string()) );
+
+        std::ifstream stream(path, std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foo was here.\n" );
+      }
+
+      // extract bar.txt
+      {
+        const auto path { std::filesystem::temp_directory_path() / "v105_extract_bar.txt" };
+        FileGuard guard{path};
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 0) );
+        REQUIRE( bsa.extractFile("something\\else\\bar.txt", path.string()) );
+
+        std::ifstream stream(path, std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foobar\n" );
+      }
+
+      // attempt to extract non-existent file
+      {
+        const auto path { std::filesystem::temp_directory_path() / "v105_extract_none.txt" };
+        FileGuard guard{path};
+        REQUIRE_FALSE( bsa.extractFile("something\\else\\not-found.txt", path.string()) );
+      }
+    }
   }
 
   SECTION("extractDirectory (with index parameter)")
@@ -1259,6 +1370,48 @@ TEST_CASE("BSA")
       REQUIRE_FALSE( bsa.extractDirectory(over9000, "/tmp/directory-out", counter) );
       REQUIRE( counter == 0 );
     }
+
+    SECTION("successfully extract a directory")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractDirectory_v104_uncompressed.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const int directory_idx = 1; // 2nd directory
+      const auto output_path { std::filesystem::temp_directory_path() / "bsa_extract_directory_by_idx" };
+      uint32_t counter = 42;
+      REQUIRE( bsa.extractDirectory(directory_idx, output_path.string(), counter) );
+      REQUIRE( counter == 2 );
+      // Both files must exist.
+      REQUIRE( std::filesystem::exists(output_path / "foo.txt") );
+      REQUIRE( std::filesystem::exists(output_path / "bar.txt") );
+
+      const char eof = static_cast<char>(std::char_traits<char>::eof());
+
+      // Check content of foo.txt.
+      {
+        std::ifstream stream(output_path / "foo.txt", std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foo was here.\n" );
+      }
+
+      // Check content of bar.txt.
+      {
+        std::ifstream stream(output_path / "bar.txt", std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foobar\n" );
+      }
+
+      // Remove the output directory and all its content.
+      REQUIRE( std::filesystem::remove_all(output_path) > 2 );
+    }
   }
 
   SECTION("extractDirectory (with folder name parameter)")
@@ -1288,6 +1441,47 @@ TEST_CASE("BSA")
       REQUIRE_FALSE( bsa.extractDirectory("does\\not\\exist", "/tmp/directory-out", counter) );
       REQUIRE( counter == 0 );
     }
+
+    SECTION("successfully extract a directory")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractDirectory_v104_uncompressed.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto output_path { std::filesystem::temp_directory_path() / "bsa_extract_directory_by_name" };
+      uint32_t counter = 42;
+      REQUIRE( bsa.extractDirectory("something\\else", output_path.string(), counter) );
+      REQUIRE( counter == 2 );
+      // Both files must exist.
+      REQUIRE( std::filesystem::exists(output_path / "foo.txt") );
+      REQUIRE( std::filesystem::exists(output_path / "bar.txt") );
+
+      const char eof = static_cast<char>(std::char_traits<char>::eof());
+
+      // Check content of foo.txt.
+      {
+        std::ifstream stream(output_path / "foo.txt", std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foo was here.\n" );
+      }
+
+      // Check content of bar.txt.
+      {
+        std::ifstream stream(output_path / "bar.txt", std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foobar\n" );
+      }
+
+      // Remove the output directory and all its content.
+      REQUIRE( std::filesystem::remove_all(output_path) > 2 );
+    }
   }
 
   SECTION("extractAll")
@@ -1300,6 +1494,56 @@ TEST_CASE("BSA")
       uint32_t counter = 42;
       REQUIRE_FALSE( bsa.extractAll("/tmp/directory-out", counter) );
       REQUIRE( counter == 0 );
+    }
+
+    SECTION("successfully extract a complete archive")
+    {
+      const std::filesystem::path path{"test_sr_bsa_extractAll_v104_uncompressed.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto output_path { std::filesystem::temp_directory_path() / "bsa_extract_all" };
+      uint32_t counter = 42;
+      REQUIRE( bsa.extractAll(output_path.string(), counter) );
+      REQUIRE( counter == 3 );
+      // All three files must exist.
+      REQUIRE( std::filesystem::exists(output_path / "some" / "thing" / "test.txt") );
+      REQUIRE( std::filesystem::exists(output_path / "something" / "else" / "foo.txt") );
+      REQUIRE( std::filesystem::exists(output_path / "something" / "else" / "bar.txt") );
+
+      const char eof = static_cast<char>(std::char_traits<char>::eof());
+
+      // Check content of test.txt.
+      {
+        std::ifstream stream(output_path / "some" / "thing" / "test.txt", std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "This is a test.\n" );
+      }
+
+      // Check content of foo.txt.
+      {
+        std::ifstream stream(output_path / "something" / "else" / "foo.txt", std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foo was here.\n" );
+      }
+
+      // Check content of bar.txt.
+      {
+        std::ifstream stream(output_path / "something" / "else" / "bar.txt", std::ios::in | std::ios::binary);
+        std::string content;
+        std::getline(stream, content, eof);
+        REQUIRE( content == "foobar\n" );
+      }
+
+      // Remove the output directory and all its content.
+      REQUIRE( std::filesystem::remove_all(output_path) > 3 );
     }
   }
 }

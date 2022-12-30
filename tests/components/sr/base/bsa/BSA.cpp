@@ -1116,12 +1116,17 @@ TEST_CASE("BSA")
         FileGuard guard{path};
         // File is compressed.
         REQUIRE( bsa.isFileCompressed(0, 0) );
+        #if !defined(MWTP_NO_LZ4)
         REQUIRE( bsa.extractFile(0, 0, path.string()) );
 
         std::ifstream stream(path, std::ios::in | std::ios::binary);
         std::string content;
         std::getline(stream, content, eof);
         REQUIRE( content == "This is a test.\n" );
+        #else
+        // Cannot extract lz4-compressed content with LZ4 support.
+        REQUIRE_FALSE( bsa.extractFile(0, 0, path.string()) );
+        #endif
       }
 
       // extract bar.txt
@@ -1144,12 +1149,17 @@ TEST_CASE("BSA")
         FileGuard guard{path};
         // File is compressed.
         REQUIRE( bsa.isFileCompressed(1, 1) );
+        #if !defined(MWTP_NO_LZ4)
         REQUIRE( bsa.extractFile(1, 1, path.string()) );
 
         std::ifstream stream(path, std::ios::in | std::ios::binary);
         std::string content;
         std::getline(stream, content, eof);
         REQUIRE( content == "foo was here.\n" );
+        #else
+        // Cannot extract lz4-compressed content with LZ4 support.
+        REQUIRE_FALSE( bsa.extractFile(1, 1, path.string()) );
+        #endif
       }
     }
   }
@@ -1299,12 +1309,17 @@ TEST_CASE("BSA")
         const auto path { std::filesystem::temp_directory_path() / "v105_extract_test.txt" };
         FileGuard guard{path};
         REQUIRE( bsa.isFileCompressed(0, 0) );
+        #if !defined(MWTP_NO_LZ4)
         REQUIRE( bsa.extractFile("some\\thing\\test.txt", path.string()) );
 
         std::ifstream stream(path, std::ios::in | std::ios::binary);
         std::string content;
         std::getline(stream, content, eof);
         REQUIRE( content == "This is a test.\n" );
+        #else
+        // Cannot extract lz4-compressed content with LZ4 support.
+        REQUIRE_FALSE( bsa.extractFile("some\\thing\\test.txt", path.string()) );
+        #endif
       }
 
       // extract foo.txt
@@ -1312,12 +1327,17 @@ TEST_CASE("BSA")
         const auto path { std::filesystem::temp_directory_path() / "v105_extract_foo.txt" };
         FileGuard guard{path};
         REQUIRE( bsa.isFileCompressed(1, 1) );
+        #if !defined(MWTP_NO_LZ4)
         REQUIRE( bsa.extractFile("something\\else\\foo.txt", path.string()) );
 
         std::ifstream stream(path, std::ios::in | std::ios::binary);
         std::string content;
         std::getline(stream, content, eof);
         REQUIRE( content == "foo was here.\n" );
+        #else
+        // Cannot extract lz4-compressed content with LZ4 support.
+        REQUIRE_FALSE( bsa.extractFile("something\\else\\foo.txt", path.string()) );
+        #endif
       }
 
       // extract bar.txt

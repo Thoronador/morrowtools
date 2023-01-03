@@ -54,8 +54,8 @@ int FileMetadata::run()
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
 
-  std::cout << "hash|file size|offset|compression toggled|file name\n"
-            << "---------------------------------------------------\n";
+  std::cout << "hash|block size|offset|compression toggled|file name\n"
+            << "----------------------------------------------------\n";
   const auto& directories = bsa.getDirectoryBlocks();
   for (const auto& directory: directories)
   {

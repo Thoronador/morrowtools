@@ -7,6 +7,13 @@ The program can now also extract files from archives where the file names are
 also embedded at the beginning of the data block. Embedded file names are used
 in some texture BSA files used by Skyrim, for example.
 
+__[breaking change]__
+The header line of the output of the `file-metadata` command is changed. Instead
+of "file size" it does now say "block size". This name is more accurate. The
+size value stored in a BSA is not necessarily the size of the file, i. e. when
+the file data is compressed or when there are embedded file names in the BSA.
+However, it is always the size of the data block that contains the file data.
+
 ## Version 0.8.0 (2022-07-12)
 
 __[feature]__

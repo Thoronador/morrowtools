@@ -988,6 +988,57 @@ TEST_CASE("BSA")
       REQUIRE_FALSE( bsa.extractFile(0, 0, destination.string()) );
     }
 
+    SECTION("data corruption: cannot read file name length in archive with embedded names")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_idx_embedded_name_length_fail.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\x01\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95$\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x1E\0\0\0\xCD\0\0\0oo\x03\x66\xC2\xA6\xD0\x95%\0\0\0\xEB\0\0\0test.txt\0bar.txt\0foo.txt\0"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto path { std::filesystem::temp_directory_path() / "extract_test_fail_embedded_name_length.txt" };
+      FileGuard guard{path};
+      REQUIRE_FALSE( bsa.isFileCompressed(0, 0) );
+      REQUIRE_FALSE( bsa.extractFile(0, 0, path.string()) );
+    }
+
+    SECTION("data corruption: embedded name's length does not fit into block size")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_idx_embedded_name_length_integrity.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\x01\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95$\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x1E\0\0\0\xCD\0\0\0oo\x03\x66\xC2\xA6\xD0\x95%\0\0\0\xEB\0\0\0test.txt\0bar.txt\0foo.txt\0\x55some\\thing\\test.txtThis is a test.\x0A\x16something\\\x65lse\\\x62\x61r.txtfoobar\x0A\x16something\\\x65lse\\\x66oo.txtfoo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto path { std::filesystem::temp_directory_path() / "extract_test_fail_embedded_name_length_integrity.txt" };
+      FileGuard guard{path};
+      REQUIRE_FALSE( bsa.isFileCompressed(0, 0) );
+      REQUIRE_FALSE( bsa.extractFile(0, 0, path.string()) );
+    }
+
+    SECTION("data corruption: embedded name cannot be skipped")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_idx_embedded_name_skip_fail.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\x01\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95$\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x1E\0\0\0\xCD\0\0\0oo\x03\x66\xC2\xA6\xD0\x95%\0\0\0\xEB\0\0\0test.txt\0bar.txt\0foo.txt\0\x13some\\thi"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto path { std::filesystem::temp_directory_path() / "extract_test_fail_embedded_name_skip_fail.txt" };
+      FileGuard guard{path};
+      REQUIRE_FALSE( bsa.isFileCompressed(0, 0) );
+      REQUIRE_FALSE( bsa.extractFile(0, 0, path.string()) );
+    }
+
     SECTION("extract uncompressed files from v104 archive")
     {
       const std::filesystem::path bsa_path{"test_sr_bsa_extractFile_idx_no_compression.bsa"};

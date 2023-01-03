@@ -502,6 +502,35 @@ bool BSA::isFileCompressed(const uint32_t directoryIndex, const uint32_t fileInd
   return m_Header.filesCompressedByDefault() ^ m_DirectoryBlocks.at(directoryIndex).files.at(fileIndex).isCompressionToggled();
 }
 
+std::optional<uint32_t> BSA::handleEmbeddedFileName(const uint32_t file_block_size)
+{
+  if (!m_Header.hasEmbeddedFileNames())
+    return 0;
+
+  uint8_t embedded_name_length = 0;
+  m_Stream.read(reinterpret_cast<char*>(&embedded_name_length), 1);
+  if (!m_Stream.good())
+  {
+    std::cerr << "BSA::handleEmbeddedFileName: Error: Could not read size of embedded file name!\n";
+    return std::nullopt;
+  }
+  // Check integrity.
+  if (embedded_name_length >= file_block_size)
+  {
+    std::cerr << "BSA::handleEmbeddedFileName: Error: Size of embedded file "
+              << "name is not plausible! Archive may be corrupted.\n";
+    return std::nullopt;
+  }
+  // Skip over embedded file name.
+  m_Stream.seekg(embedded_name_length, std::ios_base::cur);
+  if (!m_Stream.good())
+  {
+    std::cerr << "BSA::handleEmbeddedFileName: Error: Could not skip embedded file name!\n";
+    return std::nullopt;
+  }
+  return 1 + embedded_name_length;
+}
+
 bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, const std::string& outputFileName)
 {
   if (!hasAllStructureData())
@@ -525,6 +554,13 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
     return false;
   }
 
+  const auto maybe_embedded_length = handleEmbeddedFileName(fileBlockSize);
+  if (!maybe_embedded_length.has_value())
+  {
+    return false;
+  }
+  const auto embedded_name_length = maybe_embedded_length.value();
+
   uint8_t * buffer = nullptr; // buffer for output data
   uint32_t buffer_size = 0;
   if (isFileCompressed(directoryIndex, fileIndex))
@@ -539,7 +575,7 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
       return false;
     }
     #endif
-    if (fileBlockSize < 4)
+    if (fileBlockSize - embedded_name_length < 4)
     {
       std::cerr << "BSA::extractFile: Error: Size is too small to contain any compressed data!\n";
       return false;
@@ -553,8 +589,8 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
       return false;
     }
     // read compressed stuff
-    uint8_t * compressedBuffer = new uint8_t[fileBlockSize - 4];
-    m_Stream.read(reinterpret_cast<char*>(compressedBuffer), fileBlockSize - 4);
+    uint8_t * compressedBuffer = new uint8_t[fileBlockSize - embedded_name_length - 4];
+    m_Stream.read(reinterpret_cast<char*>(compressedBuffer), fileBlockSize - embedded_name_length - 4);
     if (!m_Stream.good())
     {
       std::cerr << "BSA::extractFile: Error: Could not read compressed file data from archive!\n";
@@ -565,11 +601,11 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
     buffer = new uint8_t[decompSize];
     buffer_size = decompSize;
     #if defined(MWTP_NO_LZ4)
-    const bool success = MWTP::zlibDecompress(compressedBuffer, fileBlockSize - 4, buffer, decompSize);
+    const bool success = MWTP::zlibDecompress(compressedBuffer, fileBlockSize - embedded_name_length - 4, buffer, decompSize);
     #else
     const bool success = compressionUsesLZ4 ?
-        MWTP::lz4Decompress(compressedBuffer, fileBlockSize - 4, buffer, decompSize)
-        : MWTP::zlibDecompress(compressedBuffer, fileBlockSize - 4, buffer, decompSize);
+        MWTP::lz4Decompress(compressedBuffer, fileBlockSize - embedded_name_length - 4, buffer, decompSize)
+        : MWTP::zlibDecompress(compressedBuffer, fileBlockSize - embedded_name_length - 4, buffer, decompSize);
     #endif
     if (!success)
     {
@@ -585,7 +621,7 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
   else
   {
     // handle uncompressed data
-    buffer_size = fileBlockSize;
+    buffer_size = fileBlockSize - embedded_name_length;
     buffer = new uint8_t[buffer_size];
     m_Stream.read(reinterpret_cast<char*>(buffer), buffer_size);
     if (!m_Stream.good())

@@ -252,6 +252,18 @@ struct BSA
      */
     bool isValidIndexPair(const uint32_t directoryIndex, const uint32_t fileIndex) const;
 
+    /** \brief Handles the embedded file name (if present) during file extraction.
+     *
+     * \param file_block_size  the size of the file block in bytes
+     * \remarks When called, the internal stream offset must be directly at the
+     *          size byte of the embedded file name, i. e. the beginning of the
+     *          file block.
+     * \return Returns the number of bytes that were skipped due to the embedded
+     *         file name in case of success. Returns an empty optional, if an
+     *         error occurred.
+     */
+    std::optional<uint32_t> handleEmbeddedFileName(const uint32_t file_block_size);
+
     /// enumeration type for internal status
     enum class Status { Fresh, Open, OpenDirectoryData, OpenDirectoryBlocks,
                         OpenFileNames, Closed, Failed };

@@ -1,5 +1,12 @@
 # Version history of bsa-cli
 
+## Next Version (2023-01-??)
+
+__[feature]__
+The program can now also extract files from archives where the file names are
+also embedded at the beginning of the data block. Embedded file names are used
+in some texture BSA files used by Skyrim, for example.
+
 ## Version 0.8.0 (2022-07-12)
 
 __[feature]__

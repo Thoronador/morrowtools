@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ struct BSAFileRecord
     BSAFileRecord();
 
     BSAHash nameHash;
-    uint32_t fileSize; /**< size of the file in bytes plus flags */
+    uint32_t fileBlockSize; /**< size of the file block in bytes, plus flag bit */
     uint32_t offset;
 
     // not directly part of record
@@ -56,11 +56,12 @@ struct BSAFileRecord
      */
     bool isCompressionToggled() const;
 
-    /** \brief Gets the actual file size.
+    /** \brief Gets the actual file block size.
      *
-     * \return Returns the file's size, i.e. fileSize without the flag bit.
+     * \return Returns the file block's size, i.e. fileBlockSize without the
+     *         flag bit.
      */
-    uint32_t getRealFileSize() const;
+    uint32_t getRealFileBlockSize() const;
 }; // struct
 
 } // namespace

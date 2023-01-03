@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,7 +31,7 @@ TEST_CASE("BSAFileRecord")
     BSAFileRecord file;
 
     REQUIRE( file.nameHash == 0 );
-    REQUIRE( file.fileSize == 0 );
+    REQUIRE( file.fileBlockSize == 0 );
     REQUIRE( file.offset == 0 );
     REQUIRE( file.fileName.empty() );
   }
@@ -52,7 +52,7 @@ TEST_CASE("BSAFileRecord")
       REQUIRE( record.loadFromStream(stream) );
       // Check data.
       REQUIRE( record.nameHash == 0x1FDC44B06B107368 );
-      REQUIRE( record.fileSize == 2362 );
+      REQUIRE( record.fileBlockSize == 2362 );
       REQUIRE( record.offset == 6388 );
       REQUIRE( record.fileName.empty() );
     }
@@ -112,33 +112,33 @@ TEST_CASE("BSAFileRecord")
   {
     BSAFileRecord record;
 
-    record.fileSize = 0;
+    record.fileBlockSize = 0;
     REQUIRE_FALSE( record.isCompressionToggled() );
 
-    record.fileSize = 1073741824; // == 1 << 30
+    record.fileBlockSize = 1073741824; // == 1 << 30
     REQUIRE( record.isCompressionToggled() );
 
-    record.fileSize = 32000;
+    record.fileBlockSize = 32000;
     REQUIRE_FALSE( record.isCompressionToggled() );
 
-    record.fileSize = 1073741824 + 32000;
+    record.fileBlockSize = 1073741824 + 32000;
     REQUIRE( record.isCompressionToggled() );
   }
 
-  SECTION("getRealFileSize")
+  SECTION("getRealFileBlockSize")
   {
     BSAFileRecord record;
 
-    record.fileSize = 0;
-    REQUIRE( record.getRealFileSize() == 0 );
+    record.fileBlockSize = 0;
+    REQUIRE( record.getRealFileBlockSize() == 0 );
 
-    record.fileSize = 1073741824; // == 1 << 30
-    REQUIRE( record.getRealFileSize() == 0 );
+    record.fileBlockSize = 1073741824; // == 1 << 30
+    REQUIRE( record.getRealFileBlockSize() == 0 );
 
-    record.fileSize = 32015;
-    REQUIRE( record.getRealFileSize() == 32015 );
+    record.fileBlockSize = 32015;
+    REQUIRE( record.getRealFileBlockSize() == 32015 );
 
-    record.fileSize = 1073741824 + 32031;  // == 1 << 30 + 32031
-    REQUIRE( record.getRealFileSize() == 32031 );
+    record.fileBlockSize = 1073741824 + 32031;  // == 1 << 30 + 32031
+    REQUIRE( record.getRealFileBlockSize() == 32031 );
   }
 }

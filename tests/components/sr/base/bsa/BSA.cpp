@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2022  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -360,18 +360,18 @@ TEST_CASE("BSA")
       REQUIRE( bsa.getDirectoryBlocks().at(0).name == "some\\thing" );
       REQUIRE( bsa.getDirectoryBlocks().at(0).files.size() == 1 );
       REQUIRE( bsa.getDirectoryBlocks().at(0).files.at(0).nameHash == 0x95d0a72774047374ULL );
-      REQUIRE( bsa.getDirectoryBlocks().at(0).files.at(0).fileSize == 16 );
+      REQUIRE( bsa.getDirectoryBlocks().at(0).files.at(0).fileBlockSize == 16 );
       REQUIRE( bsa.getDirectoryBlocks().at(0).files.at(0).offset == 169 );
       REQUIRE( bsa.getDirectoryBlocks().at(0).files.at(0).fileName.empty() );
       // Check second block.
       REQUIRE( bsa.getDirectoryBlocks().at(1).name == "something\\else" );
       REQUIRE( bsa.getDirectoryBlocks().at(1).files.size() == 2 );
       REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(0).nameHash == 0x95d0a6c262036172ULL );
-      REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(0).fileSize == 7 );
+      REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(0).fileBlockSize == 7 );
       REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(0).offset == 185 );
       REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(0).fileName.empty() );
       REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(1).nameHash == 0x95d0a6c266036f6fULL );
-      REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(1).fileSize == 14 );
+      REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(1).fileBlockSize == 14 );
       REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(1).offset == 192 );
       REQUIRE( bsa.getDirectoryBlocks().at(1).files.at(1).fileName.empty() );
 

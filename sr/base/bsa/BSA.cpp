@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2014, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2014, 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -517,7 +517,7 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
     return false;
   }
 
-  uint32_t extractedFileSize = m_DirectoryBlocks[directoryIndex].files[fileIndex].getRealFileSize();
+  uint32_t fileBlockSize = m_DirectoryBlocks[directoryIndex].files[fileIndex].getRealFileBlockSize();
   m_Stream.seekg(m_DirectoryBlocks[directoryIndex].files[fileIndex].offset, std::ios_base::beg);
   if (!m_Stream.good())
   {
@@ -526,6 +526,7 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
   }
 
   uint8_t * buffer = nullptr; // buffer for output data
+  uint32_t buffer_size = 0;
   if (isFileCompressed(directoryIndex, fileIndex))
   {
     const bool compressionUsesLZ4 = m_Header.version >= 105;
@@ -538,7 +539,7 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
       return false;
     }
     #endif
-    if (extractedFileSize < 4)
+    if (fileBlockSize < 4)
     {
       std::cerr << "BSA::extractFile: Error: Size is too small to contain any compressed data!\n";
       return false;
@@ -552,8 +553,8 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
       return false;
     }
     // read compressed stuff
-    uint8_t * compressedBuffer = new uint8_t[extractedFileSize - 4];
-    m_Stream.read(reinterpret_cast<char*>(compressedBuffer), extractedFileSize - 4);
+    uint8_t * compressedBuffer = new uint8_t[fileBlockSize - 4];
+    m_Stream.read(reinterpret_cast<char*>(compressedBuffer), fileBlockSize - 4);
     if (!m_Stream.good())
     {
       std::cerr << "BSA::extractFile: Error: Could not read compressed file data from archive!\n";
@@ -562,12 +563,13 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
     }
     // allocate buffer for decompressed data
     buffer = new uint8_t[decompSize];
+    buffer_size = decompSize;
     #if defined(MWTP_NO_LZ4)
-    const bool success = MWTP::zlibDecompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize);
+    const bool success = MWTP::zlibDecompress(compressedBuffer, fileBlockSize - 4, buffer, decompSize);
     #else
     const bool success = compressionUsesLZ4 ?
-        MWTP::lz4Decompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize)
-        : MWTP::zlibDecompress(compressedBuffer, extractedFileSize - 4, buffer, decompSize);
+        MWTP::lz4Decompress(compressedBuffer, fileBlockSize - 4, buffer, decompSize)
+        : MWTP::zlibDecompress(compressedBuffer, fileBlockSize - 4, buffer, decompSize);
     #endif
     if (!success)
     {
@@ -579,14 +581,13 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
     // success, delete compressed data buffer
     delete [] compressedBuffer;
     compressedBuffer = nullptr;
-    // Adjust size for file output, because decompressed data is usually bigger.
-    extractedFileSize = decompSize;
   }
   else
   {
     // handle uncompressed data
-    buffer = new uint8_t[extractedFileSize];
-    m_Stream.read(reinterpret_cast<char*>(buffer), extractedFileSize);
+    buffer_size = fileBlockSize;
+    buffer = new uint8_t[buffer_size];
+    m_Stream.read(reinterpret_cast<char*>(buffer), buffer_size);
     if (!m_Stream.good())
     {
       std::cerr << "BSA::extractFile: Error: Bad internal stream, could not read file data from archive!\n";
@@ -607,7 +608,7 @@ bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, c
     return false;
   }
 
-  outputStream.write(reinterpret_cast<const char*>(buffer), extractedFileSize);
+  outputStream.write(reinterpret_cast<const char*>(buffer), buffer_size);
   if (!outputStream.good())
   {
     std::cerr << "BSA::extractFile: Error: Could not write data to file \""

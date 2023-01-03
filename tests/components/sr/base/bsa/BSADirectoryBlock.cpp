@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2022  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,11 +52,11 @@ TEST_CASE("BSADirectoryBlock")
       REQUIRE( block.name == "interface\\controls\\360" );
       REQUIRE( block.files.size() == 2 );
       REQUIRE( block.files[0].nameHash == 0x1FDC44B06B107368 );
-      REQUIRE( block.files[0].fileSize == 2362 );
+      REQUIRE( block.files[0].fileBlockSize == 2362 );
       REQUIRE( block.files[0].offset == 6388 );
       REQUIRE( block.files[0].fileName.empty() );
       REQUIRE( block.files[1].nameHash == 0x6CF7725967076164 );
-      REQUIRE( block.files[1].fileSize == 535 );
+      REQUIRE( block.files[1].fileBlockSize == 535 );
       REQUIRE( block.files[1].offset == 8750 );
       REQUIRE( block.files[1].fileName.empty() );
     }
@@ -75,7 +75,7 @@ TEST_CASE("BSADirectoryBlock")
       REQUIRE( block.name == "interface\\controls\\360" );
       REQUIRE( block.files.size() == 1 );
       REQUIRE( block.files[0].nameHash == 0x1FDC44B06B107368 );
-      REQUIRE( block.files[0].fileSize == 2362 );
+      REQUIRE( block.files[0].fileBlockSize == 2362 );
       REQUIRE( block.files[0].offset == 6388 );
       REQUIRE( block.files[0].fileName.empty() );
     }

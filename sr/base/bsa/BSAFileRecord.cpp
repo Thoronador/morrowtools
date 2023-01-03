@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2021  Thoronador
+    Copyright (C) 2011, 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,7 +26,7 @@ namespace SRTP
 
 BSAFileRecord::BSAFileRecord()
 : nameHash(0),
-  fileSize(0),
+  fileBlockSize(0),
   offset(0),
   fileName("")
 {
@@ -46,7 +46,7 @@ bool BSAFileRecord::loadFromStream(std::istream& input)
     std::cerr << "BSAFileRecord::loadFromStream: Error: Could not read hash!\n";
     return false;
   }
-  input.read(reinterpret_cast<char*>(&fileSize), 4);
+  input.read(reinterpret_cast<char*>(&fileBlockSize), 4);
   input.read(reinterpret_cast<char*>(&offset), 4);
   if (!input.good())
   {
@@ -61,12 +61,12 @@ bool BSAFileRecord::loadFromStream(std::istream& input)
 
 bool BSAFileRecord::isCompressionToggled() const
 {
-  return (fileSize & (1 << 30)) != 0;
+  return (fileBlockSize & (1 << 30)) != 0;
 }
 
-uint32_t BSAFileRecord::getRealFileSize() const
+uint32_t BSAFileRecord::getRealFileBlockSize() const
 {
-  return fileSize & ~(1 << 30);
+  return fileBlockSize & ~(1 << 30);
 }
 
 } // namespace

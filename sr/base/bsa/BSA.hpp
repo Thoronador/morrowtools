@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -242,7 +242,7 @@ struct BSA
      *         Returns false if an error occurred.
      */
     bool extractAll(const std::string& outputDirName, uint32_t& extractedFileCount);
-  protected:
+  private:
     /** \brief Check whether the given indexes identify a valid index pair.
      *
      * \param directoryIndex  index of the directory

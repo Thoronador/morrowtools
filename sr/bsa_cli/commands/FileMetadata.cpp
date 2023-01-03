@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -71,7 +71,7 @@ int FileMetadata::run()
       std::cout.width(prev_width);
       std::cout.fill(' ');
       // Display rest of the information.
-      std::cout << "|" << std::dec << file.getRealFileSize()
+      std::cout << "|" << std::dec << file.getRealFileBlockSize()
                 << "|" << file.offset << "|"
                 << (file.isCompressionToggled() ? "yes" : "no") << "|"
                 << directory.name << '\\' << file.fileName << "\n";

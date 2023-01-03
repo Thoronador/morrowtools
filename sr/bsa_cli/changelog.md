@@ -1,6 +1,6 @@
 # Version history of bsa-cli
 
-## Next Version (2023-01-??)
+## Version 0.9.0 (2023-01-04)
 
 __[feature]__
 The program can now also extract files from archives where the file names are

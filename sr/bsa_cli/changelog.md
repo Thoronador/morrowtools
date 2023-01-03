@@ -41,8 +41,8 @@ __[feature]__
 The `info` command will now show whether the archive's flag for embedded file
 names is set.
 
-_(Note that `bsa-cli` is not yet able to extract archive files when the embedded
-file name flag is set. This feature may become available in a later version of
+_(Note that `bsa-cli` 0.7.2 is not able to extract archive files when the
+embedded file name flag is set. This feature is available in version 0.9.0 of
 `bsa-cli`.)_
 
 ## Version 0.7.1 (2021-11-08)
@@ -76,32 +76,39 @@ __[feature]__
 
 ## Version 0.6.1 (2021-10-31)
 
+__[feature]__
 `bsa-cli` can now also handle the newer archive version 105 which is used in
 Skyrim Special Edition.
 
 ## Version 0.6.0 (2021-10-31)
 
+__[feature]__
 The new `extract-all` command to extract all content from a BSA file is added.
 
 ## Version 0.5.0 (2021-10-31)
 
+__[feature]__
 The new `folders` command to list all folders inside a BSA file is added.
 
+__[feature]__
 The new `extract-folder` command to extract all files from a folder of a BSA
 file is added.
 
 ## Version 0.4.1 (2021-10-30)
 
+__[feature]__
 A new `help` command is added to provide a bit more detailed help for the
 various other commands.
 
 ## Version 0.4.0 (2021-10-29)
 
+__[feature]__
 The new `extract-file` command to extract a single file from a BSA file is
 added.
 
 ## Version 0.3.0 (2021-10-27)
 
+__[feature]__
 The new `commands` command is added. It shows available commands.
 
 ## Version 0.2.1 (2021-10-25)

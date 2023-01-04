@@ -3,9 +3,6 @@
 bsa-cli is a command-line tool to perform some operations on BSA files, an
 archive format that is used by TES V: Skyrim (and some other games).
 
-_Note: The bsa-cli is still in an early stage of development. So far it can only
-perform very few operations._
-
 ## Usage
 
 ```

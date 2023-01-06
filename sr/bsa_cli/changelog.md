@@ -1,5 +1,11 @@
 # Version history of bsa-cli
 
+## Next Version (2023-01-??)
+
+__[feature]__
+The extended help text for commands (obtained via the `help` command) does now
+include an example, too.
+
 ## Version 0.9.0 (2023-01-04)
 
 __[feature]__

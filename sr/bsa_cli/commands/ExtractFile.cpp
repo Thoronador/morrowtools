@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021, 2022  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -132,17 +132,37 @@ std::string ExtractFile::helpShort() const
 
 std::string ExtractFile::helpLong(const std::string_view binaryName) const
 {
+  const std::string file = "meshes\\markerx.nif";
+  #if defined(_WIN32)
+  const auto archive = "D:\\Games\\Some-PlugIn\\archive.bsa";
+  const auto destination = "D:\\MyStuff\\unpacked\\my.nif";
+  #else
+  const auto archive = "/opt/some-plugin/archive.bsa";
+  const auto destination = "/home/user/unpacked/my.nif";
+  #endif
   return std::string(binaryName).append(" extract-file\n")
       .append("Extracts a single file from an archive.\n\n")
       .append("Usage:\n    ")
       .append(binaryName).append(" extract-file BSA_FILE ARCHIVE_MEMBER EXTRACT_DESTINATION\n\n")
-      .append("Options:\n    BSA_FILE            - set path to the BSA file to operate on to BSA_FILE.\n")
+      .append("Options:\n    BSA_FILE            - Set path of the BSA file to operate on to BSA_FILE.\n")
       .append("                          The BSA_FILE must be given.\n")
       .append("    ARCHIVE_MEMBER      - full path and name of the file from the archive to\n")
       .append("                          extract. This option must be present.\n")
       .append("    EXTRACT_DESTINATION - destination file name for extraction. This option\n")
       .append("                          must be present. The destination file must not exist\n")
-      .append("                          yet. Otherwise the extraction will not be performed.\n");
+      .append("                          yet. Otherwise the extraction will not be performed.\n\n")
+      .append("Example:\n")
+      .append("    To extract the file " + file)
+      .append(" from the archive\n    ")
+      .append(archive).append(" to the file\n    ").append(destination)
+      .append(" type:\n\n    ").append(binaryName)
+      .append(" extract-file ").append(archive)
+      #if defined(_WIN32)
+      .append(" ").append(file).append(" ")
+      #else
+      .append(" '").append(file).append("' ")
+      #endif
+      .append(destination).append("\n");
 }
 
 } // namespace

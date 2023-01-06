@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -119,12 +119,28 @@ std::string CheckHashes::helpShort() const
 
 std::string CheckHashes::helpLong(const std::string_view binaryName) const
 {
+  #if defined(_WIN32)
+  const auto archive = "D:\\path-of\\some-file.bsa";
+  #else
+  const auto archive = "/path-of/some-file.bsa";
+  #endif
   return std::string(binaryName).append(" check-hashes\n")
       .append("Checks hashes of files and directories in the archive.\n\n")
       .append("Usage:\n    ")
       .append(binaryName).append(" check-hashes BSA_FILE\n\n")
-      .append("Options:\n    BSA_FILE    - set path to the BSA file to operate on to BSA_FILE.\n")
-      .append("                  The BSA_FILE must be given.\n");
+      .append("Options:\n")
+      .append("    BSA_FILE    - Set path to the BSA file to operate on to BSA_FILE.\n")
+      .append("                  The BSA_FILE must be given.\n\n")
+      .append("Example:\n")
+      .append("    The following command would check the hash values of the file\n")
+      .append("    ").append(archive).append(":\n\n    ")
+      .append(binaryName).append(" check-hashes ").append(archive)
+      .append("\n\nRemarks:\n    This command is considered experimental.\n")
+      .append("    Reason for that is the fact that the hash function is not ")
+      .append("completely known\n    but has been reverse-engineered from ")
+      .append("known hashes in official BSA files.\n    While it is accurate")
+      .append(" for many files, it cannot be guaranteed to be correct\n    ")
+      .append("for all BSA files.\n");
 }
 
 } // namespace

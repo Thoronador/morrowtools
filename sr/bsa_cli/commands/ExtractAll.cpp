@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021, 2022  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -122,16 +122,29 @@ std::string ExtractAll::helpShort() const
 
 std::string ExtractAll::helpLong(const std::string_view binaryName) const
 {
+  #if defined(_WIN32)
+  const auto archive = "D:\\Games\\Some-PlugIn\\archive.bsa";
+  const auto destination = "D:\\MyStuff\\unpacked-data";
+  #else
+  const auto archive = "/games/some-plugin/archive.bsa";
+  const auto destination = "/home/user/unpacked-data";
+  #endif
   return std::string(binaryName).append(" extract-all\n")
       .append("Extracts everything from an archive.\n\n")
       .append("Usage:\n    ")
       .append(binaryName).append(" extract-all BSA_FILE EXTRACT_DESTINATION\n\n")
-      .append("Options:\n    BSA_FILE            - set path to the BSA file to operate on to BSA_FILE.\n")
+      .append("Options:\n    BSA_FILE            - Set path to the BSA file to operate on to BSA_FILE.\n")
       .append("                          The BSA_FILE must be given.\n")
       .append("    EXTRACT_DESTINATION - name of destination directory for extraction. This\n")
       .append("                          option must be present. The destination directory\n")
       .append("                          must not exist yet. Otherwise the extraction will not\n")
-      .append("                          be performed.\n");
+      .append("                          be performed.\n\n")
+      .append("Example:\n")
+      .append("    To extract all files from the archive\n    ")
+      .append(archive).append(" to the directory\n    ").append(destination)
+      .append(" type:\n\n    ").append(binaryName)
+      .append(" extract-all ").append(archive).append(" ").append(destination)
+      .append("\n");
 }
 
 } // namespace

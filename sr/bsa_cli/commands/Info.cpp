@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021, 2022  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -96,12 +96,21 @@ std::string Info::helpShort() const
 
 std::string Info::helpLong(const std::string_view binaryName) const
 {
+  #if defined(_WIN32)
+  const auto archive = "D:\\Games\\Some-PlugIn\\archive.bsa";
+  #else
+  const auto archive = "/opt/games/some-plugin/archive.bsa";
+  #endif
   return std::string(binaryName).append(" info\n")
       .append("Shows header information of an archive.\n\n")
       .append("Usage:\n    ")
       .append(binaryName).append(" info BSA_FILE\n\n")
-      .append("Options:\n    BSA_FILE    - set path to the BSA file to operate on to BSA_FILE.\n")
-      .append("                  The BSA_FILE must be given.\n");
+      .append("Options:\n    BSA_FILE - Set path of the BSA file to operate on to BSA_FILE.\n")
+      .append("               The BSA_FILE must be given.\n\n")
+      .append("Example:\n")
+      .append("    To show the header information of the archive\n")
+      .append("    ").append(archive).append(" type:\n\n    ")
+      .append(binaryName).append(" info ").append(archive).append("\n");
 }
 
 } // namespace

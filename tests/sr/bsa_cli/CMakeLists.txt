@@ -24,3 +24,27 @@ endif ()
 # parameter to show version number
 add_test(NAME bsa_cli_version
          COMMAND $<TARGET_FILE:bsa-cli> --version)
+
+# tests for help of commands
+add_test(NAME bsa_cli_help_check_hashes
+         COMMAND $<TARGET_FILE:bsa-cli> help check-hashes)
+add_test(NAME bsa_cli_help_commands
+         COMMAND $<TARGET_FILE:bsa-cli> help commands)
+add_test(NAME bsa_cli_help_directories
+         COMMAND $<TARGET_FILE:bsa-cli> help directories)
+add_test(NAME bsa_cli_help_directory_metadata
+         COMMAND $<TARGET_FILE:bsa-cli> help directory-metadata)
+add_test(NAME bsa_cli_help_extract_all
+         COMMAND $<TARGET_FILE:bsa-cli> help extract-all)
+add_test(NAME bsa_cli_help_extract_directory
+         COMMAND $<TARGET_FILE:bsa-cli> help extract-directory)
+add_test(NAME bsa_cli_help_extract_file
+         COMMAND $<TARGET_FILE:bsa-cli> help extract-file)
+add_test(NAME bsa_cli_help_file_metadata
+         COMMAND $<TARGET_FILE:bsa-cli> help file-metadata)
+add_test(NAME bsa_cli_help_help
+         COMMAND $<TARGET_FILE:bsa-cli> help help)
+add_test(NAME bsa_cli_help_info
+         COMMAND $<TARGET_FILE:bsa-cli> help info)
+add_test(NAME bsa_cli_help_list
+         COMMAND $<TARGET_FILE:bsa-cli> help list)

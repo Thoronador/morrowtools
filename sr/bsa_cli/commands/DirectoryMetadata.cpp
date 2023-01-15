@@ -54,7 +54,7 @@ int DirectoryMetadata::run()
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
 
-  std::cout << "hash|file count|offset|name\n"
+  std::cout << "hash|offset|file count|name\n"
             << "---------------------------\n";
   const auto& directory_records = bsa.getDirectories();
   const auto& directory_blocks = bsa.getDirectoryBlocks();
@@ -77,8 +77,8 @@ int DirectoryMetadata::run()
     std::cout.width(prev_width);
     std::cout.fill(' ');
     // Display rest of the information.
-    std::cout << "|" << std::dec << directory_records[i].count
-              << "|" << directory_records[i].offset << "|"
+    std::cout << "|" << std::dec << directory_records[i].offset
+              << "|" << directory_records[i].count << "|"
               << directory_blocks[i].name << "\n";
   }
 

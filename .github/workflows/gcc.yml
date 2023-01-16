@@ -4,11 +4,11 @@ on: push
 
 jobs:
   ubuntu_gcc:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        version: [8, 9, 10]
+        version: [9, 10, 11, 12]
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
@@ -20,7 +20,7 @@ jobs:
         run: |
           export CXX=g++-${{ matrix.version }}
           ./ci/cpplint.sh
-        if: matrix.version == 10
+        if: matrix.version == 12
       - name: Build with GCC ${{ matrix.version }}
         run: |
           export CXX=g++-${{ matrix.version }}
@@ -50,19 +50,19 @@ jobs:
           ctest -V
         if: matrix.version == 9
 
-  gcc10_lto_static:
-    runs-on: ubuntu-20.04
+  gcc_lto_static:
+    runs-on: ubuntu-22.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-10 liblz4-dev pkg-config zlib1g-dev
-      - name: Build with GCC 10
+          sudo apt-get install -y catch cmake g++-12 liblz4-dev pkg-config zlib1g-dev
+      - name: Build with GCC 12
         run: |
-          export CXX=g++-10
-          export CC=gcc-10
+          export CXX=g++-12
+          export CC=gcc-12
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build

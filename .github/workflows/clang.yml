@@ -7,8 +7,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        version: [8, 9, 10]
-    runs-on: ubuntu-20.04
+        version: [11, 12, 13]
+    runs-on: ubuntu-22.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
@@ -24,7 +24,7 @@ jobs:
         run: |
           export CXX=clang++-${{ matrix.version }}
           ./ci/cpplint.sh
-        if: matrix.version == 10
+        if: matrix.version == 11
       - name: Build with Clang ${{ matrix.version }}
         run: |
           export CXX=clang++-${{ matrix.version }}
@@ -47,26 +47,26 @@ jobs:
           cd build-no-lz4
           cmake ../ -DAUTODETECT_LZ4=OFF -DDISABLE_LZ4=ON
           make -j2
-        if: matrix.version == 9
+        if: matrix.version == 12
       - name: Test build without LZ4 support
         run: |
           cd "$GITHUB_WORKSPACE"/build-no-lz4
           ctest -V
-        if: matrix.version == 9
+        if: matrix.version == 12
 
-  clang10_lto_static:
-    runs-on: ubuntu-20.04
+  clang_lto_static:
+    runs-on: ubuntu-22.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake clang-10 liblz4-dev pkg-config zlib1g-dev
-      - name: Build with Clang 10
+          sudo apt-get install -y catch cmake clang-14 liblz4-dev pkg-config zlib1g-dev
+      - name: Build with Clang 14
         run: |
-          export CXX=clang++-10
-          export CC=clang-10
+          export CXX=clang++-14
+          export CC=clang-14
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build

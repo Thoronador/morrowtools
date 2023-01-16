@@ -54,7 +54,7 @@ int FileMetadata::run()
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
 
-  std::cout << "hash|block size|offset|compression toggled|file name\n"
+  std::cout << "hash|offset|block size|compression toggled|file name\n"
             << "----------------------------------------------------\n";
   const auto& directories = bsa.getDirectoryBlocks();
   for (const auto& directory: directories)
@@ -71,8 +71,8 @@ int FileMetadata::run()
       std::cout.width(prev_width);
       std::cout.fill(' ');
       // Display rest of the information.
-      std::cout << "|" << std::dec << file.getRealFileBlockSize()
-                << "|" << file.offset << "|"
+      std::cout << "|" << std::dec << file.offset
+                << "|" << file.getRealFileBlockSize() << "|"
                 << (file.isCompressionToggled() ? "yes" : "no") << "|"
                 << directory.name << '\\' << file.fileName << "\n";
     }

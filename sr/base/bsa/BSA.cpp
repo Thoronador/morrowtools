@@ -531,6 +531,58 @@ std::optional<uint32_t> BSA::handleEmbeddedFileName(const uint32_t file_block_si
   return 1 + embedded_name_length;
 }
 
+std::optional<uint32_t> BSA::getExtractedFileSize(const uint32_t directoryIndex, const uint32_t fileIndex)
+{
+  bool compressed;
+  try
+  {
+    compressed = isFileCompressed(directoryIndex, fileIndex);
+  }
+  catch(...)
+  {
+    std::cerr << "BSA::getExtractedFileSize: Error: Could not determine compression status!\n";
+    return std::nullopt;
+  }
+  const bool has_embedded_names = m_Header.hasEmbeddedFileNames();
+  const auto& file_record = m_DirectoryBlocks[directoryIndex].files[fileIndex];
+  const auto file_block_size = file_record.getRealFileBlockSize();
+  if (!compressed && !has_embedded_names)
+    // case #1: no compression and no embedded names
+    return file_block_size;
+
+  m_Stream.seekg(file_record.offset, std::ios_base::beg);
+  if (!m_Stream.good())
+  {
+    std::cerr << "BSA::getExtractedFileSize: Error: Bad internal stream, could not jump to file's offset!\n";
+    return std::nullopt;
+  }
+  const auto maybe_embedded_length = handleEmbeddedFileName(file_block_size);
+  if (!maybe_embedded_length.has_value())
+  {
+    return std::nullopt;
+  }
+  const auto embedded_name_length = maybe_embedded_length.value();
+  if (!compressed)
+    // case #2: no compression, but embedded names
+    return file_block_size - embedded_name_length;
+
+  if (file_block_size - embedded_name_length < 4)
+  {
+    std::cerr << "BSA::getExtractedFileSize: Error: Size is too small to contain any compressed data!\n";
+    return std::nullopt;
+  }
+  uint32_t decompSize = 0;
+  // read size of decompressed file
+  m_Stream.read(reinterpret_cast<char*>(&decompSize), 4);
+  if (!m_Stream.good())
+  {
+    std::cerr << "BSA::getExtractedFileSize: Error: Could not read file's uncompressed size!\n";
+    return std::nullopt;
+  }
+  // case: compression (with or without embedded names)
+  return decompSize;
+}
+
 bool BSA::extractFile(const uint32_t directoryIndex, const uint32_t fileIndex, const std::string& outputFileName)
 {
   if (!hasAllStructureData())

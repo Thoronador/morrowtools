@@ -152,6 +152,15 @@ struct BSA
      */
     bool isFileCompressed(const uint32_t directoryIndex, const uint32_t fileIndex) const;
 
+    /** \brief Gets the actual size of a file when it will be extracted.
+     *
+     * \param directoryIndex  index of the directory
+     * \param fileIndex    index of the file within the directory
+     * \return Returns the extracted file's size in bytes in case of success.
+     *         Returns an empty optional, if the size could not be determined.
+     */
+    std::optional<uint32_t> getExtractedFileSize(const uint32_t directoryIndex, const uint32_t fileIndex);
+
     /** \brief Reads the directory records.
      *
      * \return Returns true in case of success. Returns false otherwise.

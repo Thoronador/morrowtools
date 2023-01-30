@@ -775,6 +775,43 @@ TEST_CASE("BSA")
     }
   }
 
+  SECTION("hasDirectory")
+  {
+    using namespace std::string_view_literals;
+
+    SECTION("no structure data")
+    {
+      BSA bsa;
+      REQUIRE_FALSE( bsa.hasDirectory("baz") );
+    }
+
+    SECTION("matches")
+    {
+      const std::filesystem::path path{"test_sr_bsa_hasDirectory_match.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // Check existing directories.
+      REQUIRE( bsa.hasDirectory("some\\thing") );
+      REQUIRE( bsa.hasDirectory("something\\else") );
+
+      // Check existing directories, but use different upper / lower case.
+      REQUIRE( bsa.hasDirectory("SOME\\thiNG") );
+      REQUIRE( bsa.hasDirectory("something\\ELSE") );
+      REQUIRE( bsa.hasDirectory("SoMeThInG\\eLsE") );
+
+      // Test some directories that do not exist in the archive.
+      REQUIRE_FALSE( bsa.hasDirectory("foo") );
+      REQUIRE_FALSE( bsa.hasDirectory("does\\not\\exist") );
+      REQUIRE_FALSE( bsa.hasDirectory("is\\missing") );
+    }
+  }
+
   SECTION("isFileCompressed")
   {
     using namespace std::string_view_literals;

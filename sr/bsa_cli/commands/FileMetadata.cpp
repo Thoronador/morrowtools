@@ -54,18 +54,22 @@ int FileMetadata::run()
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
 
-  std::cout << "hash|offset|block size|compression toggled|file name\n"
-            << "----------------------------------------------------\n";
+  std::cout << "hash|offset|block size|compression toggled|file size|file name\n"
+            << "--------------------------------------------------------------\n";
   const auto& directories = bsa.getDirectoryBlocks();
-  for (const auto& directory: directories)
+  const auto dir_size = directories.size();
+  for (std::vector<BSADirectoryBlock>::size_type directory_idx = 0; directory_idx < dir_size; ++directory_idx)
   {
-    for (const BSAFileRecord& file: directory.files)
+    const auto& directory = directories[directory_idx];
+    const auto file_count = directory.files.size();
+    for (std::vector<BSAFileRecord>::size_type file_idx = 0; file_idx < file_count; ++file_idx)
     {
       std::cout << "0x" << std::hex;
       // Set width and fill character for hash values.
       const auto prev_width = std::cout.width(16);
       std::cout.fill('0');
       // Print hash to stream.
+      const BSAFileRecord& file = directory.files[file_idx];
       std::cout << file.nameHash;
       // Reset width and fill character.
       std::cout.width(prev_width);
@@ -73,8 +77,17 @@ int FileMetadata::run()
       // Display rest of the information.
       std::cout << "|" << std::dec << file.offset
                 << "|" << file.getRealFileBlockSize() << "|"
-                << (file.isCompressionToggled() ? "yes" : "no") << "|"
-                << directory.name << '\\' << file.fileName << "\n";
+                << (file.isCompressionToggled() ? "yes" : "no") << "|";
+      const auto extracted = bsa.getExtractedFileSize(directory_idx, file_idx);
+      if (extracted.has_value())
+      {
+        std::cout << extracted.value();
+      }
+      else
+      {
+        std::cout << "unknown";
+      }
+      std::cout << "|" << directory.name << '\\' << file.fileName << "\n";
     }
   }
 

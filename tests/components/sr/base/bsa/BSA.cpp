@@ -1844,4 +1844,334 @@ TEST_CASE("BSA")
       REQUIRE( std::filesystem::remove_all(output_path) > 3 );
     }
   }
+
+  SECTION("getExtractedFileSize")
+  {
+    using namespace std::string_view_literals;
+
+    SECTION("no structure data")
+    {
+      BSA bsa;
+      REQUIRE_FALSE( bsa.getExtractedFileSize(1, 1).has_value() );
+    }
+
+    SECTION("index is out of range")
+    {
+      const std::filesystem::path path{"test_sr_bsa_getExtractedFileSize_out_of_range.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      constexpr uint32_t over9000 = 9001;
+      REQUIRE_FALSE( bsa.getExtractedFileSize(over9000, 1).has_value() );
+      REQUIRE_FALSE( bsa.getExtractedFileSize(0, over9000).has_value() );
+    }
+
+    SECTION("data corruption: offset is out of range")
+    {
+      const std::filesystem::path path{"test_sr_bsa_getExtractedFileSize_offset_out_of_range.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\xFF\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto opt_size = bsa.getExtractedFileSize(0, 0);
+      REQUIRE_FALSE( opt_size.has_value() );
+    }
+
+    SECTION("data corruption: data size of compressed data is too small")
+    {
+      const std::filesystem::path path{"test_sr_bsa_getExtractedFileSize_compressed_data_truncated.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x03\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0x\x9C\x0B\xC9\xC8,V\0\xA2\x44\x85\x92\xD4\xE2\x12=.\0.\xC5\x05.foobar\x0A\x0E\0\0\0x\x9CK\xCB\xCFW(O,V\xC8H-J\xD5\xE3\x02\0&&\x04\xAC"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto opt_size = bsa.getExtractedFileSize(0, 0);
+      REQUIRE_FALSE( opt_size.has_value() );
+    }
+
+    SECTION("data corruption: fail to read decompressed size value")
+    {
+      const std::filesystem::path path{"test_sr_bsa_getExtractedFileSize_decompressed_size_truncated.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x1A\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      const auto opt_size = bsa.getExtractedFileSize(0, 0);
+      REQUIRE_FALSE( opt_size.has_value() );
+    }
+
+    SECTION("get size of uncompressed files from v104 archive")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_getExtractedFileSize_no_compression.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // file test.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(0, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(0, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 16 );
+      }
+
+      // file bar.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 7 );
+      }
+
+      // file foo.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 1) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 1);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 14 );
+      }
+    }
+
+    SECTION("get size of compressed files from v104 archive")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_getExtractedFileSize_with_compression_v104.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x1A\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xC3\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x1A\0\0\0\xCA\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0x\x9C\x0B\xC9\xC8,V\0\xA2\x44\x85\x92\xD4\xE2\x12=.\0.\xC5\x05.foobar\x0A\x0E\0\0\0x\x9CK\xCB\xCFW(O,V\xC8H-J\xD5\xE3\x02\0&&\x04\xAC"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // file test.txt
+      {
+        REQUIRE( bsa.isFileCompressed(0, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(0, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 16 );
+      }
+
+      // file bar.txt
+      {
+        // File is not compressed, because compression is toggled.
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 7 );
+      }
+
+      // file foo.txt
+      {
+        REQUIRE( bsa.isFileCompressed(1, 1) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 1);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 14 );
+      }
+    }
+
+    SECTION("get size of uncompressed files from v104 archive with embedded names")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_getExtractedFileSize_with_embedded_names_v104.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\x01\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95$\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x1E\0\0\0\xCD\0\0\0oo\x03\x66\xC2\xA6\xD0\x95%\0\0\0\xEB\0\0\0test.txt\0bar.txt\0foo.txt\0\x13some\\thing\\test.txtThis is a test.\x0A\x16something\\\x65lse\\\x62\x61r.txtfoobar\x0A\x16something\\\x65lse\\\x66oo.txtfoo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // file test.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(0, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(0, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 16 );
+      }
+
+      // file bar.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 7 );
+      }
+
+      // file foo.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 1) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 1);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 14 );
+      }
+    }
+
+    SECTION("get size of compressed files from v104 archive with embedded names")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_getExtractedFileSize_compressed_with_embedded_names_v104.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x07\x01\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95/\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95+\0\0\0\xD8\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x32\0\0\0\x03\x01\0\0test.txt\0bar.txt\0foo.txt\0\x13some\\thing\\test.txt\x10\0\0\0x\x9C\x0B\xC9\xC8,V\0\xA2\x44\x85\x92\xD4\xE2\x12=.\0.\xC5\x05.\x0A\x16something/else/bar.txt\x07\0\0\0x\x9CK\xCB\xCFOJ,\xE2\x02\0\x0B/\x02\x84\x0A\x16something/else/foo.txt\x0E\0\0\0x\x9CK\xCB\xCFW(O,V\xC8H-J\xD5\xE3\x02\0&&\x04\xAC\x0A"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // file test.txt
+      {
+        REQUIRE( bsa.isFileCompressed(0, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(0, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 16 );
+      }
+
+      // file bar.txt
+      {
+        REQUIRE( bsa.isFileCompressed(1, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 7 );
+      }
+
+      // file foo.txt
+      {
+        REQUIRE( bsa.isFileCompressed(1, 1) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 1);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 14 );
+      }
+    }
+
+    SECTION("get size of compressed files from v105 archive")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_getExtractedFileSize_with_compression_v105.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x69\0\0\0\x24\0\0\0\x07\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0\0\0\0\0m\0\0\0\0\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0\0\0\0\0\x89\0\0\0\0\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95#\0\0\0\xB9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0@\xDC\0\0\0oo\x03\x66\xC2\xA6\xD0\x95!\0\0\0\xE3\0\0\0test.txt\0bar.txt\0foo.txt\0\x10\0\0\0\x04\"M\x18`@\x82\x10\0\0\x80This is a test.\x0A\0\0\0\0foobar\x0A\x0E\0\0\0\x04\"M\x18`@\x82\x0E\0\0\x80\x66oo was here.\x0A\0\0\0\0"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // file test.txt
+      {
+        // File is compressed.
+        REQUIRE( bsa.isFileCompressed(0, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(0, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 16 );
+      }
+
+      // file bar.txt
+      {
+        // File is not compressed, because compression is toggled.
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 7 );
+      }
+
+      // file foo.txt
+      {
+        const auto path { std::filesystem::temp_directory_path() / "extract_foo_v105.txt" };
+        FileGuard guard{path};
+        // File is compressed.
+        REQUIRE( bsa.isFileCompressed(1, 1) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 1);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 14 );
+      }
+    }
+
+    SECTION("get size of uncompressed files from v105 archive with embedded names")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_getExtractedFileSize_with_embedded_names_v105.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x69\0\0\0\x24\0\0\0\x03\x01\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0\0\0\0\0m\0\0\0\0\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0\0\0\0\0\x89\0\0\0\0\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95$\0\0\0\xB9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x1E\0\0\0\xDD\0\0\0oo\x03\x66\xC2\xA6\xD0\x95%\0\0\0\xFB\0\0\0test.txt\0bar.txt\0foo.txt\0\x13some\\thing\\test.txtThis is a test.\x0A\x16something\\\x65lse\\\x62\x61r.txtfoobar\x0A\x16something\\\x65lse\\\x66oo.txtfoo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // file test.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(0, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(0, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 16 );
+      }
+
+      // file bar.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 7 );
+      }
+
+      // file foo.txt
+      {
+        REQUIRE_FALSE( bsa.isFileCompressed(1, 1) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 1);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 14 );
+      }
+    }
+
+    SECTION("get size of compressed files from v105 archive with embedded file names")
+    {
+      const std::filesystem::path bsa_path{"test_sr_bsa_getExtractedFileSize_compressed_with_embedded_names_v105.bsa"};
+      FileGuard bsa_guard{bsa_path};
+      const auto data = "BSA\0\x69\0\0\0\x24\0\0\0\x07\x01\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\0\0\0gn\x0As@r\xBE\x0B\x01\0\0\0\0\0\0\0m\0\0\0\0\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0\0\0\0\0\x89\0\0\0\0\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x37\0\0\0\xB9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x31\0\0\0\xF0\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x38\0\0\0!\x01\0\0test.txt\0bar.txt\0foo.txt\0\x13some/thing/test.txt\x10\0\0\0\x04\"M\x18`@\x82\x10\0\0\x80This is a test.\x0A\0\0\0\0\x16something/else/bar.txt\x07\0\0\0\x04\"M\x18`@\x82\x07\0\0\x80\x66oobar\x0A\0\0\0\0\x16something/else/foo.txt\x0E\0\0\0\x04\"M\x18`@\x82\x0E\0\0\x80\x66oo was here.\x0A\0\0\0\0"sv;
+      REQUIRE( writeBsa(data, bsa_path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(bsa_path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // file test.txt
+      {
+        REQUIRE( bsa.isFileCompressed(0, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(0, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 16 );
+      }
+
+      // file bar.txt
+      {
+        REQUIRE( bsa.isFileCompressed(1, 0) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 0);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 7 );
+      }
+
+      // file foo.txt
+      {
+        REQUIRE( bsa.isFileCompressed(1, 1) );
+        const auto opt_size = bsa.getExtractedFileSize(1, 1);
+        REQUIRE( opt_size.has_value() );
+        REQUIRE( opt_size.value() == 14 );
+      }
+    }
+  }
 }

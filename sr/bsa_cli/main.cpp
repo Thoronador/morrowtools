@@ -31,7 +31,7 @@
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.11.0-pre, 2023-01-30\n"
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.11.0, 2023-02-01\n"
             << "\nLibrary versions:\n"
             << " * lz4:  " << MWTP::lz4Version() << "\n"
             << " * zlib: " << MWTP::zlibVersion() << "\n";

@@ -1,13 +1,13 @@
 # Note: This Dockerfile attempts to build the project by cross-compiling it
 #       for 32-bit Windows OS via MinGW.
 
-FROM debian:11-slim
+FROM debian:12-slim
 LABEL maintainer="Dirk Stolle <striezel-dev@web.de>"
 # Always update any existing packages first.
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get upgrade -y
 # Install build toolchain.
-RUN apt-get install -y catch cmake pkg-config \
+RUN apt-get install -y catch2 cmake pkg-config \
     binutils-mingw-w64-i686 \
     g++-mingw-w64-i686-win32 \
     gcc-mingw-w64-i686-win32 \
@@ -32,7 +32,7 @@ RUN mkdir -p /opt/morrowtools/build/artifacts && \
     cp sr/conv_cams/conv_cams.exe artifacts/ && \
     cp sr/formID_finder/formID_finder.exe artifacts/ && \
     cp sr/race_resize/race_resize.exe artifacts/ && \
-    cp /usr/lib/gcc/i686-w64-mingw32/10-win32/libstdc++-6.dll artifacts/ && \
+    cp /usr/lib/gcc/i686-w64-mingw32/12-win32/libstdc++-6.dll artifacts/ && \
     cp /usr/i686-w64-mingw32/lib/zlib1.dll artifacts/
 RUN apt-get install -y zip && \
     cd /opt/morrowtools/build && \

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2013, 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef MW_TRAVELDESTINATION_HPP
 #define MW_TRAVELDESTINATION_HPP
 
+#include <cstdint>
 #include <fstream>
 #include <string>
 

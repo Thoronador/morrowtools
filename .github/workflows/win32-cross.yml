@@ -3,8 +3,8 @@ name: Cross-compile for Win32
 on: push
 
 jobs:
-  build_ubuntu_20_04_cross-win32_dynamic:
-    runs-on: ubuntu-20.04
+  build_cross-win32_dynamic:
+    runs-on: ubuntu-22.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3
@@ -30,8 +30,8 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/build/artifacts
           cp /usr/i686-w64-mingw32/lib/zlib1.dll "$GITHUB_WORKSPACE"/build/artifacts/zlib1.dll
-          cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libstdc++-6.dll "$GITHUB_WORKSPACE"/build/artifacts/libstdc++-6.dll
-          cp /usr/lib/gcc/i686-w64-mingw32/9.3-win32/libgcc_s_sjlj-1.dll "$GITHUB_WORKSPACE"/build/artifacts/libgcc_s_sjlj-1.dll
+          cp /usr/lib/gcc/i686-w64-mingw32/10-win32/libstdc++-6.dll "$GITHUB_WORKSPACE"/build/artifacts/libstdc++-6.dll
+          cp /usr/lib/gcc/i686-w64-mingw32/10-win32/libgcc_s_dw2-1.dll "$GITHUB_WORKSPACE"/build/artifacts/libgcc_s_dw2-1.dll
       - name: Collect build artifacts in one place
         run: |
           cd "$GITHUB_WORKSPACE"/build
@@ -50,8 +50,8 @@ jobs:
           path: |
             build/artifacts/*.exe
             build/artifacts/*.dll
-  build_ubuntu_20_04_cross-win32_static:
-    runs-on: ubuntu-20.04
+  build_cross-win32_static:
+    runs-on: ubuntu-22.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v3

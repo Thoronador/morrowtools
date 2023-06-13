@@ -2,13 +2,13 @@
 #       to build the project by cross-compiling it for 64-bit Windows OS.
 
 # build stage
-FROM debian:11-slim AS builder
+FROM debian:12-slim AS builder
 LABEL maintainer="Dirk Stolle <striezel-dev@web.de>"
 # Always update any existing packages first.
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get upgrade -y
 # Install build toolchain.
-RUN apt-get install -y catch cmake pkg-config \
+RUN apt-get install -y catch2 cmake pkg-config \
     binutils-mingw-w64-x86-64 \
     g++-mingw-w64-x86-64-win32 \
     gcc-mingw-w64-x86-64-win32 \

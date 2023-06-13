@@ -15,7 +15,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-${{ matrix.version }} liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch2 cmake g++-${{ matrix.version }} liblz4-dev pkg-config zlib1g-dev
       - name: Syntax check
         run: |
           export CXX=g++-${{ matrix.version }}
@@ -58,7 +58,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake g++-12 liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch2 cmake g++-12 liblz4-dev pkg-config zlib1g-dev
       - name: Build with GCC 12
         run: |
           export CXX=g++-12

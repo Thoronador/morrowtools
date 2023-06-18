@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013  Thoronador
+    Copyright (C) 2013, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,37 +31,35 @@ namespace SRTP
 
 struct DependencyElement
 {
-  std::string name;
-  SRTP::Tes4HeaderRecord header;
+  std::string name; /**< name of the ESM file, e. g. "Skyrim.esm" */
+  SRTP::Tes4HeaderRecord header; /**< header data of the ESM file */
 
   DependencyElement();
-  DependencyElement(const std::string& fn);
-  DependencyElement(const std::string& fn, const Tes4HeaderRecord& head);
+  DependencyElement(const std::string& file_name);
+  DependencyElement(const std::string& file_name, const Tes4HeaderRecord& head);
 
   bool operator<(const DependencyElement& other) const;
 };
 
-/* determines the load order for the given ESM files and stores them in result.
-   Returns true in case of success; returns false, if an error occurred.
-
-   parameters:
-       esmNames - vector containing the basic .esm file names, i.e. not the
-                  full path but only "Skyrim.esm", "Cool PlugIn.esm", etc.
-       dataDir  - path to the Data directory of Skyrim, including trailing
-                  backslash
-       result   - the vector that is used to store the resulting load order
-*/
+/** \brief Determines the load order for the given ESM files and stores them in result.
+ *
+ * \param esmNames  vector containing the basic .esm file names, i.e. not the
+ *                  full path but only "Skyrim.esm", "Cool PlugIn.esm", etc.
+ * \param dataDir   path to the Data directory of Skyrim, including trailing
+ *                  backslash
+ * \param result    the vector that is used to store the resulting load order
+ * \return Returns true in case of success; returns false, if an error occurred.
+ */
 bool getLoadOrder(const std::vector<std::string>& esmNames, const std::string& dataDir, std::vector<std::string>& result);
 
-/* determines the load order for the given files and stores them in result.
-   Returns true in case of success; returns false, if an error occurred.
-
-   parameters:
-       files  - set of .esm file names, including their headers
-       result - the vector that is used to store the resulting load order
-*/
+/** \brief Determines the load order for the given files and stores them in result.
+ *
+ * \param files   set of .esm file names, including their headers
+ * \param result  the vector that is used to store the resulting load order
+ * \return Returns true in case of success; returns false, if an error occurred.
+ */
 bool getLoadOrder(const std::set<DependencyElement>& files, std::vector<std::string>& result);
 
-} //namespace
+} // namespace
 
 #endif // SR_DEPENDENCYSOLVER_HPP

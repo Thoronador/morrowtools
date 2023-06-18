@@ -945,7 +945,7 @@ int main(int argc, char **argv)
     HWND receiver = FindWindow(ptrSend1, ptrSend2);
     if (receiver == nullptr)
     {
-      std::cerr << "Error in send data mode: cannot find receiving window!\n";
+      std::cerr << "Error in send data mode: Cannot find receiving window!\n";
       return SRTP::rcWindowNotFound;
     }
     int msgResult = SendMessage(receiver, WM_COPYDATA, 0, (LPARAM) &cds);
@@ -953,14 +953,14 @@ int main(int argc, char **argv)
     // check for socket
     if (sendParam1st != "socket")
     {
-      std::cerr << "Error: parameter --send-data expects socket as first part!\n";
+      std::cerr << "Error: Parameter --send-data expects socket as first part!\n";
       return SRTP::rcInvalidParameter;
     }
     // create Unix domain socket
     const int socket_fd = socket(AF_UNIX, SOCK_STREAM, 0);
     if (socket_fd < 0)
     {
-      std::cerr << "Error: could not open Unix domain socket!\n";
+      std::cerr << "Error: Could not open Unix domain socket!\n";
       return SRTP::rcSocketError;
     }
     // prepare socket address structure
@@ -971,7 +971,7 @@ int main(int argc, char **argv)
     // now connect
     if (connect(socket_fd, (struct sockaddr *) &serv_addr, sizeof(struct sockaddr_un)) != 0)
     {
-      std::cerr << "Error: could not connect via Unix domain socket!\n";
+      std::cerr << "Error: Could not connect via Unix domain socket!\n";
       return SRTP::rcSocketError;
     }
     // write to socket

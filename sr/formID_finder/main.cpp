@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2015, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2015, 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -543,7 +543,8 @@ int main(int argc, char **argv)
   {
     unsigned int typedMatches = 0;
     auto mgr_iter = mgr.begin();
-    while (mgr_iter != mgr.end())
+    const auto end = mgr.end();
+    while (mgr_iter != end)
     {
       if (mgr_iter->second.name.isPresent())
       {
@@ -595,7 +596,7 @@ int main(int argc, char **argv)
           if (matchesKeyword(book_iter->second.title.getString(), searchKeyword, caseSensitive))
           {
             // found matching book record
-            if (bookMatches==0)
+            if (bookMatches == 0)
             {
               basic_out << "\n\nMatching books:\n";
             }
@@ -690,106 +691,10 @@ int main(int argc, char **argv)
     }
   }
 
-  // check flora for matches
-  {
-    unsigned int floraMatches = 0;
-    auto flora_iter = SRTP::Floras::get().begin();
-    while (flora_iter != SRTP::Floras::get().end())
-    {
-        if (flora_iter->second.name.isPresent())
-        {
-          if (matchesKeyword(flora_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            // found matching flora record
-            if (floraMatches == 0)
-            {
-              basic_out << "\n\nMatching flora:\n";
-            }
-            basic_out << "    \"" << flora_iter->second.name.getString()
-                      << "\"\n        form ID " << SRTP::getFormIDAsStringWithFile(flora_iter->second.headerFormID, loadOrder, showFiles)
-                      << "\n        editor ID \"" << flora_iter->second.editorID << "\"\n";
-            ++floraMatches;
-            ++totalMatches;
-          }
-        }
-      ++flora_iter;
-    }
-    if (floraMatches > 0)
-    {
-      basic_out << "Total matching florae: " << floraMatches << "\n";
-    }
-  }
-
+  listMatches(SRTP::Floras::get(), "floras");
   listMatches(SRTP::Furniture::get(), "furniture");
-
-  // check ingredients for matches
-  {
-    unsigned int ingredMatches = 0;
-    auto ingred_iter = SRTP::Ingredients::get().begin();
-    while (ingred_iter != SRTP::Ingredients::get().end())
-    {
-        if (ingred_iter->second.name.isPresent())
-        {
-          if (matchesKeyword(ingred_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            // found matching ingredient record
-            if (ingredMatches == 0)
-            {
-              basic_out << "\n\nMatching ingredients:\n";
-            }
-            basic_out << "    \"" << ingred_iter->second.name.getString()
-                      << "\"\n        form ID " << SRTP::getFormIDAsStringWithFile(ingred_iter->second.headerFormID, loadOrder, showFiles)
-                      << "\n        editor ID \"" << ingred_iter->second.editorID << "\"\n";
-            if (withReferences)
-            {
-              showRefIDs(ingred_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++ingredMatches;
-            ++totalMatches;
-          }
-        }
-      ++ingred_iter;
-    }
-    if (ingredMatches > 0)
-    {
-      basic_out << "Total matching ingredients: " << ingredMatches << "\n";
-    }
-  }
-
-  // check keys for matches
-  {
-    unsigned int keyMatches = 0;
-    auto key_iter = SRTP::Keys::get().begin();
-    while (key_iter != SRTP::Keys::get().end())
-    {
-        if (key_iter->second.name.isPresent())
-        {
-          if (matchesKeyword(key_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            // found matching key record
-            if (keyMatches == 0)
-            {
-              basic_out << "\n\nMatching keys:\n";
-            }
-            basic_out << "    \"" << key_iter->second.name.getString()
-                      << "\"\n        form ID " << SRTP::getFormIDAsStringWithFile(key_iter->second.headerFormID, loadOrder, showFiles)
-                      << "\n        editor ID \"" << key_iter->second.editorID << "\"\n";
-            if (withReferences)
-            {
-              showRefIDs(key_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++keyMatches;
-            ++totalMatches;
-          }
-        }
-      ++key_iter;
-    }
-    if (keyMatches > 0)
-    {
-      basic_out << "Total matching keys: " << keyMatches << "\n";
-    }
-  }
-
+  listMatches(SRTP::Ingredients::get(), "ingredients");
+  listMatches(SRTP::Keys::get(), "keys");
   listMatches(SRTP::MiscObjects::get(), "misc. objects");
   listMatches(SRTP::NPCs::get(), "NPCs");
 
@@ -918,40 +823,7 @@ int main(int argc, char **argv)
     }
   }
 
-  // check scrolls for matches
-  {
-    unsigned int scrollMatches = 0;
-    auto scroll_iter = SRTP::Scrolls::get().begin();
-    while (scroll_iter != SRTP::Scrolls::get().end())
-    {
-        if (scroll_iter->second.name.isPresent())
-        {
-          if (matchesKeyword(scroll_iter->second.name.getString(), searchKeyword, caseSensitive))
-          {
-            // found matching spell record
-            if (scrollMatches == 0)
-            {
-              basic_out << "\n\nMatching scrolls:\n";
-            }
-            basic_out << "    \"" << scroll_iter->second.name.getString()
-                      << "\"\n        form ID " << SRTP::getFormIDAsStringWithFile(scroll_iter->second.headerFormID, loadOrder, showFiles)
-                      << "\n        editor ID \"" << scroll_iter->second.editorID << "\"\n";
-            if (withReferences)
-            {
-              showRefIDs(scroll_iter->second.headerFormID, readerReferences.refMap, basic_out);
-            }
-            ++scrollMatches;
-            ++totalMatches;
-          }
-        }
-      ++scroll_iter;
-    }
-    if (scrollMatches > 0)
-    {
-      basic_out << "Total matching scrolls: " << scrollMatches << "\n";
-    }
-  }
-
+  listMatches(SRTP::Scrolls::get(), "scrolls");
   listMatches(SRTP::SoulGems::get(), "soul gems");
   listMatches(SRTP::Spells::get(), "spells");
 
@@ -1008,7 +880,7 @@ int main(int argc, char **argv)
             }
             basic_out << "    \"" << word_iter->second.name.getString()
                       << "\"\n        form ID " << SRTP::getFormIDAsStringWithFile(word_iter->second.headerFormID, loadOrder, showFiles)
-                      << "\n        editor ID \"" << word_iter->second.editorID<<"\"\n";
+                      << "\n        editor ID \"" << word_iter->second.editorID << "\"\n";
             ++wordMatches;
             ++totalMatches;
           }

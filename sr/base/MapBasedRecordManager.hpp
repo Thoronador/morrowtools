@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014, 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -99,10 +99,10 @@ class MapBasedRecordManager
     bool removeRecord(const uint32_t ID);
 
     /** Returns constant iterator to the beginning of the internal structure. */
-    ListIterator begin() const;
+    ListIterator begin() const noexcept;
 
     /** Returns constant iterator to the end of the internal structure. */
-    ListIterator end() const;
+    ListIterator end() const noexcept;
 
     #ifndef SR_UNSAVEABLE_RECORDS
     /** \brief Tries to save all available records to the given stream.
@@ -183,13 +183,13 @@ bool MapBasedRecordManager<recT>::removeRecord(const uint32_t ID)
 
 template<typename recT>
 typename MapBasedRecordManager<recT>::ListIterator
-MapBasedRecordManager<recT>::begin() const
+MapBasedRecordManager<recT>::begin() const noexcept
 {
   return m_Records.begin();
 }
 
 template<typename recT>
-typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::end() const
+typename MapBasedRecordManager<recT>::ListIterator MapBasedRecordManager<recT>::end() const noexcept
 {
   return m_Records.end();
 }

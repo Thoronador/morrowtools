@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,6 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
+#include <filesystem>
 #include <iostream>
 #include "../base/ESMReaderSingleType.hpp"
 #include "../base/ESMWriterContents.hpp"
@@ -29,35 +30,114 @@
 #include "../base/StringTable.hpp"
 #include "../base/StringTableCompound.hpp"
 
-int main()
+void showHelp()
 {
-  SRTP::Tes4HeaderRecord header_rec, write_header;
-  SRTP::ESMReaderSingleType<SRTP::RaceRecord, SRTP::Races, SRTP::cRACE> reader;
+  std::cout << "\nrace_resize [-d DIRECTORY]\n"
+            << "\n"
+            << "options:\n"
+            << "  --help           - displays this help message and quits\n"
+            << "  -?               - same as --help\n"
+            << "  -d DIRECTORY     - set path to the Data Files directory of Skyrim to\n"
+            << "                     DIRECTORY\n"
+            << "  -dir DIRECTORY   - same as -d\n";
+}
 
+int main(int argc, char** argv)
+{
   std::string SkyrimDir;
+  if ((argc > 1) && (argv != nullptr))
+  {
+    int i = 1;
+    while (i < argc)
+    {
+      if (argv[i] != nullptr)
+      {
+        const std::string param = std::string(argv[i]);
+        // help parameter
+        if ((param == "--help") || (param == "-?") || (param == "/?"))
+        {
+          showHelp();
+          return 0;
+        }
+        else if ((param == "-d") || (param == "-dir") || (param == "--data-files"))
+        {
+          // set more than once?
+          if (!SkyrimDir.empty())
+          {
+            std::cerr << "Error: Data directory was already set!\n";
+            return SRTP::rcInvalidParameter;
+          }
+          // enough parameters?
+          if ((i + 1 < argc) && (argv[i+1] != nullptr))
+          {
+            // Is it long enough to be a directory? (Minimum should be "./".)
+            if (std::string(argv[i+1]).size() > 1)
+            {
+              SkyrimDir = std::string(argv[i+1]);
+              ++i; // skip next parameter, because it's used as directory name already
+              // Does it have a trailing (back)slash? If not, add it.
+              SkyrimDir = slashify(SkyrimDir);
+              std::cout << "Data files directory was set to \"" << SkyrimDir << "\".\n";
+            }
+            else
+            {
+              std::cerr << "Parameter \"" << std::string(argv[i+1]) << "\" is too"
+                        << " short to be a proper directory path.\n";
+              return SRTP::rcInvalidParameter;
+            }
+          }
+          else
+          {
+            std::cerr << "Error: You have to specify a directory name after \""
+                      << param << "\".\n";
+            return SRTP::rcInvalidParameter;
+          }
+        } //data files directory
+        else
+        {
+          // unknown or wrong parameter
+          std::cout << "Invalid parameter given: \"" << param << "\".\n"
+                    << "Use --help to get a list of valid parameters.\n";
+          return SRTP::rcInvalidParameter;
+        }
+      } // parameter exists
+      else
+      {
+        std::cerr << "Parameter at index " << i << " is NULL.\n";
+        return SRTP::rcInvalidParameter;
+      }
+      ++i; // on to next parameter
+    } // while
+  } // if arguments present
+
   SRTP::getDataDir(SkyrimDir, std::nullopt);
 
+  SRTP::Tes4HeaderRecord header_rec, write_header;
+  SRTP::ESMReaderSingleType<SRTP::RaceRecord, SRTP::Races, SRTP::cRACE> reader;
   const int readResult = reader.readESM(SkyrimDir + "Skyrim.esm", header_rec, SRTP::Localization::German);
   if (readResult >= 0)
   {
-    std::cout << "File was read/skipped successfully! Groups read: " << readResult << ".\n";
-    std::cout << "Race records read so far: " << SRTP::Races::get().getNumberOfRecords() << "\n";
+    std::cout << "File was read/skipped successfully! Groups read: "
+              << readResult << ".\n" << "Race records read so far: "
+              << SRTP::Races::get().getNumberOfRecords() << "\n";
   }
   else
   {
-    std::cout << "Reading file failed!\n";
+    std::cerr << "Reading file failed!\n";
     return SRTP::rcFileError;
   }
 
   // String tables
   SRTP::StringTableCompound table_compound;
-  if (table_compound.readCompound(SkyrimDir + "Strings\\Skyrim_German"))
+  const std::string StringPath = std::string("Strings") + MWTP::pathDelimiter + "Skyrim_German";
+  if (table_compound.readCompound(SkyrimDir + StringPath))
   {
-    std::cout << "Table compound read successfully! Table contains "<<table_compound.getNumberOfCompoundEntries()<<" entries.\n";
+    std::cout << "Table compound read successfully! Table contains "
+              << table_compound.getNumberOfCompoundEntries() << " entries.\n";
   }
   else
   {
-    std::cout << "Reading compound tables "<<SkyrimDir<<"Strings\\Skyrim_German.DLStrings etc. failed!\n";
+    std::cerr << "Reading compound tables " << SkyrimDir << StringPath << ".DLStrings etc. failed!\n";
     return SRTP::rcFileError;
   }
 
@@ -66,7 +146,7 @@ int main()
   SRTP::Races::ListIterator iter = SRTP::Races::get().begin();
   while (iter != SRTP::Races::get().end())
   {
-    if (iter->second.editorID.find("HighElf")==std::string::npos)
+    if (iter->second.editorID.find("HighElf") == std::string::npos)
     {
       SRTP::Races::get().removeRecord(iter->second.headerFormID);
       iter = SRTP::Races::get().begin();
@@ -75,36 +155,35 @@ int main()
     {
       ++iter;
     }
-  }//while
-  std::cout << "Race records now: "<<SRTP::Races::get().getNumberOfRecords()<<"\n";
+  }
+  std::cout << "Race records now: " << SRTP::Races::get().getNumberOfRecords() << "\n";
 
   iter = SRTP::Races::get().begin();
   while (iter != SRTP::Races::get().end())
   {
-    std::cout << "RACE \""<<iter->second.editorID<<"\":\n";
-    //FULL
+    std::cout << "RACE \"" << iter->second.editorID << "\":\n";
+    // FULL
     if (iter->second.name.isPresent())
     {
-      std::cout << "    FULL: "<<iter->second.name.getIndex();
-      std::cout << "    string: \""<<iter->second.name.getString()<<"\"";
-      std::cout << std::endl;
-    }//if
-    //DESC
+      std::cout << "    FULL: " << iter->second.name.getIndex()
+                << "    string: \"" << iter->second.name.getString() << "\"\n";
+    }
 
-    std::cout << "    DESC: "<<iter->second.description.getIndex();
-    std::cout << "    string: \""<< iter->second.description.getString()<<"\"";
-    std::cout << std::endl;
+    // DESC
+    std::cout << "    DESC: " << iter->second.description.getIndex()
+              << "    string: \"" << iter->second.description.getString()
+              << "\"\n";
 
-    //DATA
-    std::cout << "    DATA: height(m/f): "<<iter->second.data.heightMale<<"/"<<iter->second.data.heightFemale<<"\n";
-    std::cout << "          weight(m/f): "<<iter->second.data.weightMale<<"/"<<iter->second.data.weightFemale<<"\n";
+    // DATA
+    std::cout << "    DATA: height(m/f): " << iter->second.data.heightMale << "/" << iter->second.data.heightFemale << "\n";
+    std::cout << "          weight(m/f): " << iter->second.data.weightMale << "/" << iter->second.data.weightFemale << "\n";
     ++iter;
-  }//while
+  }
 
   /* const float childSize = 0.8;
   const float tinySize = 0.5; */
 
-  //prepare header record for writing
+  // prepare header record for writing
   write_header = header_rec;
   SRTP::Tes4HeaderRecord::MasterFile master;
   master.fileName = "Skyrim.esm";
@@ -112,80 +191,87 @@ int main()
   write_header.dependencies.push_back(master);
   write_header.authorName = "Thoronador";
 
-  //race record for transfer
-  SRTP::RaceRecord* tempRaceRec = NULL;
+  // race record for transfer
+  SRTP::RaceRecord* tempRaceRec = nullptr;
 
-  //the writer class itself
+  // the writer class itself
   SRTP::ESMWriterContents writer;
-  //add stuff
+  // add stuff
   SRTP::Group& currentGroup = writer.contents.addNewGroup();
   currentGroup.headerData.setLabel(SRTP::cRACE);
 
   iter = SRTP::Races::get().begin();
   while (iter != SRTP::Races::get().end())
   {
-    //create new record
+    // create new record
     tempRaceRec = new SRTP::RaceRecord;
-    //get data from the original record
+    // get data from the original record
     *tempRaceRec = iter->second;
-    //adjust size
+    // adjust size
     tempRaceRec->data.heightMale = 1.0f;
     tempRaceRec->data.heightFemale = 1.0f;
-    //now add it to the group
+    // now add it to the group
     currentGroup.addRecord(tempRaceRec);
-    //...and next
+    // ...and next
     ++iter;
-  }//while
+  }
 
   currentGroup.updateGroupSize();
 
-  if (writer.writeESM("C:\\Temp\\KleineHochelfen_normalEins.esm", write_header))
+  namespace fs = std::filesystem;
+  const fs::path path = fs::temp_directory_path() / "KleineHochelfen.esm";
+
+  if (writer.writeESM(path.string(), write_header))
   {
     std::cout << "Writing new file was successful!\n";
-    //just for checks, try to load it
-    int result = reader.readESM("C:\\Temp\\KleineHochelfen.esm", header_rec, SRTP::Localization::German);
-    if (result<0)
-    {
-      std::cout << "Error: could not load saved stuff!\n";
-    }
-    else
-    {
-      std::cout << "Loading saved stuff succeeded, read "<<result<<" group(s)!\n";
-    }
   }
   else
   {
-    std::cout << "Writing new file failed!\n";
-    return 1;
+    std::cerr << "Writing new file failed!\n";
+    return SRTP::rcFileError;
   }
 
-  //prepare tables
+  // prepare tables
   SRTP::StringTableCompound writeCompound;
   SRTP::StringTableCompound::TableType tt;
   iter = SRTP::Races::get().begin();
-  while (iter!=SRTP::Races::get().end())
+  while (iter != SRTP::Races::get().end())
   {
-    //FULL
+    // FULL
     if (iter->second.name.isPresent())
     {
       tt = table_compound.locateString(iter->second.name.getIndex());
       writeCompound.addString(iter->second.name.getIndex(), table_compound.getString(iter->second.name.getIndex()), tt);
-    }//if
-    //DESC
+    }
+    // DESC
     tt = table_compound.locateString(iter->second.description.getIndex());
     writeCompound.addString(iter->second.description.getIndex(), table_compound.getString(iter->second.description.getIndex()), tt);
 
     ++iter;
-  }//while
+  }
 
-  std::cout << "Compound entries in new compound: "<<writeCompound.getNumberOfCompoundEntries()<<".\n";
-  if (writeCompound.writeCompound("C:\\Temp\\KleineHochelfen_German"))
+  std::cout << "Compound entries in new compound: " << writeCompound.getNumberOfCompoundEntries() << ".\n";
+  auto compound_path {path};
+  compound_path.replace_filename("KleineHochelfen_German");
+  if (writeCompound.writeCompound(compound_path.string()))
   {
     std::cout << "Success at writing string tables!\n";
   }
   else
   {
-    std::cout << "Failed at writing string tables!\n";
+    std::cerr << "Failed at writing string tables!\n";
+    return SRTP::rcFileError;
+  }
+
+  // just for checks, try to load it
+  const int result = reader.readESM(path.string(), header_rec, SRTP::Localization::German);
+  if (result < 0)
+  {
+    std::cerr << "Error: Could not load saved stuff!\n";
+  }
+  else
+  {
+    std::cout << "Loading saved stuff succeeded, read " << result << " group(s)!\n";
   }
 
   return 0;

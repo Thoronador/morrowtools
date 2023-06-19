@@ -32,7 +32,7 @@
 
 void showHelp()
 {
-  std::cout << "\nrace_resize [-d DIRECTORY]\n"
+  std::cout << "\nsmall_high_elves [-d DIRECTORY]\n"
             << "\n"
             << "options:\n"
             << "  --help           - displays this help message and quits\n"

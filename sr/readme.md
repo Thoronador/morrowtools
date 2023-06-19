@@ -12,5 +12,5 @@ There are the following directories:
 * **formID_finder**: command-line interface to search for form IDs in Skyrim
 * **formID_finder_GUI**: a GUI that wraps `formID_finder` calls in a more
   user-friendly way
-* **race_resize**: _(just for fun)_ command-line tool that creates a Skyrim
+* **small_high_elves**: _(just for fun)_ command-line tool that creates a Skyrim
   plugin which adjusts the size of high elves to be not so high anymore

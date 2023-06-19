@@ -31,7 +31,7 @@ RUN mkdir -p /opt/morrowtools/build/artifacts && \
     cp sr/bsa_cli/bsa-cli.exe artifacts/ && \
     cp sr/conv_cams/conv_cams.exe artifacts/ && \
     cp sr/formID_finder/formID_finder.exe artifacts/ && \
-    cp sr/race_resize/race_resize.exe artifacts/ && \
+    cp sr/small_high_elves/small_high_elves.exe artifacts/ && \
     cp /usr/lib/gcc/i686-w64-mingw32/12-win32/libstdc++-6.dll artifacts/ && \
     cp /usr/i686-w64-mingw32/lib/zlib1.dll artifacts/
 RUN apt-get install -y zip && \

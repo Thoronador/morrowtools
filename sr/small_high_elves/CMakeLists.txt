@@ -1,9 +1,9 @@
 # We might support earlier versions, too, but try to use a recent one.
 cmake_minimum_required (VERSION 3.8)
 
-project(race_resize)
+project(small_high_elves)
 
-set(race_resize_sources
+set(small_high_elves_sources
     ../../base/CompressionFunctions.cpp
     ../../base/DirectoryFunctions.cpp
     ../../base/FileFunctions.cpp
@@ -50,10 +50,10 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (ENABLE_LTO)
-  set(TARGET race_resize PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+  set(TARGET small_high_elves PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif()
 
-add_executable(race_resize ${race_resize_sources})
+add_executable(small_high_elves ${small_high_elves_sources})
 
 if (MINGW AND CMAKE_HOST_UNIX)
   # If compiler is some kind of MinGW, but the CMake host is Unix, then this is
@@ -73,13 +73,13 @@ if (MINGW AND CMAKE_HOST_UNIX)
     include_directories( /usr/i686-w64-mingw32/include/ )
     link_directories( /usr/i686-w64-mingw32/lib )
   endif ()
-  target_link_libraries (race_resize z)
+  target_link_libraries (small_high_elves z)
 else()
   # use default method to find zlib
   find_package (ZLIB)
   if (ZLIB_FOUND)
     include_directories(${ZLIB_INCLUDE_DIRS})
-    target_link_libraries (race_resize ${ZLIB_LIBRARIES})
+    target_link_libraries (small_high_elves ${ZLIB_LIBRARIES})
   else ()
     message ( FATAL_ERROR "zlib was not found!" )
   endif (ZLIB_FOUND)
@@ -92,7 +92,7 @@ if (NOT DISABLE_LZ4)
   find_package (LZ4)
   if (LZ4_FOUND)
     include_directories(${LZ4_INCLUDE_DIRS})
-    target_link_libraries (race_resize ${LZ4_LIBRARIES})
+    target_link_libraries (small_high_elves ${LZ4_LIBRARIES})
   else ()
     message ( FATAL_ERROR "liblz4 was not found!" )
   endif (LZ4_FOUND)
@@ -106,10 +106,10 @@ endif ()
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.1.0")
-  target_link_libraries(race_resize stdc++fs)
+  target_link_libraries(small_high_elves stdc++fs)
 endif ()
 
 # Clang before 9.0 needs to link to libc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0")
-  target_link_libraries(race_resize c++fs)
+  target_link_libraries(small_high_elves c++fs)
 endif ()

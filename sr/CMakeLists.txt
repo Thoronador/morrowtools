@@ -2,4 +2,4 @@
 add_subdirectory (bsa_cli)
 add_subdirectory (conv_cams)
 add_subdirectory (formID_finder)
-add_subdirectory (race_resize)
+add_subdirectory (small_high_elves)

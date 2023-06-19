@@ -42,7 +42,7 @@ jobs:
           cp sr/bsa_cli/bsa-cli.exe artifacts/
           cp sr/conv_cams/conv_cams.exe artifacts/
           cp sr/formID_finder/formID_finder.exe artifacts/
-          cp sr/race_resize/race_resize.exe artifacts/
+          cp sr/small_high_elves/small_high_elves.exe artifacts/
       - name: Archive build artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -84,7 +84,7 @@ jobs:
           cp sr/bsa_cli/bsa-cli.exe artifacts/
           cp sr/conv_cams/conv_cams.exe artifacts/
           cp sr/formID_finder/formID_finder.exe artifacts/
-          cp sr/race_resize/race_resize.exe artifacts/
+          cp sr/small_high_elves/small_high_elves.exe artifacts/
       - name: Archive build artifacts
         uses: actions/upload-artifact@v3
         with:

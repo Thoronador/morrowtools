@@ -53,7 +53,7 @@ jobs:
           cmake --build . -j2 --target bsa-cli
           cmake --build . -j2 --target conv_cams
           cmake --build . -j2 --target formID_finder
-          cmake --build . -j2 --target race_resize
+          cmake --build . -j2 --target small_high_elves
           # Morrowind tools
           cmake --build . -j2 --target cell_translator
           cmake --build . -j2 --target data_cleaner
@@ -71,7 +71,7 @@ jobs:
           cp build-static/sr/bsa_cli/bsa-cli.exe artifacts/
           cp build-static/sr/conv_cams/conv_cams.exe artifacts/
           cp build-static/sr/formID_finder/formID_finder.exe artifacts/
-          cp build-static/sr/race_resize/race_resize.exe artifacts/
+          cp build-static/sr/small_high_elves/small_high_elves.exe artifacts/
       - name: Archive build artifacts
         uses: actions/upload-artifact@v3
         with:

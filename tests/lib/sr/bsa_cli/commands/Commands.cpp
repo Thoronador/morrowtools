@@ -20,7 +20,7 @@
 
 #include "../../../locate_catch.hpp"
 #include <array>
-#include "../../../../../sr/bsa_cli/commands/Commands.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/Commands.hpp"
 
 TEST_CASE("bsa_cli::Commands")
 {

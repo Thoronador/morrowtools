@@ -64,14 +64,14 @@ jobs:
           export MSYSTEM=MINGW64
           mkdir -p "$GITHUB_WORKSPACE"/artifacts
           cd "$GITHUB_WORKSPACE"
-          cp build-static/mw/cell_translator/cell_translator.exe artifacts/
-          cp build-static/mw/data_cleaner/data_cleaner.exe artifacts/
-          cp build-static/mw/skill_rebalance/skill_rebalance.exe artifacts/
-          cp build-static/mw/spell_rename/spell_rename.exe artifacts/
-          cp build-static/sr/bsa_cli/bsa-cli.exe artifacts/
-          cp build-static/sr/conv_cams/conv_cams.exe artifacts/
-          cp build-static/sr/formID_finder/formID_finder.exe artifacts/
-          cp build-static/sr/small_high_elves/small_high_elves.exe artifacts/
+          cp build-static/apps/mw/cell_translator/cell_translator.exe artifacts/
+          cp build-static/apps/mw/data_cleaner/data_cleaner.exe artifacts/
+          cp build-static/apps/mw/skill_rebalance/skill_rebalance.exe artifacts/
+          cp build-static/apps/mw/spell_rename/spell_rename.exe artifacts/
+          cp build-static/apps/sr/bsa_cli/bsa-cli.exe artifacts/
+          cp build-static/apps/sr/conv_cams/conv_cams.exe artifacts/
+          cp build-static/apps/sr/formID_finder/formID_finder.exe artifacts/
+          cp build-static/apps/sr/small_high_elves/small_high_elves.exe artifacts/
       - name: Archive build artifacts
         uses: actions/upload-artifact@v3
         with:
@@ -83,9 +83,9 @@ jobs:
           export MSYSTEM=MINGW64
           mkdir -p "$GITHUB_WORKSPACE"/bsa-cli
           cd "$GITHUB_WORKSPACE"
-          cp build-static/sr/bsa_cli/bsa-cli.exe bsa-cli/
-          cp sr/bsa_cli/readme.md bsa-cli/
-          cp sr/bsa_cli/changelog.md bsa-cli/
+          cp build-static/apps/sr/bsa_cli/bsa-cli.exe bsa-cli/
+          cp apps/sr/bsa_cli/readme.md bsa-cli/
+          cp apps/sr/bsa_cli/changelog.md bsa-cli/
           cp LICENSE bsa-cli/
       - name: Create bsa-cli artifact
         uses: actions/upload-artifact@v3
@@ -98,10 +98,10 @@ jobs:
           export MSYSTEM=MINGW64
           mkdir -p "$GITHUB_WORKSPACE"/formID_finder
           cd "$GITHUB_WORKSPACE"
-          cp build-static/sr/formID_finder/formID_finder.exe formID_finder/
-          cp sr/formID_finder/readme.md formID_finder/
-          cp sr/formID_finder/ChangeLog.de.md formID_finder/
-          cp sr/formID_finder/ChangeLog.en.md formID_finder/
+          cp build-static/apps/sr/formID_finder/formID_finder.exe formID_finder/
+          cp apps/sr/formID_finder/readme.md formID_finder/
+          cp apps/sr/formID_finder/ChangeLog.de.md formID_finder/
+          cp apps/sr/formID_finder/ChangeLog.en.md formID_finder/
           cp LICENSE formID_finder/
       - name: Create Form ID finder artifact
         uses: actions/upload-artifact@v3

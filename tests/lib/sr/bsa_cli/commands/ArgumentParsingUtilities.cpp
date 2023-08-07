@@ -22,7 +22,7 @@
 #include <array>
 #include <fstream>
 #include "../../../../../lib/base/FileFunctions.hpp"
-#include "../../../../../sr/bsa_cli/commands/ArgumentParsingUtilities.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/ArgumentParsingUtilities.hpp"
 
 TEST_CASE("bsa_cli::ArgumentParsingUtilities")
 {

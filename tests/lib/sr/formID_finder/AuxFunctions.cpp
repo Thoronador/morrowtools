@@ -19,7 +19,7 @@
 */
 
 #include "../../locate_catch.hpp"
-#include "../../../../sr/formID_finder/AuxFunctions.hpp"
+#include "../../../../apps/sr/formID_finder/AuxFunctions.hpp"
 
 TEST_CASE("AuxFunctions")
 {

@@ -10,12 +10,13 @@ despite its name the project also contains tools for Skyrim.
 
 ## Contents of repository
 
+- **apps**: contains code for application programs
+  - **mw**: contains code for Morrowind-related programs
+  - **sr**: contains code for Skyrim-related programs
 - **ci**: scripts and other files that are used as part of Continuous
   Integration (automated builds and tests, etc.)
 - **lib**: This directory contains the source code for stuff that is used in
   more than one branch of morrowtools.
-- **mw**: contains code for Morrowind-related programs
-- **sr**: contains code for Skyrim-related programs
 - **tests**: contains code for test cases
 - **win64-compile-test**: utility to test for 64 bit Windows OS when compiling
 

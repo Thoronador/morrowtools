@@ -86,10 +86,8 @@ else ()
     message(STATUS "Auto-detection of lz4 is not active.")
 endif (AUTODETECT_LZ4)
 
-# Recurse into subdirectory for Morrowind-related executables.
-add_subdirectory (mw)
-# Recurse into subdirectory for Skyrim-related executables.
-add_subdirectory (sr)
+# Recurse into subdirectory for applications (i. e. executables).
+add_subdirectory (apps)
 
 if (MINGW AND CMAKE_HOST_UNIX)
   # If compiler is some kind of MinGW, but the CMake host is Unix, then this is

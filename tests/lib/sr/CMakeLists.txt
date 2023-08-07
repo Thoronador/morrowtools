@@ -85,21 +85,21 @@ set(lib_sr_tests_sources
     ../../../lib/sr/records/quest/QOBJEntry.cpp
     ../../../lib/sr/records/quest/QSDTRecord.cpp
     ../../../lib/sr/records/quest/QSTAEntry.cpp
-     ../../../sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
-     ../../../sr/bsa_cli/commands/CheckHashes.cpp
-     ../../../sr/bsa_cli/commands/CommandFactory.cpp
-     ../../../sr/bsa_cli/commands/Commands.cpp
-     ../../../sr/bsa_cli/commands/Directories.cpp
-     ../../../sr/bsa_cli/commands/DirectoryMetadata.cpp
-     ../../../sr/bsa_cli/commands/ExtractAll.cpp
-     ../../../sr/bsa_cli/commands/ExtractDirectory.cpp
-     ../../../sr/bsa_cli/commands/ExtractFile.cpp
-     ../../../sr/bsa_cli/commands/FileMetadata.cpp
-     ../../../sr/bsa_cli/commands/Help.cpp
-     ../../../sr/bsa_cli/commands/Info.cpp
-     ../../../sr/bsa_cli/commands/List.cpp
-     ../../../sr/bsa_cli/commands/Operations.cpp
-     ../../../sr/formID_finder/AuxFunctions.cpp
+     ../../../apps/sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
+     ../../../apps/sr/bsa_cli/commands/CheckHashes.cpp
+     ../../../apps/sr/bsa_cli/commands/CommandFactory.cpp
+     ../../../apps/sr/bsa_cli/commands/Commands.cpp
+     ../../../apps/sr/bsa_cli/commands/Directories.cpp
+     ../../../apps/sr/bsa_cli/commands/DirectoryMetadata.cpp
+     ../../../apps/sr/bsa_cli/commands/ExtractAll.cpp
+     ../../../apps/sr/bsa_cli/commands/ExtractDirectory.cpp
+     ../../../apps/sr/bsa_cli/commands/ExtractFile.cpp
+     ../../../apps/sr/bsa_cli/commands/FileMetadata.cpp
+     ../../../apps/sr/bsa_cli/commands/Help.cpp
+     ../../../apps/sr/bsa_cli/commands/Info.cpp
+     ../../../apps/sr/bsa_cli/commands/List.cpp
+     ../../../apps/sr/bsa_cli/commands/Operations.cpp
+     ../../../apps/sr/formID_finder/AuxFunctions.cpp
     DependencyElement.cpp
     ESMFileContents.cpp
     ESMReader.cpp

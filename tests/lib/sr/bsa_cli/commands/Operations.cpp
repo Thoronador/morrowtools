@@ -19,7 +19,7 @@
 */
 
 #include "../../../locate_catch.hpp"
-#include "../../../../../sr/bsa_cli/commands/Operations.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/Operations.hpp"
 #include <algorithm>
 
 TEST_CASE("bsa_cli::Operations")

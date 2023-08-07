@@ -19,19 +19,19 @@
 */
 
 #include "../../../locate_catch.hpp"
-#include "../../../../../sr/bsa_cli/commands/CommandFactory.hpp"
-#include "../../../../../sr/bsa_cli/commands/CheckHashes.hpp"
-#include "../../../../../sr/bsa_cli/commands/Commands.hpp"
-#include "../../../../../sr/bsa_cli/commands/DirectoryMetadata.hpp"
-#include "../../../../../sr/bsa_cli/commands/ExtractAll.hpp"
-#include "../../../../../sr/bsa_cli/commands/ExtractDirectory.hpp"
-#include "../../../../../sr/bsa_cli/commands/ExtractFile.hpp"
-#include "../../../../../sr/bsa_cli/commands/FileMetadata.hpp"
-#include "../../../../../sr/bsa_cli/commands/Directories.hpp"
-#include "../../../../../sr/bsa_cli/commands/Help.hpp"
-#include "../../../../../sr/bsa_cli/commands/Info.hpp"
-#include "../../../../../sr/bsa_cli/commands/List.hpp"
-#include "../../../../../sr/bsa_cli/commands/Operations.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/CommandFactory.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/CheckHashes.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/Commands.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/DirectoryMetadata.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/ExtractAll.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/ExtractDirectory.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/ExtractFile.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/FileMetadata.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/Directories.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/Help.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/Info.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/List.hpp"
+#include "../../../../../apps/sr/bsa_cli/commands/Operations.hpp"
 
 TEST_CASE("bsa_cli::CommandFactory")
 {

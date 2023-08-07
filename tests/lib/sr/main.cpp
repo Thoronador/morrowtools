@@ -19,4 +19,4 @@
 */
 
 #define CATCH_CONFIG_MAIN
-#include "locate_catch.hpp"
+#include "../locate_catch.hpp"

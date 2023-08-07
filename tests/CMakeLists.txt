@@ -8,7 +8,7 @@ else ()
 endif ()
 
 # component and function tests
-add_subdirectory (components)
+add_subdirectory (lib)
 
 # Morrowind-related executable tests
 add_subdirectory (mw)

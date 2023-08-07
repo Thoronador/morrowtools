@@ -19,9 +19,9 @@
 */
 
 #include "CompileStatistics.hpp"
-#include "../../mw/base/Scripts.hpp"
-#include "../../mw/base/records/ScriptRecord.hpp"
-#include "../../mw/base/script_compiler/ScriptCompiler.hpp"
+#include "../../lib/mw/Scripts.hpp"
+#include "../../lib/mw/records/ScriptRecord.hpp"
+#include "../../lib/mw/script_compiler/ScriptCompiler.hpp"
 
 namespace MWTP
 {

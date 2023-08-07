@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,14 +20,14 @@
 
 #include <iostream>
 #include <sstream>
-#include "../base/Edition.hpp"
-#include "../base/ESMWriterContents.hpp"
-#include "../base/PathFunctions.hpp"
-#include "../base/ReturnCodes.hpp"
-#include "../base/SR_Constants.hpp"
-#include "../base/records/CameraShotRecord.hpp"
-#include "../base/records/TES4HeaderRecord.hpp"
-#include "../../base/FileFunctions.hpp"
+#include "../../lib/sr/Edition.hpp"
+#include "../../lib/sr/ESMWriterContents.hpp"
+#include "../../lib/sr/PathFunctions.hpp"
+#include "../../lib/sr/ReturnCodes.hpp"
+#include "../../lib/sr/SR_Constants.hpp"
+#include "../../lib/sr/records/CameraShotRecord.hpp"
+#include "../../lib/sr/records/TES4HeaderRecord.hpp"
+#include "../../lib/base/FileFunctions.hpp"
 #include "ESMReaderConvCAMS.hpp"
 
 void showGPLNotice()

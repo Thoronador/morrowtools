@@ -23,7 +23,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "../../base/lz4Compression.hpp"
+#include "../../lib/base/lz4Compression.hpp"
 #include "codes.hpp"
 
 int getCompressedData(const std::string& fileName, std::unique_ptr<uint8_t[]>& data, uint32_t& dataSize, uint32_t& decompressedSize)

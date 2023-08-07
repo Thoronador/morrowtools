@@ -20,9 +20,9 @@
 
 #include "ExtractDirectory.hpp"
 #include <iostream>
-#include "../../../base/FileFunctions.hpp"
-#include "../../base/ReturnCodes.hpp"
-#include "../../base/bsa/BSA.hpp"
+#include "../../../lib/base/FileFunctions.hpp"
+#include "../../../lib/sr/ReturnCodes.hpp"
+#include "../../../lib/sr/bsa/BSA.hpp"
 
 namespace SRTP::bsa_cli
 {

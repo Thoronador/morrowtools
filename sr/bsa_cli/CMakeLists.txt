@@ -4,19 +4,19 @@ cmake_minimum_required (VERSION 3.8)
 project(bsa-cli)
 
 set(bsa_cli_sources
-    ../../base/CompressionFunctions.cpp
-    ../../base/DirectoryFunctions.cpp
-    ../../base/FileFunctions.cpp
-    ../../base/lz4Compression.cpp
-    ../../base/SlashFunctions.cpp
-    ../../base/UtilityFunctions.cpp
-    ../base/FormIDFunctions.cpp
-    ../base/bsa/BSA.cpp
-    ../base/bsa/BSADirectoryBlock.cpp
-    ../base/bsa/BSADirectoryRecord.cpp
-    ../base/bsa/BSAFileRecord.cpp
-    ../base/bsa/BSAHash.cpp
-    ../base/bsa/BSAHeader.cpp
+    ../../lib/base/CompressionFunctions.cpp
+    ../../lib/base/DirectoryFunctions.cpp
+    ../../lib/base/FileFunctions.cpp
+    ../../lib/base/lz4Compression.cpp
+    ../../lib/base/SlashFunctions.cpp
+    ../../lib/base/UtilityFunctions.cpp
+    ../../lib/sr/FormIDFunctions.cpp
+    ../../lib/sr/bsa/BSA.cpp
+    ../../lib/sr/bsa/BSADirectoryBlock.cpp
+    ../../lib/sr/bsa/BSADirectoryRecord.cpp
+    ../../lib/sr/bsa/BSAFileRecord.cpp
+    ../../lib/sr/bsa/BSAHash.cpp
+    ../../lib/sr/bsa/BSAHeader.cpp
     commands/ArgumentParsingUtilities.cpp
     commands/CheckHashes.cpp
     commands/CommandFactory.cpp

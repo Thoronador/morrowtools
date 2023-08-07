@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 
 #include <string>
 #include <map>
-#include "../../base/ComparisonFunctor.hpp"
+#include "../../lib/base/ComparisonFunctor.hpp"
 
 namespace MWTP
 {

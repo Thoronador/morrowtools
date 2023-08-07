@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.8)
 project(zdeflate)
 
 set(zdeflate_sources
-    ../../base/CompressionFunctions.cpp
+    ../../lib/base/CompressionFunctions.cpp
     ../zinflate/codes.hpp
     functions.cpp
     main.cpp)

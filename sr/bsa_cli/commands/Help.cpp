@@ -20,7 +20,7 @@
 
 #include "Help.hpp"
 #include <iostream>
-#include "../../base/ReturnCodes.hpp"
+#include "../../../lib/sr/ReturnCodes.hpp"
 #include "CommandFactory.hpp"
 #include "Operations.hpp"
 

@@ -1,8 +1,5 @@
-Contents of repository:
-=======================
-
-- base         - This directory contains the source code for stuff that is used
-                 in more than one programme of morrowtools.
+Contents of directory:
+======================
 
 - cell_translator - directory containing the files specific to the yet to be
                     completed translation programme

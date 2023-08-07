@@ -4,36 +4,36 @@ cmake_minimum_required (VERSION 3.8)
 project(conv_cams)
 
 set(conv_cams_sources
-    ../../base/CompressionFunctions.cpp
-    ../../base/DirectoryFunctions.cpp
-    ../../base/FileFunctions.cpp
-    ../../base/lz4Compression.cpp
-    ../../base/RandomFunctions.cpp
-    ../../base/RegistryFunctions.cpp
-    ../../base/SlashFunctions.cpp
-    ../../base/UtilityFunctions.cpp
-    ../../mw/base/HelperIO.cpp
-    ../base/ESMFileContents.cpp
-    ../base/ESMReader.cpp
-    ../base/ESMReaderContentsBase.cpp
-    ../base/ESMWriter.cpp
-    ../base/ESMWriterContents.cpp
-    ../base/Group.cpp
-    ../base/Localization.cpp
-    ../base/StringTable.cpp
-    ../base/TableUtilities.cpp
-    ../base/bsa/BSA.cpp
-    ../base/bsa/BSADirectoryBlock.cpp
-    ../base/bsa/BSADirectoryRecord.cpp
-    ../base/bsa/BSAFileRecord.cpp
-    ../base/bsa/BSAHeader.cpp
-    ../base/records/BasicRecord.cpp
-    ../base/records/BinarySubRecord.cpp
-    ../base/records/CameraShotRecord.cpp
-    ../base/records/GenericRecord.cpp
-    ../base/records/GroupData.cpp
-    ../base/records/NAVIRecord.cpp
-    ../base/records/TES4HeaderRecord.cpp
+    ../../lib/base/CompressionFunctions.cpp
+    ../../lib/base/DirectoryFunctions.cpp
+    ../../lib/base/FileFunctions.cpp
+    ../../lib/base/lz4Compression.cpp
+    ../../lib/base/RandomFunctions.cpp
+    ../../lib/base/RegistryFunctions.cpp
+    ../../lib/base/SlashFunctions.cpp
+    ../../lib/base/UtilityFunctions.cpp
+    ../../lib/mw/HelperIO.cpp
+    ../../lib/sr/ESMFileContents.cpp
+    ../../lib/sr/ESMReader.cpp
+    ../../lib/sr/ESMReaderContentsBase.cpp
+    ../../lib/sr/ESMWriter.cpp
+    ../../lib/sr/ESMWriterContents.cpp
+    ../../lib/sr/Group.cpp
+    ../../lib/sr/Localization.cpp
+    ../../lib/sr/StringTable.cpp
+    ../../lib/sr/TableUtilities.cpp
+    ../../lib/sr/bsa/BSA.cpp
+    ../../lib/sr/bsa/BSADirectoryBlock.cpp
+    ../../lib/sr/bsa/BSADirectoryRecord.cpp
+    ../../lib/sr/bsa/BSAFileRecord.cpp
+    ../../lib/sr/bsa/BSAHeader.cpp
+    ../../lib/sr/records/BasicRecord.cpp
+    ../../lib/sr/records/BinarySubRecord.cpp
+    ../../lib/sr/records/CameraShotRecord.cpp
+    ../../lib/sr/records/GenericRecord.cpp
+    ../../lib/sr/records/GroupData.cpp
+    ../../lib/sr/records/NAVIRecord.cpp
+    ../../lib/sr/records/TES4HeaderRecord.cpp
     ESMReaderConvCAMS.cpp
     main.cpp)
 

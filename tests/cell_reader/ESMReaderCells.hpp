@@ -21,7 +21,7 @@
 #ifndef MW_TEST_ESMREADERCELLS_HPP
 #define MW_TEST_ESMREADERCELLS_HPP
 
-#include "../../mw/base/ESMReader.hpp"
+#include "../../lib/mw/ESMReader.hpp"
 
 namespace MWTP
 {

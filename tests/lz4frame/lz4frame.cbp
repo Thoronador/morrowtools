@@ -32,8 +32,8 @@
 		<Linker>
 			<Add library="lz4" />
 		</Linker>
-		<Unit filename="../../base/lz4Compression.cpp" />
-		<Unit filename="../../base/lz4Compression.hpp" />
+		<Unit filename="../../lib/base/lz4Compression.cpp" />
+		<Unit filename="../../lib/base/lz4Compression.hpp" />
 		<Unit filename="../lz4deframe/codes.hpp" />
 		<Unit filename="functions.cpp" />
 		<Unit filename="functions.hpp" />

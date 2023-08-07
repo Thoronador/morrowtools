@@ -19,9 +19,9 @@
 */
 
 #include <iostream>
-#include "../../base/DirectoryFunctions.hpp"
-#include "../../mw/base/Cells.hpp"
-#include "../../mw/base/ReturnCodes.hpp"
+#include "../../lib/base/DirectoryFunctions.hpp"
+#include "../../lib/mw/Cells.hpp"
+#include "../../lib/mw/ReturnCodes.hpp"
 #include "ESMReaderCells.hpp"
 
 void showVersion()

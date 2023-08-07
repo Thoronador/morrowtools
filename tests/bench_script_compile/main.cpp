@@ -19,10 +19,10 @@
 */
 
 #include <iostream>
-#include "../../base/DirectoryFunctions.hpp"
-#include "../../mw/base/ESMReaderScriptCompiler.hpp"
-#include "../../mw/base/RegistryFunctions.hpp"
-#include "../../mw/base/ReturnCodes.hpp"
+#include "../../lib/base/DirectoryFunctions.hpp"
+#include "../../lib/mw/ESMReaderScriptCompiler.hpp"
+#include "../../lib/mw/RegistryFunctions.hpp"
+#include "../../lib/mw/ReturnCodes.hpp"
 #include "CompileStatistics.hpp"
 
 void showHelp()

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #ifndef ESMREADERTRANSLATOR_H
 #define ESMREADERTRANSLATOR_H
 
-#include "../base/ESMReaderGeneric.hpp"
+#include "../../lib/mw/ESMReaderGeneric.hpp"
 
 namespace MWTP
 {

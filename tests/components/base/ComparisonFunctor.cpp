@@ -20,7 +20,7 @@
 
 #include "../locate_catch.hpp"
 #include <string>
-#include "../../../base/ComparisonFunctor.hpp"
+#include "../../../lib/base/ComparisonFunctor.hpp"
 
 TEST_CASE("ComparisonFunctor: ci_less")
 {

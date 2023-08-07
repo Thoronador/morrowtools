@@ -21,8 +21,8 @@
 #include "../locate_catch.hpp"
 #include <cstring>
 #include <fstream>
-#include "../../../base/CompressionFunctions.hpp"
-#include "../../../base/DirectoryFunctions.hpp"
+#include "../../../lib/base/CompressionFunctions.hpp"
+#include "../../../lib/base/DirectoryFunctions.hpp"
 
 TEST_CASE("CompressionFunctions")
 {

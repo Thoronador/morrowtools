@@ -21,13 +21,13 @@
 #include <iostream>
 #include <sstream>
 #include <string>
-#include "../../base/FileFunctions.hpp"
-#include "../../base/DirectoryFunctions.hpp"
-#include "../../base/UtilityFunctions.hpp"
-#include "../../sr/base/Cells.hpp"
-#include "../../sr/base/FormIDFunctions.hpp"
-#include "../../sr/base/ReturnCodes.hpp"
-#include "../../sr/base/records/TES4HeaderRecord.hpp"
+#include "../../lib/base/FileFunctions.hpp"
+#include "../../lib/base/DirectoryFunctions.hpp"
+#include "../../lib/base/UtilityFunctions.hpp"
+#include "../../lib/sr/Cells.hpp"
+#include "../../lib/sr/FormIDFunctions.hpp"
+#include "../../lib/sr/ReturnCodes.hpp"
+#include "../../lib/sr/records/TES4HeaderRecord.hpp"
 #include "ESMReaderOneRecordType.hpp"
 
 void showVersion()

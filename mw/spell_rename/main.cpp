@@ -31,13 +31,13 @@
 #include <vector>
 #include "ESMReaderSpells.hpp"
 #include "ESMWriterSpells.hpp"
-#include "../../base/DirectoryFunctions.hpp"
-#include "../../base/FileFunctions.hpp"
-#include "../base/GameSettings.hpp"
-#include "../base/IniFunctions.hpp"
-#include "../base/MagicEffects.hpp"
-#include "../base/ReturnCodes.hpp"
-#include "../base/Spells.hpp"
+#include "../../lib/base/DirectoryFunctions.hpp"
+#include "../../lib/base/FileFunctions.hpp"
+#include "../../lib/mw/GameSettings.hpp"
+#include "../../lib/mw/IniFunctions.hpp"
+#include "../../lib/mw/MagicEffects.hpp"
+#include "../../lib/mw/ReturnCodes.hpp"
+#include "../../lib/mw/Spells.hpp"
 
 
 void showHelp()

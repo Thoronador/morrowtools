@@ -20,7 +20,7 @@
 
 #include "../locate_catch.hpp"
 #include <string_view>
-#include "../../../base/ByteBuffer.hpp"
+#include "../../../lib/base/ByteBuffer.hpp"
 
 TEST_CASE("ByteBuffer")
 {

@@ -20,9 +20,9 @@
 
 #include "ESMReaderSkillRebalance.hpp"
 #include <iostream>
-#include "../base/MW_Constants.hpp"
-#include "../base/HelperIO.hpp"
-#include "../base/Skills.hpp"
+#include "../../lib/mw/MW_Constants.hpp"
+#include "../../lib/mw/HelperIO.hpp"
+#include "../../lib/mw/Skills.hpp"
 
 namespace MWTP
 {

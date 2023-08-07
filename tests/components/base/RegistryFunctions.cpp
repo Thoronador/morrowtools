@@ -19,8 +19,8 @@
 */
 
 #include "../locate_catch.hpp"
-#include "../../../base/RegistryFunctions.hpp"
-#include "../../../base/UtilityFunctions.hpp"
+#include "../../../lib/base/RegistryFunctions.hpp"
+#include "../../../lib/base/UtilityFunctions.hpp"
 
 TEST_CASE("RegistryFunctions")
 {

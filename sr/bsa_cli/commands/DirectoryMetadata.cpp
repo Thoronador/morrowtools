@@ -20,8 +20,8 @@
 
 #include "DirectoryMetadata.hpp"
 #include <iostream>
-#include "../../base/ReturnCodes.hpp"
-#include "../../base/bsa/BSA.hpp"
+#include "../../../lib/sr/ReturnCodes.hpp"
+#include "../../../lib/sr/bsa/BSA.hpp"
 #include "ArgumentParsingUtilities.hpp"
 
 namespace SRTP::bsa_cli

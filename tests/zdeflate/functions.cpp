@@ -23,7 +23,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "../../base/CompressionFunctions.hpp"
+#include "../../lib/base/CompressionFunctions.hpp"
 #include "../zinflate/codes.hpp"
 
 namespace zdeflate

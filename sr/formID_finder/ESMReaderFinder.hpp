@@ -21,7 +21,7 @@
 #ifndef SR_ESMREADERFINDER_HPP
 #define SR_ESMREADERFINDER_HPP
 
-#include "../base/ESMReaderReIndex.hpp"
+#include "../../lib/sr/ESMReaderReIndex.hpp"
 
 namespace SRTP
 {

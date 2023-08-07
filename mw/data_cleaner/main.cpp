@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,10 +21,10 @@
 #include <iostream>
 #include <string>
 #include "ESMReaderCleaner.hpp"
-#include "../base/ReturnCodes.hpp"
-#include "../base/IniFunctions.hpp"
-#include "../../base/DirectoryFunctions.hpp"
-#include "../../base/FileFunctions.hpp"
+#include "../../lib/mw/ReturnCodes.hpp"
+#include "../../lib/mw/IniFunctions.hpp"
+#include "../../lib/base/DirectoryFunctions.hpp"
+#include "../../lib/base/FileFunctions.hpp"
 #include "DirectoryTraversal.hpp"
 
 void showHelp()

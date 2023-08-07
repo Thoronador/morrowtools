@@ -19,8 +19,8 @@
 */
 
 #include "../locate_catch.hpp"
-#include "../../../base/DirectoryFunctions.hpp"
-#include "../../../base/FileFunctions.hpp"
+#include "../../../lib/base/DirectoryFunctions.hpp"
+#include "../../../lib/base/FileFunctions.hpp"
 
 TEST_CASE("DirectoryFunctions")
 {

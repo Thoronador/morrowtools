@@ -21,7 +21,7 @@
 #ifndef SR_ESMREADERONERECORDTYPE_HPP
 #define SR_ESMREADERONERECORDTYPE_HPP
 
-#include "../../sr/base/ESMReader.hpp"
+#include "../../lib/sr/ESMReader.hpp"
 
 namespace SRTP
 {

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #ifndef SR_ESMREADERCONVCAMS_HPP
 #define SR_ESMREADERCONVCAMS_HPP
 
-#include "../base/ESMReaderContentsBase.hpp"
+#include "../../lib/sr/ESMReaderContentsBase.hpp"
 
 namespace SRTP
 {

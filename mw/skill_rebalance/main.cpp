@@ -20,16 +20,16 @@
 
 #include <iostream>
 #include <string>
-#include "../../base/UtilityFunctions.hpp"
-#include "../../base/FileFunctions.hpp"
-#include "../../base/DirectoryFunctions.hpp"
-#include "../base/ReturnCodes.hpp"
-#include "../base/records/GameSettingRecord.hpp"
-#include "../base/records/SkillRecord.hpp"
-#include "../base/records/TES3Record.hpp"
-#include "../base/GameSettings.hpp"
-#include "../base/Skills.hpp"
-#include "../base/RegistryFunctions.hpp"
+#include "../../lib/base/UtilityFunctions.hpp"
+#include "../../lib/base/FileFunctions.hpp"
+#include "../../lib/base/DirectoryFunctions.hpp"
+#include "../../lib/mw/ReturnCodes.hpp"
+#include "../../lib/mw/records/GameSettingRecord.hpp"
+#include "../../lib/mw/records/SkillRecord.hpp"
+#include "../../lib/mw/records/TES3Record.hpp"
+#include "../../lib/mw/GameSettings.hpp"
+#include "../../lib/mw/Skills.hpp"
+#include "../../lib/mw/RegistryFunctions.hpp"
 #include "ESMReaderSkillRebalance.hpp"
 #include "ESMWriterSkillRebalance.hpp"
 

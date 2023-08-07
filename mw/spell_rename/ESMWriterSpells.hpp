@@ -21,7 +21,7 @@
 #ifndef MW_ESMWRITERSPELLS_HPP
 #define MW_ESMWRITERSPELLS_HPP
 
-#include "../base/ESMWriter.hpp"
+#include "../../lib/mw/ESMWriter.hpp"
 
 namespace MWTP
 {

@@ -19,11 +19,11 @@
 */
 
 #include "ESMReaderFinderReferences.hpp"
-#include "../base/Cells.hpp"
-#include "../base/WorldSpaces.hpp"
-#include "../base/SR_Constants.hpp"
-#include "../base/records/CharacterReferenceRecord.hpp"
-#include "../base/records/SimplifiedReferenceRecord.hpp"
+#include "../../lib/sr/Cells.hpp"
+#include "../../lib/sr/WorldSpaces.hpp"
+#include "../../lib/sr/SR_Constants.hpp"
+#include "../../lib/sr/records/CharacterReferenceRecord.hpp"
+#include "../../lib/sr/records/SimplifiedReferenceRecord.hpp"
 
 namespace SRTP
 {

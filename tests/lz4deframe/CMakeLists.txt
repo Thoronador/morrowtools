@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.8)
 project(lz4deframe)
 
 set(lz4deframe_sources
-    ../../base/lz4Compression.cpp
+    ../../lib/base/lz4Compression.cpp
     codes.hpp
     functions.cpp
     main.cpp)

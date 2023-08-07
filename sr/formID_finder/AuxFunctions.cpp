@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2015, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2015, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,9 +19,9 @@
 */
 
 #include "AuxFunctions.hpp"
-#include "../../base/UtilityFunctions.hpp"
-#include "../base/Cells.hpp"
-#include "../base/FormIDFunctions.hpp"
+#include "../../lib/base/UtilityFunctions.hpp"
+#include "../../lib/sr/Cells.hpp"
+#include "../../lib/sr/FormIDFunctions.hpp"
 
 bool matchesKeyword(const std::string& haystack, const std::string& keyword, const bool caseMatters)
 {

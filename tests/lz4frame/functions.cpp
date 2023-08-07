@@ -23,7 +23,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include "../../base/lz4Compression.hpp"
+#include "../../lib/base/lz4Compression.hpp"
 #include "../lz4deframe/codes.hpp"
 
 namespace lz4frame

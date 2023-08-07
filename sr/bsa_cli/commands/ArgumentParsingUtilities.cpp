@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021  Thoronador
+    Copyright (C) 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,8 +20,8 @@
 
 #include "ArgumentParsingUtilities.hpp"
 #include <iostream>
-#include "../../base/ReturnCodes.hpp"
-#include "../../../base/FileFunctions.hpp"
+#include "../../../lib/sr/ReturnCodes.hpp"
+#include "../../../lib/base/FileFunctions.hpp"
 
 namespace SRTP::bsa_cli
 {

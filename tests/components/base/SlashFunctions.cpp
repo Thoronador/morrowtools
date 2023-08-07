@@ -19,7 +19,7 @@
 */
 
 #include "../locate_catch.hpp"
-#include "../../../base/SlashFunctions.hpp"
+#include "../../../lib/base/SlashFunctions.hpp"
 
 TEST_CASE("SlashFunctions")
 {

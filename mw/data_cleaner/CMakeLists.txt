@@ -4,41 +4,41 @@ cmake_minimum_required (VERSION 3.8)
 project(data_cleaner)
 
 set(data_cleaner_sources
-    ../../base/DirectoryFunctions.cpp
-    ../../base/FileFunctions.cpp
-    ../../base/UtilityFunctions.cpp
-    ../base/DepFiles.cpp
-    ../base/ESMReader.cpp
-    ../base/Enchantment.cpp
-    ../base/HelperIO.cpp
-    ../base/IniFunctions.cpp
-    ../base/records/AIData.cpp
-    ../base/records/AIPackages.cpp
-    ../base/records/ActivatorRecord.cpp
-    ../base/records/AlchemyPotionRecord.cpp
-    ../base/records/ApparatusRecord.cpp
-    ../base/records/ArmourRecord.cpp
-    ../base/records/BasicRecord.cpp
-    ../base/records/BodyPartAssociation.cpp
-    ../base/records/BodyPartRecord.cpp
-    ../base/records/BookRecord.cpp
-    ../base/records/ClothingRecord.cpp
-    ../base/records/ContainerRecord.cpp
-    ../base/records/CreatureRecord.cpp
-    ../base/records/DoorRecord.cpp
-    ../base/records/IngredientRecord.cpp
-    ../base/records/ItemRecord.cpp
-    ../base/records/LightRecord.cpp
-    ../base/records/LockpickRecord.cpp
-    ../base/records/MiscItemRecord.cpp
-    ../base/records/NPCRecord.cpp
-    ../base/records/PreNPCRecord.cpp
-    ../base/records/ProbeRecord.cpp
-    ../base/records/RepairItemRecord.cpp
-    ../base/records/StaticRecord.cpp
-    ../base/records/TES3Record.cpp
-    ../base/records/TravelDestination.cpp
-    ../base/records/WeaponRecord.cpp
+    ../../lib/base/DirectoryFunctions.cpp
+    ../../lib/base/FileFunctions.cpp
+    ../../lib/base/UtilityFunctions.cpp
+    ../../lib/mw/DepFiles.cpp
+    ../../lib/mw/ESMReader.cpp
+    ../../lib/mw/Enchantment.cpp
+    ../../lib/mw/HelperIO.cpp
+    ../../lib/mw/IniFunctions.cpp
+    ../../lib/mw/records/AIData.cpp
+    ../../lib/mw/records/AIPackages.cpp
+    ../../lib/mw/records/ActivatorRecord.cpp
+    ../../lib/mw/records/AlchemyPotionRecord.cpp
+    ../../lib/mw/records/ApparatusRecord.cpp
+    ../../lib/mw/records/ArmourRecord.cpp
+    ../../lib/mw/records/BasicRecord.cpp
+    ../../lib/mw/records/BodyPartAssociation.cpp
+    ../../lib/mw/records/BodyPartRecord.cpp
+    ../../lib/mw/records/BookRecord.cpp
+    ../../lib/mw/records/ClothingRecord.cpp
+    ../../lib/mw/records/ContainerRecord.cpp
+    ../../lib/mw/records/CreatureRecord.cpp
+    ../../lib/mw/records/DoorRecord.cpp
+    ../../lib/mw/records/IngredientRecord.cpp
+    ../../lib/mw/records/ItemRecord.cpp
+    ../../lib/mw/records/LightRecord.cpp
+    ../../lib/mw/records/LockpickRecord.cpp
+    ../../lib/mw/records/MiscItemRecord.cpp
+    ../../lib/mw/records/NPCRecord.cpp
+    ../../lib/mw/records/PreNPCRecord.cpp
+    ../../lib/mw/records/ProbeRecord.cpp
+    ../../lib/mw/records/RepairItemRecord.cpp
+    ../../lib/mw/records/StaticRecord.cpp
+    ../../lib/mw/records/TES3Record.cpp
+    ../../lib/mw/records/TravelDestination.cpp
+    ../../lib/mw/records/WeaponRecord.cpp
     DirectoryTraversal.cpp
     ESMReaderCleaner.cpp
     main.cpp)

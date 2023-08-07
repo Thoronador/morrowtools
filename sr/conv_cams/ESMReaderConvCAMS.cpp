@@ -19,10 +19,10 @@
 */
 
 #include "ESMReaderConvCAMS.hpp"
-#include "../base/SR_Constants.hpp"
-#include "../base/records/CameraShotRecord.hpp"
-#include "../base/records/GenericRecord.hpp"
-#include "../base/records/NAVIRecord.hpp"
+#include "../../lib/sr/SR_Constants.hpp"
+#include "../../lib/sr/records/CameraShotRecord.hpp"
+#include "../../lib/sr/records/GenericRecord.hpp"
+#include "../../lib/sr/records/NAVIRecord.hpp"
 
 namespace SRTP
 {

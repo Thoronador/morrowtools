@@ -20,9 +20,9 @@
 
 #include "ESMReaderCells.hpp"
 #include <iostream>
-#include "../../mw/base/Cells.hpp"
-#include "../../mw/base/HelperIO.hpp"
-#include "../../mw/base/MW_Constants.hpp"
+#include "../../lib/mw/Cells.hpp"
+#include "../../lib/mw/HelperIO.hpp"
+#include "../../lib/mw/MW_Constants.hpp"
 
 namespace MWTP
 {

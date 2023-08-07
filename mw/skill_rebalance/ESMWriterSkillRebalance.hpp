@@ -21,7 +21,7 @@
 #ifndef MW_ESMWRITERSKILLREBALANCE_HPP
 #define MW_ESMWRITERSKILLREBALANCE_HPP
 
-#include "../base/ESMWriter.hpp"
+#include "../../lib/mw/ESMWriter.hpp"
 
 namespace MWTP
 {

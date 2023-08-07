@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #ifndef SR_ESMREADERFINDERREFERENCES_HPP
 #define SR_ESMREADERFINDERREFERENCES_HPP
 
-#include "../base/ESMReaderReIndex.hpp"
+#include "../../lib/sr/ESMReaderReIndex.hpp"
 #include <map>
 #include <vector>
 

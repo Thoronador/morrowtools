@@ -4,22 +4,22 @@ cmake_minimum_required (VERSION 3.8)
 project(spell_rename)
 
 set(spell_rename_sources
-    ../../base/DirectoryFunctions.cpp
-    ../../base/FileFunctions.cpp
-    ../../base/UtilityFunctions.cpp
-    ../base/DepFiles.cpp
-    ../base/ESMReader.cpp
-    ../base/ESMWriter.cpp
-    ../base/Enchantment.cpp
-    ../base/HelperIO.cpp
-    ../base/IniFunctions.cpp
-    ../base/MagicEffects.cpp
-    ../base/MapBasedRecordManager.hpp
-    ../base/records/BasicRecord.cpp
-    ../base/records/GameSettingRecord.cpp
-    ../base/records/MagicEffectRecord.cpp
-    ../base/records/SpellRecord.cpp
-    ../base/records/TES3Record.cpp
+    ../../lib/base/DirectoryFunctions.cpp
+    ../../lib/base/FileFunctions.cpp
+    ../../lib/base/UtilityFunctions.cpp
+    ../../lib/mw/DepFiles.cpp
+    ../../lib/mw/ESMReader.cpp
+    ../../lib/mw/ESMWriter.cpp
+    ../../lib/mw/Enchantment.cpp
+    ../../lib/mw/HelperIO.cpp
+    ../../lib/mw/IniFunctions.cpp
+    ../../lib/mw/MagicEffects.cpp
+    ../../lib/mw/MapBasedRecordManager.hpp
+    ../../lib/mw/records/BasicRecord.cpp
+    ../../lib/mw/records/GameSettingRecord.cpp
+    ../../lib/mw/records/MagicEffectRecord.cpp
+    ../../lib/mw/records/SpellRecord.cpp
+    ../../lib/mw/records/TES3Record.cpp
     ESMReaderSpells.cpp
     ESMWriterSpells.cpp
     main.cpp)

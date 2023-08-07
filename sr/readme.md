@@ -4,7 +4,6 @@ This directory and its subdirectories contain the code for Skyrim-related tools.
 
 There are the following directories:
 
-* **base**: general classes and code for Skyrim's data format
 * **bsa_cli**: code for `bsa-cli`, a command-line interface for BSA archives of
   Skyrim
 * **conv_cams**: _(obsolete)_ tool to convert CAMS records in an ESM file to the

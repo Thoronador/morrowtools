@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2014  Thoronador
+    Copyright (C) 2011, 2014  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,15 +22,15 @@
 
 #include <iostream>
 #include <stdexcept>
-#include "../base/HelperIO.hpp"
-#include "../base/MW_Constants.hpp"
-#include "../base/records/GenericRecord.hpp"
-#include "../base/records/CellRecord.hpp"
-#include "../base/records/CreatureRecord.hpp"
-#include "../base/records/DialogueInfoRecord.hpp"
-#include "../base/records/NPCRecord.hpp"
-#include "../base/records/PathGridRecord.hpp"
-#include "../base/records/ScriptRecord.hpp"
+#include "../../lib/mw/HelperIO.hpp"
+#include "../../lib/mw/MW_Constants.hpp"
+#include "../../lib/mw/records/GenericRecord.hpp"
+#include "../../lib/mw/records/CellRecord.hpp"
+#include "../../lib/mw/records/CreatureRecord.hpp"
+#include "../../lib/mw/records/DialogueInfoRecord.hpp"
+#include "../../lib/mw/records/NPCRecord.hpp"
+#include "../../lib/mw/records/PathGridRecord.hpp"
+#include "../../lib/mw/records/ScriptRecord.hpp"
 
 namespace MWTP
 {

@@ -4,35 +4,35 @@ cmake_minimum_required (VERSION 3.8)
 project(small_high_elves)
 
 set(small_high_elves_sources
-    ../../base/CompressionFunctions.cpp
-    ../../base/DirectoryFunctions.cpp
-    ../../base/FileFunctions.cpp
-    ../../base/lz4Compression.cpp
-    ../../base/RandomFunctions.cpp
-    ../../base/RegistryFunctions.cpp
-    ../../base/SlashFunctions.cpp
-    ../../base/UtilityFunctions.cpp
-    ../../mw/base/HelperIO.cpp
-    ../base/ESMFileContents.cpp
-    ../base/ESMReader.cpp
-    ../base/ESMWriter.cpp
-    ../base/ESMWriterContents.cpp
-    ../base/Group.cpp
-    ../base/Localization.cpp
-    ../base/StringTable.cpp
-    ../base/StringTableCompound.cpp
-    ../base/TableUtilities.cpp
-    ../base/bsa/BSA.cpp
-    ../base/bsa/BSADirectoryBlock.cpp
-    ../base/bsa/BSADirectoryRecord.cpp
-    ../base/bsa/BSAFileRecord.cpp
-    ../base/bsa/BSAHeader.cpp
-    ../base/records/BasicRecord.cpp
-    ../base/records/BinarySubRecord.cpp
-    ../base/records/GroupData.cpp
-    ../base/records/LocalizedString.cpp
-    ../base/records/RaceRecord.cpp
-    ../base/records/TES4HeaderRecord.cpp
+    ../../lib/base/CompressionFunctions.cpp
+    ../../lib/base/DirectoryFunctions.cpp
+    ../../lib/base/FileFunctions.cpp
+    ../../lib/base/lz4Compression.cpp
+    ../../lib/base/RandomFunctions.cpp
+    ../../lib/base/RegistryFunctions.cpp
+    ../../lib/base/SlashFunctions.cpp
+    ../../lib/base/UtilityFunctions.cpp
+    ../../lib/mw/HelperIO.cpp
+    ../../lib/sr/ESMFileContents.cpp
+    ../../lib/sr/ESMReader.cpp
+    ../../lib/sr/ESMWriter.cpp
+    ../../lib/sr/ESMWriterContents.cpp
+    ../../lib/sr/Group.cpp
+    ../../lib/sr/Localization.cpp
+    ../../lib/sr/StringTable.cpp
+    ../../lib/sr/StringTableCompound.cpp
+    ../../lib/sr/TableUtilities.cpp
+    ../../lib/sr/bsa/BSA.cpp
+    ../../lib/sr/bsa/BSADirectoryBlock.cpp
+    ../../lib/sr/bsa/BSADirectoryRecord.cpp
+    ../../lib/sr/bsa/BSAFileRecord.cpp
+    ../../lib/sr/bsa/BSAHeader.cpp
+    ../../lib/sr/records/BasicRecord.cpp
+    ../../lib/sr/records/BinarySubRecord.cpp
+    ../../lib/sr/records/GroupData.cpp
+    ../../lib/sr/records/LocalizedString.cpp
+    ../../lib/sr/records/RaceRecord.cpp
+    ../../lib/sr/records/TES4HeaderRecord.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

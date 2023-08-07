@@ -21,7 +21,7 @@
 #include "../../../locate_catch.hpp"
 #include <array>
 #include <fstream>
-#include "../../../../../base/FileFunctions.hpp"
+#include "../../../../../lib/base/FileFunctions.hpp"
 #include "../../../../../sr/bsa_cli/commands/CheckHashes.hpp"
 
 TEST_CASE("bsa_cli::CheckHashes")

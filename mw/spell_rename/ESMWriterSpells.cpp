@@ -19,7 +19,7 @@
 */
 
 #include "ESMWriterSpells.hpp"
-#include "../base/Spells.hpp"
+#include "../../lib/mw/Spells.hpp"
 
 namespace MWTP
 {

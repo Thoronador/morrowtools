@@ -22,8 +22,8 @@
 #define MW_ESMREADERSKILLREBALANCE_HPP
 
 #include <vector>
-#include "../base/ESMReader.hpp"
-#include "../base/records/BasicRecord.hpp"
+#include "../../lib/mw/ESMReader.hpp"
+#include "../../lib/mw/records/BasicRecord.hpp"
 
 namespace MWTP
 {

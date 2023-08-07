@@ -25,9 +25,9 @@
 #include "commands/CommandFactory.hpp"
 #include "commands/Info.hpp"
 #include "commands/List.hpp"
-#include "../../base/CompressionFunctions.hpp"
-#include "../../base/lz4Compression.hpp"
-#include "../base/ReturnCodes.hpp"
+#include "../../lib/base/CompressionFunctions.hpp"
+#include "../../lib/base/lz4Compression.hpp"
+#include "../../lib/sr/ReturnCodes.hpp"
 
 void showVersion()
 {

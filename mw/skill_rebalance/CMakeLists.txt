@@ -4,21 +4,21 @@ cmake_minimum_required (VERSION 3.8)
 project(skill_rebalance)
 
 set(skill_rebalance_sources
-    ../../base/DirectoryFunctions.cpp
-    ../../base/FileFunctions.cpp
-    ../../base/RegistryFunctions.cpp
-    ../../base/UtilityFunctions.cpp
-    ../base/DepFiles.cpp
-    ../base/ESMReader.cpp
-    ../base/ESMWriter.cpp
-    ../base/HelperIO.cpp
-    ../base/MapBasedRecordManager.hpp
-    ../base/Skills.cpp
-    ../base/records/BasicRecord.cpp
-    ../base/records/GameSettingRecord.cpp
-    ../base/records/GenericRecord.cpp
-    ../base/records/SkillRecord.cpp
-    ../base/records/TES3Record.cpp
+    ../../lib/base/DirectoryFunctions.cpp
+    ../../lib/base/FileFunctions.cpp
+    ../../lib/base/RegistryFunctions.cpp
+    ../../lib/base/UtilityFunctions.cpp
+    ../../lib/mw/DepFiles.cpp
+    ../../lib/mw/ESMReader.cpp
+    ../../lib/mw/ESMWriter.cpp
+    ../../lib/mw/HelperIO.cpp
+    ../../lib/mw/MapBasedRecordManager.hpp
+    ../../lib/mw/Skills.cpp
+    ../../lib/mw/records/BasicRecord.cpp
+    ../../lib/mw/records/GameSettingRecord.cpp
+    ../../lib/mw/records/GenericRecord.cpp
+    ../../lib/mw/records/SkillRecord.cpp
+    ../../lib/mw/records/TES3Record.cpp
     ESMReaderSkillRebalance.cpp
     ESMWriterSkillRebalance.cpp
     main.cpp)

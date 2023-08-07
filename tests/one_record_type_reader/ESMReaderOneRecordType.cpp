@@ -19,9 +19,9 @@
 */
 
 #include "ESMReaderOneRecordType.hpp"
-#include "../../sr/base/SR_Constants.hpp"
-#include "../../sr/base/Cells.hpp"
-#include "../../sr/base/records/CellRecord.hpp"
+#include "../../lib/sr/SR_Constants.hpp"
+#include "../../lib/sr/Cells.hpp"
+#include "../../lib/sr/records/CellRecord.hpp"
 
 namespace SRTP
 {

@@ -20,7 +20,7 @@
 
 #include "../locate_catch.hpp"
 #include <cstring>
-#include "../../../base/BufferStream.hpp"
+#include "../../../lib/base/BufferStream.hpp"
 
 TEST_CASE("BufferStream")
 {

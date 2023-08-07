@@ -20,15 +20,15 @@
 
 #include <filesystem>
 #include <iostream>
-#include "../base/ESMReaderSingleType.hpp"
-#include "../base/ESMWriterContents.hpp"
-#include "../base/records/TES4HeaderRecord.hpp"
-#include "../base/Races.hpp"
-#include "../base/PathFunctions.hpp"
-#include "../base/ReturnCodes.hpp"
-#include "../base/SR_Constants.hpp"
-#include "../base/StringTable.hpp"
-#include "../base/StringTableCompound.hpp"
+#include "../../lib/sr/ESMReaderSingleType.hpp"
+#include "../../lib/sr/ESMWriterContents.hpp"
+#include "../../lib/sr/records/TES4HeaderRecord.hpp"
+#include "../../lib/sr/Races.hpp"
+#include "../../lib/sr/PathFunctions.hpp"
+#include "../../lib/sr/ReturnCodes.hpp"
+#include "../../lib/sr/SR_Constants.hpp"
+#include "../../lib/sr/StringTable.hpp"
+#include "../../lib/sr/StringTableCompound.hpp"
 
 void showHelp()
 {

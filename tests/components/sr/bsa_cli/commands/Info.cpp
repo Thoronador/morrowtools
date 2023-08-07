@@ -21,7 +21,7 @@
 #include "../../../locate_catch.hpp"
 #include <array>
 #include <fstream>
-#include "../../../../../base/FileFunctions.hpp"
+#include "../../../../../lib/base/FileFunctions.hpp"
 #include "../../../../../sr/bsa_cli/commands/Info.hpp"
 
 void writeBsaHeaderForTest(const std::string& fileName, const uint32_t version, const uint32_t flags)

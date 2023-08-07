@@ -21,7 +21,7 @@
 #ifndef MW_ESMREADERSPELLS_HPP
 #define MW_ESMREADERSPELLS_HPP
 
-#include "../base/ESMReader.hpp"
+#include "../../lib/mw/ESMReader.hpp"
 
 namespace MWTP
 {

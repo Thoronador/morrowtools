@@ -22,8 +22,8 @@
 #include <algorithm>
 #include <ctime>
 #include <fstream>
-#include "../../../base/DirectoryFunctions.hpp"
-#include "../../../base/FileFunctions.hpp"
+#include "../../../lib/base/DirectoryFunctions.hpp"
+#include "../../../lib/base/FileFunctions.hpp"
 
 TEST_CASE("FileFunctions")
 {

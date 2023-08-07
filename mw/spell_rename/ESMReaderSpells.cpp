@@ -20,11 +20,11 @@
 
 #include "ESMReaderSpells.hpp"
 #include <iostream>
-#include "../base/MW_Constants.hpp"
-#include "../base/HelperIO.hpp"
-#include "../base/GameSettings.hpp"
-#include "../base/MagicEffects.hpp"
-#include "../base/Spells.hpp"
+#include "../../lib/mw/MW_Constants.hpp"
+#include "../../lib/mw/HelperIO.hpp"
+#include "../../lib/mw/GameSettings.hpp"
+#include "../../lib/mw/MagicEffects.hpp"
+#include "../../lib/mw/Spells.hpp"
 
 namespace MWTP
 {

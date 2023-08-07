@@ -21,8 +21,8 @@
 #include "../locate_catch.hpp"
 #include <cstring>
 #include <fstream>
-#include "../../../base/lz4Compression.hpp"
-#include "../../../base/DirectoryFunctions.hpp"
+#include "../../../lib/base/lz4Compression.hpp"
+#include "../../../lib/base/DirectoryFunctions.hpp"
 
 TEST_CASE("lz4Compression")
 {

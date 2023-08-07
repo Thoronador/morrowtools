@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,10 +22,10 @@
 #define TRANSLATERECORDS_H
 
 #include "TranslatorXML.hpp"
-#include "../base/records/CellRecord.hpp"
-#include "../base/records/DialogueInfoRecord.hpp"
-#include "../base/records/PreNPCRecord.hpp"
-#include "../base/records/ScriptRecord.hpp"
+#include "../../lib/mw/records/CellRecord.hpp"
+#include "../../lib/mw/records/DialogueInfoRecord.hpp"
+#include "../../lib/mw/records/PreNPCRecord.hpp"
+#include "../../lib/mw/records/ScriptRecord.hpp"
 
 namespace MWTP
 {

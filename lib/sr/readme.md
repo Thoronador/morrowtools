@@ -37,3 +37,10 @@ However, there are some notable exceptions:
 * `StringTable.hpp` + `StringTable.cpp` contain the `StringTable` class which
   handles files containing localized string data (e. g. `*.dlstrings`,
   `*.ilstrings` and `*.strings` files).
+
+### Documentation (kind of ...)
+
+* `sr_esm.txt` - description of Skyrim's ESM file format (may be incomplete or
+  slightly outdated)
+* `sr_record_progress.txt` - progress list for ESM record types
+* `symbols.txt` - contains a list of preprocessor symbols used in SRTP

@@ -70,12 +70,12 @@ After the build is finished, the executables will be located at the following
 paths inside the build directory:
 
 * Morrowind tools:
-  * Cell Translator: `mw/cell_translator/cell_translator.exe`
-  * Data Cleaner: `mw/data_cleaner/data_cleaner.exe`
-  * Skill Rebalancer: `mw/skill_rebalance/skill_rebalance.exe`
-  * Spell Renamer: `mw/spell_rename/spell_rename.exe`
+  * Cell Translator: `apps/mw/cell_translator/cell_translator.exe`
+  * Data Cleaner: `apps/mw/data_cleaner/data_cleaner.exe`
+  * Skill Rebalancer: `apps/mw/skill_rebalance/skill_rebalance.exe`
+  * Spell Renamer: `apps/mw/spell_rename/spell_rename.exe`
 
 * Skyrim tools:
-  * bsa-cli: `sr/bsa_cli/bsa-cli.exe`
-  * CAMS record converter: `sr/conv_cams/conv_cams.exe`
-  * Form ID finder: `sr/formID_finder/formID_finder.exe`
+  * bsa-cli: `apps/sr/bsa_cli/bsa-cli.exe`
+  * CAMS record converter: `apps/sr/conv_cams/conv_cams.exe`
+  * Form ID finder: `apps/sr/formID_finder/formID_finder.exe`

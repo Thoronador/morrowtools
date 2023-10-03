@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install Rust packages
       run: |
         sudo apt-get update
@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-22.04
     name: Clippy lints
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install packages
       run: sudo apt-get install -y wget
     - name: Rustup

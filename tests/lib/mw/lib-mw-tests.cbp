@@ -51,6 +51,7 @@
 		<Unit filename="../../../lib/mw/MagicEffects.hpp" />
 		<Unit filename="../../../lib/mw/MapBasedRecordManager.hpp" />
 		<Unit filename="../../../lib/mw/SetBasedRecordManager.hpp" />
+		<Unit filename="../../../lib/mw/SkillConstants.hpp" />
 		<Unit filename="../../../lib/mw/Skills.cpp" />
 		<Unit filename="../../../lib/mw/Skills.hpp" />
 		<Unit filename="../../../lib/mw/records/AIData.cpp" />

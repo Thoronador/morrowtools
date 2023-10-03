@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2010, 2011, 2013, 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,47 +25,10 @@
 #include <string>
 #include <fstream>
 #include "BasicRecord.hpp"
+#include "../SkillConstants.hpp"
 
 namespace MWTP
 {
-
-// constants for skill indices
-const int32_t SkillBlock = 0;
-const int32_t SkillArmorer = 1;
-const int32_t SkillMediumArmor = 2;
-const int32_t SkillHeavyArmor = 3;
-const int32_t SkillBluntWeapon = 4;
-const int32_t SkillLongBlade = 5;
-const int32_t SkillAxe = 6;
-const int32_t SkillSpear = 7;
-const int32_t SkillAthletics = 8;
-const int32_t SkillEnchant = 9;
-const int32_t SkillDestruction = 10;
-const int32_t SkillAlteration = 11;
-const int32_t SkillIllusion = 12;
-const int32_t SkillConjuration = 13;
-const int32_t SkillMysticism = 14;
-const int32_t SkillRestoration = 15;
-const int32_t SkillAlchemy = 16;
-const int32_t SkillUnarmored = 17;
-const int32_t SkillSecurity = 18;
-const int32_t SkillSneak = 19;
-const int32_t SkillAcrobatics = 20;
-const int32_t SkillLightArmor = 21;
-const int32_t SkillShortBlade = 22;
-const int32_t SkillMarksman = 23;
-const int32_t SkillMercantile = 24;
-const int32_t SkillSpeechcraft = 25;
-const int32_t SkillHandToHand = 26;
-
-
-// enumeration for specialization of skills
-enum SkillSpecialization: uint32_t
-{
-  Combat = 0,
-  Magic = 1,
-  Stealth = 2
-};
 
 /** Holds information about a skill. */
 struct SkillRecord: public BasicRecord

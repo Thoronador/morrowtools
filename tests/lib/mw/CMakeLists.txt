@@ -46,6 +46,7 @@ set(lib_mw_tests_sources
     ../../../lib/mw/records/PathGridRecord.cpp
     ../../../lib/mw/records/PreNPCRecord.cpp
     ../../../lib/mw/records/ProbeRecord.cpp
+    ../../../lib/mw/records/RaceRecord.cpp
     ../../../lib/mw/records/ReferencedObject.cpp
     ../../../lib/mw/records/RegionRecord.cpp
     ../../../lib/mw/records/RepairItemRecord.cpp
@@ -105,6 +106,7 @@ set(lib_mw_tests_sources
     records/PathGridRecord.cpp
     records/PreNPCRecord.cpp
     records/ProbeRecord.cpp
+    records/RaceRecord.cpp
     records/RefDoorData.cpp
     records/ReferencedObject.cpp
     records/RegionRecord.cpp

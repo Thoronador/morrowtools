@@ -114,6 +114,8 @@
 		<Unit filename="../../../lib/mw/records/PreNPCRecord.hpp" />
 		<Unit filename="../../../lib/mw/records/ProbeRecord.cpp" />
 		<Unit filename="../../../lib/mw/records/ProbeRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/RaceRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/RaceRecord.hpp" />
 		<Unit filename="../../../lib/mw/records/ReferencedObject.cpp" />
 		<Unit filename="../../../lib/mw/records/ReferencedObject.hpp" />
 		<Unit filename="../../../lib/mw/records/RegionRecord.cpp" />
@@ -186,6 +188,7 @@
 		<Unit filename="records/PathGridRecord.cpp" />
 		<Unit filename="records/PreNPCRecord.cpp" />
 		<Unit filename="records/ProbeRecord.cpp" />
+		<Unit filename="records/RaceRecord.cpp" />
 		<Unit filename="records/RefDoorData.cpp" />
 		<Unit filename="records/ReferencedObject.cpp" />
 		<Unit filename="records/RegionRecord.cpp" />

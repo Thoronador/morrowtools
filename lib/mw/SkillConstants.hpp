@@ -21,6 +21,8 @@
 #ifndef MW_SKILLCONSTANTS_HPP
 #define MW_SKILLCONSTANTS_HPP
 
+#include <cstdint>
+
 namespace MWTP
 {
 

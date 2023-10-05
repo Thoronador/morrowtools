@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,12 +35,6 @@ namespace MWTP
 class ESMReaderCount: public ESMReader
 {
   public:
-    /* constructor */
-    ESMReaderCount();
-
-    /* destructor */
-    virtual ~ESMReaderCount();
-
     /* the map that counts the records. Key is the record name, value is the
        number that indicates how often that record was seen
 

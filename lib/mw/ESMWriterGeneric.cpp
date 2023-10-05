@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2014  Thoronador
+    Copyright (C) 2011, 2013, 2014  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,11 +34,6 @@ ESMWriterGeneric::ESMWriterGeneric(VectorType* vec)
     std::cout << "ESMWriterGeneric: Error: supplied pointer is NULL!\n";
     throw std::runtime_error("ESMWriterGeneric: Error: supplied pointer is NULL!");
   }
-}
-
-ESMWriterGeneric::~ESMWriterGeneric()
-{
-  //empty
 }
 
 int32_t ESMWriterGeneric::getTotalRecords() const

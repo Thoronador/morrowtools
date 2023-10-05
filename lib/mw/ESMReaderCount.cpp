@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,16 +25,6 @@
 
 namespace MWTP
 {
-
-ESMReaderCount::ESMReaderCount()
-{
-  //empty
-}
-
-ESMReaderCount::~ESMReaderCount()
-{
-  RecordCounter.clear();
-}
 
 int ESMReaderCount::processNextRecord(std::istream& input)
 {

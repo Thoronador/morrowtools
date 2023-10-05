@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,9 +44,6 @@ class ESMWriterGeneric: public ESMWriter
                  the ESMWriterGeneric, at least.
     */
     ESMWriterGeneric(VectorType* vec);
-
-    /* destructor */
-    virtual ~ESMWriterGeneric();
   protected:
     /* returns the number of records that will be written to the stream */
     virtual int32_t getTotalRecords() const;

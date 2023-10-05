@@ -245,6 +245,56 @@ TEST_CASE("MWTP::PreNPCRecord")
     }
   }
 
+  SECTION("copy AI data")
+  {
+    NPCRecord source;
+
+    auto pkgA = new NPC_AIActivate();
+    pkgA->TargetID = "foo";
+    pkgA->Reset = 1;
+    source.AIPackages.push_back(pkgA);
+
+    auto pkgE = new NPC_AIEscort();
+    pkgE->TargetID = "foo";
+    pkgE->Reset = 1;
+    source.AIPackages.push_back(pkgE);
+
+    auto pkgF = new NPC_AIFollow();
+    pkgF->TargetID = "foo";
+    pkgF->Reset = 1;
+    source.AIPackages.push_back(pkgF);
+
+    auto pkgT = new NPC_AITravel();
+    pkgT->X = 1.0f;
+    pkgT->Reset = 1;
+    source.AIPackages.push_back(pkgT);
+
+    auto pkgW = new NPC_AIWander();
+    pkgW->Distance = 100;
+    source.AIPackages.push_back(pkgW);
+
+    // Add a null pointer, just to make sure the code can handle this, too.
+    source.AIPackages.push_back(nullptr);
+
+    source.recordID = "TestSource";
+    source.Name = "Source";
+
+    NPCRecord destination;
+    REQUIRE( destination.AIPackages.empty() );
+
+    destination = source;
+
+    REQUIRE( source.AIPackages.size() == destination.AIPackages.size() );
+
+    REQUIRE( destination.AIPackages[0]->getPackageType() == PackageType::ptActivate );
+    NPC_AIActivate* pkg = static_cast<NPC_AIActivate*>(destination.AIPackages[0]);
+    REQUIRE( pkg->TargetID == "foo" );
+    REQUIRE( pkg->Reset == 1 );
+
+    REQUIRE( destination.hasEqualAIPackages(source) );
+    REQUIRE( source.equals(destination) );
+  }
+
   SECTION("fun with flags")
   {
     NPCRecord record;

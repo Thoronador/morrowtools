@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -96,36 +96,49 @@ void PreNPCRecord::removeAIPackages()
 
 void PreNPCRecord::copyAIPackages(const PreNPCRecord& source)
 {
-  decltype(source.AIPackages)::size_type i;
-  NPC_BasicAIPackage* pkgPtr;
-  for (i = 0; i < source.AIPackages.size(); ++i)
+  for (decltype(source.AIPackages)::size_type i = 0; i < source.AIPackages.size(); ++i)
   {
+    if (source.AIPackages[i] == nullptr)
+    {
+      AIPackages.push_back(nullptr);
+      continue;
+    }
     switch (source.AIPackages[i]->getPackageType())
     {
       case PackageType::ptActivate:
-           pkgPtr = new NPC_AIActivate;
-           *pkgPtr = *(static_cast<NPC_AIActivate*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
+           {
+             NPC_AIActivate* pkgPtr = new NPC_AIActivate;
+             *pkgPtr = *(static_cast<NPC_AIActivate*>(source.AIPackages[i]));
+             AIPackages.push_back(pkgPtr);
+           }
            break;
       case PackageType::ptEscort:
-           pkgPtr = new NPC_AIEscort;
-           *pkgPtr = *(static_cast<NPC_AIEscort*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
+           {
+             NPC_AIEscort* pkgPtr = new NPC_AIEscort;
+             *pkgPtr = *(static_cast<NPC_AIEscort*>(source.AIPackages[i]));
+             AIPackages.push_back(pkgPtr);
+           }
            break;
       case PackageType::ptFollow:
-           pkgPtr = new NPC_AIFollow;
-           *pkgPtr = *(static_cast<NPC_AIFollow*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
+           {
+             NPC_AIFollow* pkgPtr = new NPC_AIFollow;
+             *pkgPtr = *(static_cast<NPC_AIFollow*>(source.AIPackages[i]));
+             AIPackages.push_back(pkgPtr);
+           }
            break;
       case PackageType::ptTravel:
-           pkgPtr = new NPC_AITravel;
-           *pkgPtr = *(static_cast<NPC_AITravel*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
+           {
+             NPC_AITravel* pkgPtr = new NPC_AITravel;
+             *pkgPtr = *(static_cast<NPC_AITravel*>(source.AIPackages[i]));
+             AIPackages.push_back(pkgPtr);
+           }
            break;
       case PackageType::ptWander:
-           pkgPtr = new NPC_AIWander;
-           *pkgPtr = *(static_cast<NPC_AIWander*>(source.AIPackages[i]));
-           AIPackages.push_back(pkgPtr);
+           {
+             NPC_AIWander* pkgPtr = new NPC_AIWander;
+             *pkgPtr = *(static_cast<NPC_AIWander*>(source.AIPackages[i]));
+             AIPackages.push_back(pkgPtr);
+           }
            break;
     }
   }

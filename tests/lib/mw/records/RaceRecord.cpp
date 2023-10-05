@@ -531,6 +531,14 @@ TEST_CASE("MWTP::RaceRecord")
       REQUIRE( record.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+
+      // Check that "missing" bonus entries get filled with defaults on write.
+      record.Boni.pop_back();
+      record.Boni.pop_back();
+      std::ostringstream streamSeven;
+      REQUIRE( record.saveToStream(streamSeven) );
+      // Check written data.
+      REQUIRE( streamSeven.str() == data );
     }
 
     SECTION("corrupt data: stream ends before header can be read")

@@ -35,6 +35,7 @@ win64_cross:
     - mkdir -p artifacts
     - cp apps/mw/cell_translator/cell_translator.exe artifacts/
     - cp apps/mw/data_cleaner/data_cleaner.exe artifacts/
+    - cp apps/mw/name_generator/name_generator.exe artifacts/
     - cp apps/mw/skill_rebalance/skill_rebalance.exe artifacts/
     - cp apps/mw/spell_rename/spell_rename.exe artifacts/
     - cp apps/sr/bsa_cli/bsa-cli.exe artifacts/

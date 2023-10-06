@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="name_generator" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/name_generator" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/name_generator" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O3" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wnon-virtual-dtor" />
+			<Add option="-Wshadow" />
+			<Add option="-Weffc++" />
+			<Add option="-pedantic-errors" />
+			<Add option="-pedantic" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-std=gnu++17" />
+			<Add option="-fexceptions" />
+			<Add option="-DMW_UNSAVEABLE_RECORDS" />
+		</Compiler>
+		<Unit filename="../../../lib/base/DirectoryFunctions.cpp" />
+		<Unit filename="../../../lib/base/DirectoryFunctions.hpp" />
+		<Unit filename="../../../lib/base/RegistryFunctions.cpp" />
+		<Unit filename="../../../lib/base/RegistryFunctions.hpp" />
+		<Unit filename="../../../lib/base/UtilityFunctions.cpp" />
+		<Unit filename="../../../lib/base/UtilityFunctions.hpp" />
+		<Unit filename="../../../lib/mw/DepFiles.cpp" />
+		<Unit filename="../../../lib/mw/DepFiles.hpp" />
+		<Unit filename="../../../lib/mw/ESMReader.cpp" />
+		<Unit filename="../../../lib/mw/ESMReader.hpp" />
+		<Unit filename="../../../lib/mw/HelperIO.cpp" />
+		<Unit filename="../../../lib/mw/HelperIO.hpp" />
+		<Unit filename="../../../lib/mw/MW_Constants.hpp" />
+		<Unit filename="../../../lib/mw/MapBasedRecordManager.hpp" />
+		<Unit filename="../../../lib/mw/NPCs.hpp" />
+		<Unit filename="../../../lib/mw/Races.hpp" />
+		<Unit filename="../../../lib/mw/RegistryFunctions.hpp" />
+		<Unit filename="../../../lib/mw/ReturnCodes.hpp" />
+		<Unit filename="../../../lib/mw/SetBasedRecordManager.hpp" />
+		<Unit filename="../../../lib/mw/records/AIData.cpp" />
+		<Unit filename="../../../lib/mw/records/AIData.hpp" />
+		<Unit filename="../../../lib/mw/records/AIPackages.cpp" />
+		<Unit filename="../../../lib/mw/records/AIPackages.hpp" />
+		<Unit filename="../../../lib/mw/records/BasicRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/BasicRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/ItemRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/ItemRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/NPCRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/NPCRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/PreNPCRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/PreNPCRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/RaceRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/RaceRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/TES3Record.cpp" />
+		<Unit filename="../../../lib/mw/records/TES3Record.hpp" />
+		<Unit filename="../../../lib/mw/records/TravelDestination.cpp" />
+		<Unit filename="../../../lib/mw/records/TravelDestination.hpp" />
+		<Unit filename="ESMReaderNameGen.cpp" />
+		<Unit filename="ESMReaderNameGen.hpp" />
+		<Unit filename="Gender.cpp" />
+		<Unit filename="Gender.hpp" />
+		<Unit filename="NameGenFunctions.cpp" />
+		<Unit filename="NameGenFunctions.hpp" />
+		<Unit filename="generators/Factory.cpp" />
+		<Unit filename="generators/Factory.hpp" />
+		<Unit filename="generators/Generator.hpp" />
+		<Unit filename="generators/GeneratorBretonMale.cpp" />
+		<Unit filename="generators/GeneratorBretonMale.hpp" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

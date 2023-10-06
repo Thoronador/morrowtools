@@ -41,6 +41,13 @@ class Generator
      * \return Returns a vector containing the generated names.
      */
     virtual std::vector<std::string> generate(const uint_least16_t n) = 0;
+
+
+    /** \brief Gets the NPC IDs that need to be removed before generation starts.
+     *
+     * \return Returns a vector of the IDs that shall be removed.
+     */
+    virtual std::vector<std::string> purge() = 0;
 }; // class
 
 } // namespace

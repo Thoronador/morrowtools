@@ -25,6 +25,8 @@ set(name_generator_sources
     Gender.cpp
     NameGenFunctions.cpp
     generators/Factory.cpp
+    generators/GeneratorBretonBoth.cpp
+    generators/GeneratorBretonFemale.cpp
     generators/GeneratorBretonMale.cpp
     main.cpp)
 

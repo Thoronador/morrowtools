@@ -19,6 +19,8 @@
 */
 
 #include "Factory.hpp"
+#include "GeneratorBretonBoth.hpp"
+#include "GeneratorBretonFemale.hpp"
 #include "GeneratorBretonMale.hpp"
 
 namespace MWTP
@@ -32,6 +34,10 @@ std::unique_ptr<Generator> Factory::create(const std::string& race, const Gender
     {
       case Gender::Male:
            return std::make_unique<GeneratorBretonMale>();
+      case Gender::Female:
+           return std::make_unique<GeneratorBretonFemale>();
+      case Gender::Both:
+           return std::make_unique<GeneratorBretonBoth>();
     }
   }
 

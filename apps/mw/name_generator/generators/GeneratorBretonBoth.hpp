@@ -18,19 +18,19 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MW_NAMEGEN_GENERATOR_BRETON_MALE_HPP
-#define MW_NAMEGEN_GENERATOR_BRETON_MALE_HPP
+#ifndef MW_NAMEGEN_GENERATOR_BRETON_BOTH_HPP
+#define MW_NAMEGEN_GENERATOR_BRETON_BOTH_HPP
 
 #include "Generator.hpp"
 
 namespace MWTP
 {
 
-/// Generator for male Breton names.
-class GeneratorBretonMale: public Generator
+/// Generator for Breton names, regardless of gender.
+class GeneratorBretonBoth: public Generator
 {
   public:
-    GeneratorBretonMale();
+    GeneratorBretonBoth();
 
     /** \brief Generates n names.
      *

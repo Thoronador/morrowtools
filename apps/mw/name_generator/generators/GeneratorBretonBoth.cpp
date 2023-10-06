@@ -18,20 +18,20 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GeneratorBretonMale.hpp"
+#include "GeneratorBretonBoth.hpp"
 #include <random>
 #include "../../../../lib/mw/NPCs.hpp"
 
 namespace MWTP
 {
 
-GeneratorBretonMale::GeneratorBretonMale()
+GeneratorBretonBoth::GeneratorBretonBoth()
 : first_names({ }),
   last_names({ })
 {
 }
 
-std::vector<std::string> GeneratorBretonMale::generate(const uint_least16_t n)
+std::vector<std::string> GeneratorBretonBoth::generate(const uint_least16_t n)
 {
   if (first_names.empty() && last_names.empty())
   {
@@ -52,7 +52,7 @@ std::vector<std::string> GeneratorBretonMale::generate(const uint_least16_t n)
   return result;
 }
 
-std::vector<std::string> GeneratorBretonMale::purge()
+std::vector<std::string> GeneratorBretonBoth::purge()
 {
   return {
     "grandfather frost",
@@ -62,7 +62,7 @@ std::vector<std::string> GeneratorBretonMale::purge()
   };
 }
 
-void GeneratorBretonMale::prepare()
+void GeneratorBretonBoth::prepare()
 {
   auto iter = NPCs::get().begin();
   while (iter != NPCs::get().end())
@@ -70,25 +70,14 @@ void GeneratorBretonMale::prepare()
     if (iter->second.RaceID == "Breton")
     {
       const auto pos = iter->second.Name.find(' ');
-      const auto female = iter->second.isFemale();
       if (pos == std::string::npos)
       {
-        // First name only - can only be used if gender matches.
-        if (!female)
-          first_names.push_back(iter->second.Name);
+        first_names.push_back(iter->second.Name);
       }
       else
       {
-        if (!female)
-        {
-          first_names.push_back(iter->second.Name.substr(0, pos));
-          last_names.push_back(iter->second.Name.substr(pos + 1));
-        }
-        else
-        {
-          // Last name is gender-neutral, so it can be used, too.
-          last_names.push_back(iter->second.Name.substr(pos + 1));
-        }
+        first_names.push_back(iter->second.Name.substr(0, pos));
+        last_names.push_back(iter->second.Name.substr(pos + 1));
       }
     }
     ++iter;

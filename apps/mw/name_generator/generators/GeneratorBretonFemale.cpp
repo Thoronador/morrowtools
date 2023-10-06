@@ -18,20 +18,20 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GeneratorBretonMale.hpp"
+#include "GeneratorBretonFemale.hpp"
 #include <random>
 #include "../../../../lib/mw/NPCs.hpp"
 
 namespace MWTP
 {
 
-GeneratorBretonMale::GeneratorBretonMale()
+GeneratorBretonFemale::GeneratorBretonFemale()
 : first_names({ }),
   last_names({ })
 {
 }
 
-std::vector<std::string> GeneratorBretonMale::generate(const uint_least16_t n)
+std::vector<std::string> GeneratorBretonFemale::generate(const uint_least16_t n)
 {
   if (first_names.empty() && last_names.empty())
   {
@@ -52,7 +52,7 @@ std::vector<std::string> GeneratorBretonMale::generate(const uint_least16_t n)
   return result;
 }
 
-std::vector<std::string> GeneratorBretonMale::purge()
+std::vector<std::string> GeneratorBretonFemale::purge()
 {
   return {
     "grandfather frost",
@@ -62,7 +62,7 @@ std::vector<std::string> GeneratorBretonMale::purge()
   };
 }
 
-void GeneratorBretonMale::prepare()
+void GeneratorBretonFemale::prepare()
 {
   auto iter = NPCs::get().begin();
   while (iter != NPCs::get().end())
@@ -74,12 +74,12 @@ void GeneratorBretonMale::prepare()
       if (pos == std::string::npos)
       {
         // First name only - can only be used if gender matches.
-        if (!female)
+        if (female)
           first_names.push_back(iter->second.Name);
       }
       else
       {
-        if (!female)
+        if (female)
         {
           first_names.push_back(iter->second.Name.substr(0, pos));
           last_names.push_back(iter->second.Name.substr(pos + 1));

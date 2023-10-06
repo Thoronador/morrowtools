@@ -86,6 +86,10 @@
 		<Unit filename="generators/Factory.cpp" />
 		<Unit filename="generators/Factory.hpp" />
 		<Unit filename="generators/Generator.hpp" />
+		<Unit filename="generators/GeneratorBretonBoth.cpp" />
+		<Unit filename="generators/GeneratorBretonBoth.hpp" />
+		<Unit filename="generators/GeneratorBretonFemale.cpp" />
+		<Unit filename="generators/GeneratorBretonFemale.hpp" />
 		<Unit filename="generators/GeneratorBretonMale.cpp" />
 		<Unit filename="generators/GeneratorBretonMale.hpp" />
 		<Unit filename="main.cpp" />

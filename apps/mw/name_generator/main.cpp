@@ -22,6 +22,7 @@
 #include <filesystem>
 #include <string>
 #include "../../../lib/base/DirectoryFunctions.hpp"
+#include "../../../lib/mw/NPCs.hpp"
 #include "../../../lib/mw/Races.hpp"
 #include "../../../lib/mw/RegistryFunctions.hpp"
 #include "../../../lib/mw/ReturnCodes.hpp"
@@ -217,14 +218,19 @@ int main(int argc, char **argv)
   const auto gender = opt_g.value();
   std::cout << "Selected gender is " << to_string(gender) << ".\n";
 
-  std::cout << "Note / TODO: Currently only male Breton names can be generated.\n";
-
   const auto generator = MWTP::Factory::create(raceId, gender);
   if (generator == nullptr)
   {
+    std::cout << "Note / TODO: Currently only Breton names can be generated.\n";
     std::cout << "Error: The chosen selection is not implemented yet!\n";
     std::cout << "More stuff will be implemented soon-ish!\n";
     return 0;
+  }
+
+  // Remove records with incompatible names like "Dead adventurer".
+  for (const auto& id: generator->purge())
+  {
+    MWTP::NPCs::get().removeRecord(id);
   }
 
   const auto names = generator->generate(10);

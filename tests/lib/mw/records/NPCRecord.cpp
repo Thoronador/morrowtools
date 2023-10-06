@@ -73,7 +73,7 @@ TEST_CASE("MWTP::NPCRecord")
     REQUIRE( record.Unknown2 == 0 );
     REQUIRE( record.Unknown3 == 0 );
     REQUIRE( record.Gold == 0 );
-    REQUIRE( record.NPCDataType == NPDT_Type::ndtNone );
+    REQUIRE( record.NPCDataType == NPDT_Type::Small12Bytes );
     REQUIRE( record.NPC_Flag == 0 );
   }
 
@@ -422,8 +422,8 @@ TEST_CASE("MWTP::NPCRecord")
 
       SECTION("NPCDataType mismatch")
       {
-        a.NPCDataType = ndt12Bytes;
-        b.NPCDataType = ndt52Bytes;
+        a.NPCDataType = NPDT_Type::Small12Bytes;
+        b.NPCDataType = NPDT_Type::Large52Bytes;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -437,17 +437,6 @@ TEST_CASE("MWTP::NPCRecord")
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
       }
-    }
-  }
-
-  SECTION("getWriteSize")
-  {
-    SECTION("throws when NPDT size is 'none'")
-    {
-      NPCRecord record;
-      record.NPCDataType = NPDT_Type::ndtNone;
-
-      REQUIRE_THROWS( record.getWriteSize() );
     }
   }
 
@@ -503,7 +492,7 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.Rank == 1 );
       REQUIRE( record.Unknown1 == 0xD6 );
       REQUIRE( record.Gold == 0 );
-      REQUIRE( record.NPCDataType == NPDT_Type::ndt12Bytes );
+      REQUIRE( record.NPCDataType == NPDT_Type::Small12Bytes );
       REQUIRE( record.NPC_Flag == 0x00000018 );
       // stuff from PreNPCRecord
       REQUIRE( record.Items.empty() );
@@ -615,7 +604,7 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.Rank == 0 );
       REQUIRE( record.Unknown1 == 0x00 );
       REQUIRE( record.Gold == 0 );
-      REQUIRE( record.NPCDataType == NPDT_Type::ndt52Bytes );
+      REQUIRE( record.NPCDataType == NPDT_Type::Large52Bytes );
       REQUIRE( record.NPC_Flag == 0x00000008 );
       // stuff from PreNPCRecord
       REQUIRE( record.Items.size() == 1 );
@@ -708,7 +697,7 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.Unknown2 == 0x6D );
       REQUIRE( record.Unknown3 == 0x00 );
       REQUIRE( record.Gold == 0 );
-      REQUIRE( record.NPCDataType == NPDT_Type::ndt12Bytes );
+      REQUIRE( record.NPCDataType == NPDT_Type::Small12Bytes );
       REQUIRE( record.NPC_Flag == 0x00000018 );
       // stuff from PreNPCRecord
       REQUIRE( record.Items.size() == 2 );
@@ -824,7 +813,7 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.Rank == 8 );
       REQUIRE( record.Unknown1 == 0x00 );
       REQUIRE( record.Gold == 0 );
-      REQUIRE( record.NPCDataType == NPDT_Type::ndt52Bytes );
+      REQUIRE( record.NPCDataType == NPDT_Type::Large52Bytes );
       REQUIRE( record.NPC_Flag == 0x00000009 );
       // stuff from PreNPCRecord
       REQUIRE( record.Items.size() == 2 );
@@ -921,7 +910,7 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.Unknown2 == 0x00 );
       REQUIRE( record.Unknown3 == 0x00 );
       REQUIRE( record.Gold == 0 );
-      REQUIRE( record.NPCDataType == NPDT_Type::ndt12Bytes );
+      REQUIRE( record.NPCDataType == NPDT_Type::Small12Bytes );
       REQUIRE( record.NPC_Flag == 0x00000019 );
       // stuff from PreNPCRecord
       REQUIRE( record.Items.size() == 2 );
@@ -1033,7 +1022,7 @@ TEST_CASE("MWTP::NPCRecord")
       REQUIRE( record.Unknown2 == 0x00 );
       REQUIRE( record.Unknown3 == 0x00 );
       REQUIRE( record.Gold == 0 );
-      REQUIRE( record.NPCDataType == NPDT_Type::ndt12Bytes );
+      REQUIRE( record.NPCDataType == NPDT_Type::Small12Bytes );
       REQUIRE( record.NPC_Flag == 0x00000018 );
       // stuff from PreNPCRecord
       REQUIRE( record.Items.size() == 3 );

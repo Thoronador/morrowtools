@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,7 +57,7 @@ NPCRecord::NPCRecord()
   Rank(0),
   Unknown1(0), Unknown2(0), Unknown3(0),
   Gold(0),
-  NPCDataType(ndtNone),
+  NPCDataType(NPDT_Type::Small12Bytes),
   // end of NPC data
   NPC_Flag(0)
 {
@@ -156,15 +156,11 @@ uint32_t NPCRecord::getWriteSize() const
         + 4 /* NPDT */ + 4 /* 4 bytes for length */;
   switch (NPCDataType)
   {
-    case ndt12Bytes:
+    case NPDT_Type::Small12Bytes:
          Size += 12; //fixed length of 12 bytes
          break;
-    case ndt52Bytes:
+    case NPDT_Type::Large52Bytes:
          Size += 52; //fixed length of 52 bytes
-         break;
-    case ndtNone:
-         std::cerr << "Error: No data type specified for NPDT sub record.\n";
-         throw std::runtime_error("Error: No data type specified for NPDT sub record.");
          break;
   }
   Size += 4 /* FLAG */ + 4 /* 4 bytes for length */ + 4 /* fixed length of four bytes */
@@ -392,15 +388,12 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&cNPDT), 4);
   switch (NPCDataType)
   {
-    case ndt12Bytes:
+    case NPDT_Type::Small12Bytes:
          SubLength = 12;
          break;
-    case ndt52Bytes:
+    case NPDT_Type::Large52Bytes:
          SubLength = 52;
          break;
-    case ndtNone:
-         std::cerr << "Error: No data type specified for NPDT subrecord.\n";
-         return false;
   }
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
   // write NPC data
@@ -436,7 +429,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   }
   else
   {
-    //12 byte version
+    // 12 byte version
     // ---- level
     output.write(reinterpret_cast<const char*>(&Level), 2);
     // ---- disposition
@@ -770,7 +763,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
              // ---- others
              input.read(reinterpret_cast<char*>(&Unknown1), 1);
              input.read(reinterpret_cast<char*>(&Gold), 4);
-             NPCDataType = ndt52Bytes;
+             NPCDataType = NPDT_Type::Large52Bytes;
            }
            else
            {
@@ -787,7 +780,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
              input.read(reinterpret_cast<char*>(&Unknown2), 1);
              input.read(reinterpret_cast<char*>(&Unknown3), 1);
              input.read(reinterpret_cast<char*>(&Gold), 4);
-             NPCDataType = ndt12Bytes;
+             NPCDataType = NPDT_Type::Small12Bytes;
              // Reset attributes and skills to zero, because we have no data.
              // TODO: Maybe the auto-calculation feature can be implemented to
              //       fill those with the same data that Morrowind sets them to.
@@ -801,7 +794,7 @@ bool NPCRecord::loadFromStream(std::istream& input)
              Luck = 0;
              Skills.fill(0);
            }
-           BytesRead += SubLength; //should be 12 or 52 bytes
+           BytesRead += SubLength; // should be 12 or 52 bytes
            if (!input.good())
            {
              std::cerr << "Error while reading sub record NPDT of NPC_!\n";

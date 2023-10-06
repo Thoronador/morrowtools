@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,11 +28,11 @@
 namespace MWTP
 {
 
-/* enumeration type for the NPDT subrecord: there are two versions. One is
+/* enumeration type for the NPDT sub record: there are two versions. One is
     12 bytes and the other one is 52 bytes. This enumeration type will be used
     to indicate which type of NPC data was read from the stream.
 */
-enum NPDT_Type {ndtNone, ndt12Bytes, ndt52Bytes};
+enum class NPDT_Type { Small12Bytes, Large52Bytes };
 
 /* the NPC record - holds all data about an NPC */
 struct NPCRecord: public PreNPCRecord

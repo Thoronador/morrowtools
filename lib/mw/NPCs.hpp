@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,9 +27,9 @@
 namespace MWTP
 {
 
-//iterator type for NPC list
+// singleton type for NPC list
 typedef MapBasedRecordManager<NPCRecord> NPCs;
 
-} //namespace
+} // namespace
 
 #endif // MW_NPCS_HPP

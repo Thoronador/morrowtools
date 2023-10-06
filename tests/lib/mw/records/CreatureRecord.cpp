@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -71,6 +71,74 @@ TEST_CASE("MWTP::CreatureRecord")
     REQUIRE( record.CreatureFlag == 0 );
     REQUIRE( record.ScriptID.empty() );
     REQUIRE( record.Scale == 1.0f );
+  }
+
+  SECTION("copy constructor")
+  {
+    CreatureRecord source;
+    source.recordID = "guar_llovyn_unique";
+    source.ModelPath = "r\\Guar.NIF";
+    source.Name = "Corky";
+    source.SoundGenCreature = "guar";
+    source.CreatureType = 0;
+    source.Level = 3;
+    source.Strength = 255;
+    source.Intelligence = 50;
+    source.Willpower = 40;
+    source.Agility = 50;
+    source.Speed = 50;
+    source.Endurance = 50;
+    source.Personality = 50;
+    source.Luck = 50;
+    source.Health = 38;
+    source.SpellPoints = 5;
+    source.Fatigue = 400;
+    source.Soul = 20;
+    source.Combat = 50;
+    source.Magic = 90;
+    source.Stealth = 20;
+    source.AttackMin1 = 3;
+    source.AttackMax1 = 9;
+    source.AttackMin2 = 3;
+    source.AttackMax2 = 9;
+    source.AttackMin3 = 3;
+    source.AttackMax3 = 9;
+    source.Gold = 0;
+    source.CreatureFlag = 0x00000048;
+    source.ScriptID = "";
+    source.Scale = 1.0f;
+    // stuff from PreNPCRecord
+    source.Items.push_back(ItemRecord());
+    source.Items[0].Count = 1;
+    source.Items[0].Item = "random_guar_hide";
+    source.NPC_Spells.clear();
+    source.AIData = NPC_AIData();
+    source.AIData.value().Hello = 0;
+    source.AIData.value().Unknown1 = 0;
+    source.AIData.value().Fight = 0;
+    source.AIData.value().Flee = 50;
+    source.AIData.value().Alarm = 0;
+    source.AIData.value().Unknown2 = 0x09;
+    source.AIData.value().Unknown3 = 0x6D;
+    source.AIData.value().Unknown4 = 0;
+    source.AIData.value().Flags = 0x01C80000;
+    auto pkg = new NPC_AIFollow();
+    pkg->X = std::numeric_limits<float>::max();
+    pkg->Y = std::numeric_limits<float>::max();
+    pkg->Z = std::numeric_limits<float>::max();
+    pkg->Duration = 0;
+    pkg->TargetID = "llovyn andus";
+    pkg->Reset = 1;
+    pkg->CellName.clear();
+    source.AIPackages.push_back(pkg);
+    source.Destinations.clear();
+
+    CreatureRecord destination;
+    destination.recordID = "foo";
+    REQUIRE( destination.AIPackages.empty() );
+
+    destination = source;
+    REQUIRE( destination.equals(source) );
   }
 
   SECTION("equals")

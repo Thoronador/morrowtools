@@ -47,7 +47,7 @@ void showHelp()
 
 void showVersion()
 {
-  std::cout << "Name Generator for Morrowind, version 0.1.0-pre, 2023-10-06\n";
+  std::cout << "Name Generator for Morrowind, version 0.1.0-pre, 2023-10-08\n";
 }
 
 int main(int argc, char **argv)
@@ -194,13 +194,6 @@ int main(int argc, char **argv)
 
   MWTP::removeNonPlayableRaces();
 
-  auto iter = MWTP::Races::get().begin();
-  while (iter != MWTP::Races::get().end())
-  {
-    std::cout << "Race: " << iter->Name << "\n";
-    ++iter;
-  }
-
   std::string raceId;
   while (raceId.empty())
   {
@@ -221,7 +214,7 @@ int main(int argc, char **argv)
   const auto generator = MWTP::Factory::create(raceId, gender);
   if (generator == nullptr)
   {
-    std::cout << "Note / TODO: Currently only Breton names can be generated.\n";
+    std::cout << "Note / TODO: Currently only Breton or Imperial names can be generated.\n";
     std::cout << "Error: The chosen selection is not implemented yet!\n";
     std::cout << "More stuff will be implemented soon-ish!\n";
     return 0;

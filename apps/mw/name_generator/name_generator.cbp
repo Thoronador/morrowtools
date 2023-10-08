@@ -94,6 +94,14 @@
 		<Unit filename="generators/GeneratorBretonFemale.hpp" />
 		<Unit filename="generators/GeneratorBretonMale.cpp" />
 		<Unit filename="generators/GeneratorBretonMale.hpp" />
+		<Unit filename="generators/GeneratorImperialBoth.cpp" />
+		<Unit filename="generators/GeneratorImperialBoth.hpp" />
+		<Unit filename="generators/GeneratorImperialFemale.cpp" />
+		<Unit filename="generators/GeneratorImperialFemale.hpp" />
+		<Unit filename="generators/GeneratorImperialMale.cpp" />
+		<Unit filename="generators/GeneratorImperialMale.hpp" />
+		<Unit filename="generators/ImperialPurge.cpp" />
+		<Unit filename="generators/ImperialPurge.hpp" />
 		<Unit filename="generators/SplitBoth.cpp" />
 		<Unit filename="generators/SplitBoth.hpp" />
 		<Unit filename="generators/SplitFemale.cpp" />

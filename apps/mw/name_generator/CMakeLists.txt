@@ -29,6 +29,10 @@ set(name_generator_sources
     generators/GeneratorBretonBoth.cpp
     generators/GeneratorBretonFemale.cpp
     generators/GeneratorBretonMale.cpp
+    generators/GeneratorImperialBoth.cpp
+    generators/GeneratorImperialFemale.cpp
+    generators/GeneratorImperialMale.cpp
+    generators/ImperialPurge.cpp
     generators/SplitBoth.cpp
     generators/SplitFemale.cpp
     generators/SplitMale.cpp

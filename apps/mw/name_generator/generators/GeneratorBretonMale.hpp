@@ -21,35 +21,22 @@
 #ifndef MW_NAMEGEN_GENERATOR_BRETON_MALE_HPP
 #define MW_NAMEGEN_GENERATOR_BRETON_MALE_HPP
 
-#include "Generator.hpp"
+#include "BretonPurge.hpp"
+#include "SplitMale.hpp"
 
 namespace MWTP
 {
 
 /// Generator for male Breton names.
-class GeneratorBretonMale: public Generator
+class GeneratorBretonMale: public BretonPurge, public SplitMale
 {
   public:
-    GeneratorBretonMale();
-
     /** \brief Generates n names.
      *
      * \param n   the amount of names to generate
      * \return Returns a vector containing the generated names.
      */
     std::vector<std::string> generate(const uint_least16_t n) override;
-
-
-    /** \brief Gets the NPC IDs that need to be removed before generation starts.
-     *
-     * \return Returns a vector of the IDs that shall be removed.
-     */
-    std::vector<std::string> purge() override;
-  private:
-    void prepare();
-
-    std::vector<std::string> first_names;
-    std::vector<std::string> last_names;
 }; // class
 
 } // namespace

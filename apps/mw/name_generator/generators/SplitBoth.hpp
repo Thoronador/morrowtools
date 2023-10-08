@@ -18,14 +18,37 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GeneratorBretonBoth.hpp"
+#ifndef MW_NAMEGEN_GENERATOR_SPLIT_BOTH_HPP
+#define MW_NAMEGEN_GENERATOR_SPLIT_BOTH_HPP
+
+#include <cstdint>
+#include <string>
+#include <vector>
 
 namespace MWTP
 {
 
-std::vector<std::string> GeneratorBretonBoth::generate(const uint_least16_t n)
+class SplitBoth
 {
-  return SplitBoth::generate(n, "Breton");
-}
+  public:
+    SplitBoth();
+
+    virtual ~SplitBoth() = default;
+
+    /** \brief Generates n names.
+     *
+     * \param n   the amount of names to generate
+     * \param raceId   ID of the NPC race to use
+     * \return Returns a vector containing the generated names.
+     */
+    std::vector<std::string> generate(const uint_least16_t n, const std::string& raceId);
+  private:
+    void prepare(const std::string& raceId);
+
+    std::vector<std::string> first_names;
+    std::vector<std::string> last_names;
+}; // class
 
 } // namespace
+
+#endif // MW_NAMEGEN_GENERATOR_SPLIT_BOTH_HPP

@@ -83,6 +83,8 @@
 		<Unit filename="Gender.hpp" />
 		<Unit filename="NameGenFunctions.cpp" />
 		<Unit filename="NameGenFunctions.hpp" />
+		<Unit filename="generators/BretonPurge.cpp" />
+		<Unit filename="generators/BretonPurge.hpp" />
 		<Unit filename="generators/Factory.cpp" />
 		<Unit filename="generators/Factory.hpp" />
 		<Unit filename="generators/Generator.hpp" />
@@ -92,6 +94,12 @@
 		<Unit filename="generators/GeneratorBretonFemale.hpp" />
 		<Unit filename="generators/GeneratorBretonMale.cpp" />
 		<Unit filename="generators/GeneratorBretonMale.hpp" />
+		<Unit filename="generators/SplitBoth.cpp" />
+		<Unit filename="generators/SplitBoth.hpp" />
+		<Unit filename="generators/SplitFemale.cpp" />
+		<Unit filename="generators/SplitFemale.hpp" />
+		<Unit filename="generators/SplitMale.cpp" />
+		<Unit filename="generators/SplitMale.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

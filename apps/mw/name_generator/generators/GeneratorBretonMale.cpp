@@ -19,80 +19,13 @@
 */
 
 #include "GeneratorBretonMale.hpp"
-#include <random>
-#include "../../../../lib/mw/NPCs.hpp"
 
 namespace MWTP
 {
 
-GeneratorBretonMale::GeneratorBretonMale()
-: first_names({ }),
-  last_names({ })
-{
-}
-
 std::vector<std::string> GeneratorBretonMale::generate(const uint_least16_t n)
 {
-  if (first_names.empty() && last_names.empty())
-  {
-    prepare();
-  }
-
-  std::random_device device;
-  std::mt19937 generator(device());
-  std::uniform_int_distribution<decltype(first_names)::size_type> first_distrib(0, first_names.size() - 1);
-  std::uniform_int_distribution<decltype(last_names)::size_type> last_distrib(0, last_names.size() - 1);
-
-  std::vector<std::string> result;
-  for (uint_least16_t i = 0; i < n; ++i)
-  {
-    result.emplace_back(first_names[first_distrib(generator)] + " " + last_names[last_distrib(generator)]);
-  }
-
-  return result;
-}
-
-std::vector<std::string> GeneratorBretonMale::purge()
-{
-  return {
-    "grandfather frost",
-    "ken",
-    "miner juillen",
-    "roberto jodoin"
-  };
-}
-
-void GeneratorBretonMale::prepare()
-{
-  auto iter = NPCs::get().begin();
-  while (iter != NPCs::get().end())
-  {
-    if (iter->second.RaceID == "Breton")
-    {
-      const auto pos = iter->second.Name.find(' ');
-      const auto female = iter->second.isFemale();
-      if (pos == std::string::npos)
-      {
-        // First name only - can only be used if gender matches.
-        if (!female)
-          first_names.push_back(iter->second.Name);
-      }
-      else
-      {
-        if (!female)
-        {
-          first_names.push_back(iter->second.Name.substr(0, pos));
-          last_names.push_back(iter->second.Name.substr(pos + 1));
-        }
-        else
-        {
-          // Last name is gender-neutral, so it can be used, too.
-          last_names.push_back(iter->second.Name.substr(pos + 1));
-        }
-      }
-    }
-    ++iter;
-  }
+  return SplitMale::generate(n, "Breton");
 }
 
 } // namespace

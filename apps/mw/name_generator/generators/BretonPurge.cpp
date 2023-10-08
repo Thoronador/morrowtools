@@ -18,14 +18,19 @@
  -------------------------------------------------------------------------------
 */
 
-#include "GeneratorBretonBoth.hpp"
+#include "BretonPurge.hpp"
 
 namespace MWTP
 {
 
-std::vector<std::string> GeneratorBretonBoth::generate(const uint_least16_t n)
+std::vector<std::string> BretonPurge::purge()
 {
-  return SplitBoth::generate(n, "Breton");
+  return {
+    "grandfather frost",
+    "ken",
+    "miner juillen",
+    "roberto jodoin"
+  };
 }
 
 } // namespace

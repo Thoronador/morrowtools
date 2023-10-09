@@ -32,10 +32,17 @@ set(name_generator_sources
     generators/GeneratorImperialBoth.cpp
     generators/GeneratorImperialFemale.cpp
     generators/GeneratorImperialMale.cpp
+    generators/GeneratorKhajiitBoth.cpp
+    generators/GeneratorKhajiitFemale.cpp
+    generators/GeneratorKhajiitMale.cpp
     generators/ImperialPurge.cpp
+    generators/KhajiitPurge.cpp
     generators/SplitBoth.cpp
     generators/SplitFemale.cpp
     generators/SplitMale.cpp
+    generators/WholeNamesBoth.cpp
+    generators/WholeNamesFemale.cpp
+    generators/WholeNamesMale.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

@@ -25,6 +25,9 @@
 #include "GeneratorImperialBoth.hpp"
 #include "GeneratorImperialFemale.hpp"
 #include "GeneratorImperialMale.hpp"
+#include "GeneratorKhajiitBoth.hpp"
+#include "GeneratorKhajiitFemale.hpp"
+#include "GeneratorKhajiitMale.hpp"
 
 namespace MWTP
 {
@@ -54,6 +57,19 @@ std::unique_ptr<Generator> Factory::create(const std::string& race, const Gender
            return std::make_unique<GeneratorImperialFemale>();
       case Gender::Both:
            return std::make_unique<GeneratorImperialBoth>();
+    }
+  }
+
+  if (race == "Khajiit")
+  {
+    switch (gender)
+    {
+      case Gender::Male:
+           return std::make_unique<GeneratorKhajiitMale>();
+      case Gender::Female:
+           return std::make_unique<GeneratorKhajiitFemale>();
+      case Gender::Both:
+           return std::make_unique<GeneratorKhajiitBoth>();
     }
   }
 

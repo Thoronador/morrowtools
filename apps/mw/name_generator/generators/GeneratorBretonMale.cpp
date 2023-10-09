@@ -25,7 +25,7 @@ namespace MWTP
 
 std::vector<std::string> GeneratorBretonMale::generate(const uint_least16_t n)
 {
-  return SplitMale::generate(n, "Breton");
+  return SplitNamesMale::generate(n, "Breton");
 }
 
 } // namespace

@@ -37,9 +37,9 @@ set(name_generator_sources
     generators/GeneratorKhajiitMale.cpp
     generators/ImperialPurge.cpp
     generators/KhajiitPurge.cpp
-    generators/SplitBoth.cpp
-    generators/SplitFemale.cpp
-    generators/SplitMale.cpp
+    generators/SplitNamesBoth.cpp
+    generators/SplitNamesFemale.cpp
+    generators/SplitNamesMale.cpp
     generators/WholeNamesBoth.cpp
     generators/WholeNamesFemale.cpp
     generators/WholeNamesMale.cpp

@@ -18,8 +18,8 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MW_NAMEGEN_GENERATOR_SPLIT_FEMALE_HPP
-#define MW_NAMEGEN_GENERATOR_SPLIT_FEMALE_HPP
+#ifndef MW_NAMEGEN_GENERATOR_SPLIT_BOTH_HPP
+#define MW_NAMEGEN_GENERATOR_SPLIT_BOTH_HPP
 
 #include <cstdint>
 #include <string>
@@ -28,12 +28,12 @@
 namespace MWTP
 {
 
-class SplitFemale
+class SplitNamesBoth
 {
   public:
-    SplitFemale();
+    SplitNamesBoth();
 
-    virtual ~SplitFemale() = default;
+    virtual ~SplitNamesBoth() = default;
 
     /** \brief Generates n names.
      *
@@ -51,4 +51,4 @@ class SplitFemale
 
 } // namespace
 
-#endif // MW_NAMEGEN_GENERATOR_SPLIT_FEMALE_HPP
+#endif // MW_NAMEGEN_GENERATOR_SPLIT_BOTH_HPP

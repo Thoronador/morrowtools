@@ -25,7 +25,7 @@ namespace MWTP
 
 std::vector<std::string> GeneratorImperialBoth::generate(const uint_least16_t n)
 {
-  return SplitBoth::generate(n, "Imperial");
+  return SplitNamesBoth::generate(n, "Imperial");
 }
 
 } // namespace

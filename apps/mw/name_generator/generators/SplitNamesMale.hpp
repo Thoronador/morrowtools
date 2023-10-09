@@ -28,12 +28,12 @@
 namespace MWTP
 {
 
-class SplitMale
+class SplitNamesMale
 {
   public:
-    SplitMale();
+    SplitNamesMale();
 
-    virtual ~SplitMale() = default;
+    virtual ~SplitNamesMale() = default;
 
     /** \brief Generates n names.
      *

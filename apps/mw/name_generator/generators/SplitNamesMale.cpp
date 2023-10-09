@@ -18,20 +18,20 @@
  -------------------------------------------------------------------------------
 */
 
-#include "SplitMale.hpp"
+#include "SplitNamesMale.hpp"
 #include <random>
 #include "../../../../lib/mw/NPCs.hpp"
 
 namespace MWTP
 {
 
-SplitMale::SplitMale()
+SplitNamesMale::SplitNamesMale()
 : first_names({ }),
   last_names({ })
 {
 }
 
-std::vector<std::string> SplitMale::generate(const uint_least16_t n, const std::string& raceId)
+std::vector<std::string> SplitNamesMale::generate(const uint_least16_t n, const std::string& raceId)
 {
   if (first_names.empty() && last_names.empty())
   {
@@ -52,7 +52,7 @@ std::vector<std::string> SplitMale::generate(const uint_least16_t n, const std::
   return result;
 }
 
-void SplitMale::prepare(const std::string& raceId)
+void SplitNamesMale::prepare(const std::string& raceId)
 {
   auto iter = NPCs::get().begin();
   while (iter != NPCs::get().end())

@@ -22,13 +22,13 @@
 #define MW_NAMEGEN_GENERATOR_IMPERIAL_FEMALE_HPP
 
 #include "ImperialPurge.hpp"
-#include "SplitFemale.hpp"
+#include "SplitNamesFemale.hpp"
 
 namespace MWTP
 {
 
 /// Generator for female Imperial names.
-class GeneratorImperialFemale: public ImperialPurge, public SplitFemale
+class GeneratorImperialFemale: public ImperialPurge, public SplitNamesFemale
 {
   public:
     /** \brief Generates n names.

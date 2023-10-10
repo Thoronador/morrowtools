@@ -380,7 +380,7 @@ int main(int argc, char **argv)
         //Does it have a trailing (back)slash? If not, add one.
         dataDir = slashify(dataDir);
         /*add Data Files dir to path, because installed path points only to
-          Morrowinds's main direkctory */
+          Morrowinds's main directory */
         dataDir = dataDir +"Data Files" +MWTP::pathDelimiter;
         std::cout << "Data Files directory was set to \"" << dataDir << "\" via registry.\n";
       }

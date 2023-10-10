@@ -32,7 +32,7 @@ enum class Gender { Male, Female, Both };
 /** \brief Translates enumeration value in a human-readable string.
  *
  * \param g   the enumeration value to translate
- * \return Returns a human-readable string desribing the enumeration value.
+ * \return Returns a human-readable string describing the enumeration value.
  */
 std::string to_string(const Gender g);
 

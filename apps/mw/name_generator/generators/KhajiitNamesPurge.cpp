@@ -18,25 +18,21 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MW_NAMEGEN_GENERATOR_IMPERIAL_PURGE_HPP
-#define MW_NAMEGEN_GENERATOR_IMPERIAL_PURGE_HPP
-
-#include "Generator.hpp"
+#include "KhajiitNamesPurge.hpp"
 
 namespace MWTP
 {
 
-/// Implements the purge() method for all generators of Imperial names.
-class ImperialPurge: public Generator
+std::vector<std::string> KhajiitNamesPurge::purge()
 {
-  public:
-    /** \brief Gets the NPC IDs that need to be removed before generation starts.
-     *
-     * \return Returns a vector of the IDs that shall be removed.
-     */
-    std::vector<std::string> purge() override;
-}; // class
+  return {
+    "cattle_kha_f01",
+    "cattle_kha_f02",
+    "cattle_kha_m01",
+    "m'aiq",
+    "quarra vampire 3",
+    "thief dead 00"
+  };
+}
 
 } // namespace
-
-#endif // MW_NAMEGEN_GENERATOR_IMPERIAL_PURGE_HPP

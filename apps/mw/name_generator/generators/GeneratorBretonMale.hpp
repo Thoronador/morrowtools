@@ -21,14 +21,14 @@
 #ifndef MW_NAMEGEN_GENERATOR_BRETON_MALE_HPP
 #define MW_NAMEGEN_GENERATOR_BRETON_MALE_HPP
 
-#include "BretonPurge.hpp"
+#include "BretonNamesPurge.hpp"
 #include "SplitNamesMale.hpp"
 
 namespace MWTP
 {
 
 /// Generator for male Breton names.
-class GeneratorBretonMale: public BretonPurge, public SplitNamesMale
+class GeneratorBretonMale: public BretonNamesPurge, public SplitNamesMale
 {
   public:
     /** \brief Generates n names.

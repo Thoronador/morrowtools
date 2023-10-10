@@ -21,14 +21,14 @@
 #ifndef MW_NAMEGEN_GENERATOR_IMPERIAL_MALE_HPP
 #define MW_NAMEGEN_GENERATOR_IMPERIAL_MALE_HPP
 
-#include "ImperialPurge.hpp"
+#include "ImperialNamesPurge.hpp"
 #include "SplitNamesMale.hpp"
 
 namespace MWTP
 {
 
 /// Generator for male Imperial names.
-class GeneratorImperialMale: public ImperialPurge, public SplitNamesMale
+class GeneratorImperialMale: public ImperialNamesPurge, public SplitNamesMale
 {
   public:
     /** \brief Generates n names.

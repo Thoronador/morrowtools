@@ -21,14 +21,14 @@
 #ifndef MW_NAMEGEN_GENERATOR_KHAJIIT_FEMALE_HPP
 #define MW_NAMEGEN_GENERATOR_KHAJIIT_FEMALE_HPP
 
-#include "KhajiitPurge.hpp"
+#include "KhajiitNamesPurge.hpp"
 #include "WholeNamesFemale.hpp"
 
 namespace MWTP
 {
 
 /// Generator for female Khajiit names.
-class GeneratorKhajiitFemale: public KhajiitPurge, public WholeNamesFemale
+class GeneratorKhajiitFemale: public KhajiitNamesPurge, public WholeNamesFemale
 {
   public:
     /** \brief Generates n names.

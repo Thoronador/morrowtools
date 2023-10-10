@@ -83,8 +83,8 @@
 		<Unit filename="Gender.hpp" />
 		<Unit filename="NameGenFunctions.cpp" />
 		<Unit filename="NameGenFunctions.hpp" />
-		<Unit filename="generators/BretonPurge.cpp" />
-		<Unit filename="generators/BretonPurge.hpp" />
+		<Unit filename="generators/BretonNamesPurge.cpp" />
+		<Unit filename="generators/BretonNamesPurge.hpp" />
 		<Unit filename="generators/Factory.cpp" />
 		<Unit filename="generators/Factory.hpp" />
 		<Unit filename="generators/Generator.hpp" />
@@ -106,10 +106,10 @@
 		<Unit filename="generators/GeneratorKhajiitFemale.hpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.cpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.hpp" />
-		<Unit filename="generators/ImperialPurge.cpp" />
-		<Unit filename="generators/ImperialPurge.hpp" />
-		<Unit filename="generators/KhajiitPurge.cpp" />
-		<Unit filename="generators/KhajiitPurge.hpp" />
+		<Unit filename="generators/ImperialNamesPurge.cpp" />
+		<Unit filename="generators/ImperialNamesPurge.hpp" />
+		<Unit filename="generators/KhajiitNamesPurge.cpp" />
+		<Unit filename="generators/KhajiitNamesPurge.hpp" />
 		<Unit filename="generators/SplitNamesBoth.cpp" />
 		<Unit filename="generators/SplitNamesBoth.hpp" />
 		<Unit filename="generators/SplitNamesFemale.cpp" />

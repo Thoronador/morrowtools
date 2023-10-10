@@ -24,7 +24,7 @@ set(name_generator_sources
     ESMReaderNameGen.cpp
     Gender.cpp
     NameGenFunctions.cpp
-    generators/BretonPurge.cpp
+    generators/BretonNamesPurge.cpp
     generators/Factory.cpp
     generators/GeneratorBretonBoth.cpp
     generators/GeneratorBretonFemale.cpp
@@ -35,8 +35,8 @@ set(name_generator_sources
     generators/GeneratorKhajiitBoth.cpp
     generators/GeneratorKhajiitFemale.cpp
     generators/GeneratorKhajiitMale.cpp
-    generators/ImperialPurge.cpp
-    generators/KhajiitPurge.cpp
+    generators/ImperialNamesPurge.cpp
+    generators/KhajiitNamesPurge.cpp
     generators/SplitNamesBoth.cpp
     generators/SplitNamesFemale.cpp
     generators/SplitNamesMale.cpp

@@ -18,25 +18,19 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef MW_NAMEGEN_GENERATOR_BRETON_PURGE_HPP
-#define MW_NAMEGEN_GENERATOR_BRETON_PURGE_HPP
-
-#include "Generator.hpp"
+#include "BretonNamesPurge.hpp"
 
 namespace MWTP
 {
 
-/// Implements the purge() method for all generators of Breton names.
-class BretonPurge: public Generator
+std::vector<std::string> BretonNamesPurge::purge()
 {
-  public:
-    /** \brief Gets the NPC IDs that need to be removed before generation starts.
-     *
-     * \return Returns a vector of the IDs that shall be removed.
-     */
-    std::vector<std::string> purge() override;
-}; // class
+  return {
+    "grandfather frost",
+    "ken",
+    "miner juillen",
+    "roberto jodoin"
+  };
+}
 
 } // namespace
-
-#endif // MW_NAMEGEN_GENERATOR_BRETON_PURGE_HPP

@@ -18,21 +18,25 @@
  -------------------------------------------------------------------------------
 */
 
-#include "KhajiitPurge.hpp"
+#ifndef MW_NAMEGEN_GENERATOR_BRETON_PURGE_HPP
+#define MW_NAMEGEN_GENERATOR_BRETON_PURGE_HPP
+
+#include "Generator.hpp"
 
 namespace MWTP
 {
 
-std::vector<std::string> KhajiitPurge::purge()
+/// Implements the purge() method for all generators of Breton names.
+class BretonNamesPurge: public Generator
 {
-  return {
-    "cattle_kha_f01",
-    "cattle_kha_f02",
-    "cattle_kha_m01",
-    "m'aiq",
-    "quarra vampire 3",
-    "thief dead 00"
-  };
-}
+  public:
+    /** \brief Gets the NPC IDs that need to be removed before generation starts.
+     *
+     * \return Returns a vector of the IDs that shall be removed.
+     */
+    std::vector<std::string> purge() override;
+}; // class
 
 } // namespace
+
+#endif // MW_NAMEGEN_GENERATOR_BRETON_PURGE_HPP

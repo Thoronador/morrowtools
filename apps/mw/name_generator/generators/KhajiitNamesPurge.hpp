@@ -27,7 +27,7 @@ namespace MWTP
 {
 
 /// Implements the purge() method for all generators of Khajiit names.
-class KhajiitPurge: public Generator
+class KhajiitNamesPurge: public Generator
 {
   public:
     /** \brief Gets the NPC IDs that need to be removed before generation starts.

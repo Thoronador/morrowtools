@@ -18,12 +18,12 @@
  -------------------------------------------------------------------------------
 */
 
-#include "ImperialPurge.hpp"
+#include "ImperialNamesPurge.hpp"
 
 namespace MWTP
 {
 
-std::vector<std::string> ImperialPurge::purge()
+std::vector<std::string> ImperialNamesPurge::purge()
 {
   return {
     "a shady smuggler",

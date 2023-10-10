@@ -26,6 +26,8 @@ namespace MWTP
 std::vector<std::string> BretonNamesPurge::purge()
 {
   return {
+    "bm_werewolf_wild05",
+    "bm_werewolf_wild06",
     "grandfather frost",
     "ken",
     "miner juillen",

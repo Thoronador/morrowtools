@@ -38,7 +38,7 @@ TEST_CASE("MWTP::WholeNamesMale")
 
     NPCRecord john;
     john.recordID = "test_john";
-    john.Name = "Jane";
+    john.Name = "John";
     john.RaceID = "SomeTestId";
     john.NPC_Flag = 0;
     REQUIRE_FALSE( john.isFemale() );
@@ -48,6 +48,7 @@ TEST_CASE("MWTP::WholeNamesMale")
     foo.Name = "Somebody";
     foo.RaceID = "DifferentId";
 
+    NPCs::get().clear();
     NPCs::get().addRecord(jane);
     NPCs::get().addRecord(john);
     NPCs::get().addRecord(foo);
@@ -59,8 +60,8 @@ TEST_CASE("MWTP::WholeNamesMale")
     // Name "Somebody" should not be present due to different race id.
     REQUIRE( std::find(names.begin(), names.end(), "Somebody") == names.end() );
     // Name "Jane" should not be present due to different gender.
-    REQUIRE( std::find(names.begin(), names.end(), "Jane") != names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Jane") == names.end() );
     // Names "John" should be present.
-    REQUIRE( std::find(names.begin(), names.end(), "John") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "John") != names.end() );
   }
 }

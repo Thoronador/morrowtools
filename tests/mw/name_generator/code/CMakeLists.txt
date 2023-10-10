@@ -7,8 +7,24 @@ set(name_generator_mw_tests_sources
     ../../../../apps/mw/name_generator/NameGenFunctions.cpp
     ../../../../apps/mw/name_generator/generators/ArgonianNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/BretonNamesPurge.cpp
+    ../../../../apps/mw/name_generator/generators/Factory.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorArgonianBoth.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorArgonianFemale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorArgonianMale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorBretonBoth.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorBretonFemale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorBretonMale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorImperialBoth.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorImperialFemale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorImperialMale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorKhajiitBoth.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorKhajiitFemale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.cpp
     ../../../../apps/mw/name_generator/generators/ImperialNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.cpp
+    ../../../../apps/mw/name_generator/generators/SplitNamesBoth.cpp
+    ../../../../apps/mw/name_generator/generators/SplitNamesFemale.cpp
+    ../../../../apps/mw/name_generator/generators/SplitNamesMale.cpp
     ../../../../apps/mw/name_generator/generators/WholeNamesBoth.cpp
     ../../../../apps/mw/name_generator/generators/WholeNamesFemale.cpp
     ../../../../apps/mw/name_generator/generators/WholeNamesMale.cpp
@@ -24,7 +40,13 @@ set(name_generator_mw_tests_sources
     ../../../../lib/mw/records/TravelDestination.cpp
     Gender.cpp
     NameGenFunctions.cpp
+    generators/Factory.cpp
+    generators/GeneratorBretonX.cpp
+    generators/GeneratorImperialX.cpp
     generators/NamesPurge.cpp
+    generators/SplitNamesBoth.cpp
+    generators/SplitNamesFemale.cpp
+    generators/SplitNamesMale.cpp
     generators/WholeNamesBoth.cpp
     generators/WholeNamesFemale.cpp
     generators/WholeNamesMale.cpp

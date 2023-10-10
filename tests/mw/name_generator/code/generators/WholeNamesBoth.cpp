@@ -48,6 +48,7 @@ TEST_CASE("MWTP::WholeNamesBoth")
     foo.Name = "Somebody";
     foo.RaceID = "DifferentId";
 
+    NPCs::get().clear();
     NPCs::get().addRecord(jane);
     NPCs::get().addRecord(john);
     NPCs::get().addRecord(foo);

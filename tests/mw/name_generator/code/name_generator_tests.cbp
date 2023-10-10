@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="name_generator_tests" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Debug">
+				<Option output="bin/Debug/name_generator_tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Debug/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-g" />
+				</Compiler>
+			</Target>
+			<Target title="Release">
+				<Option output="bin/Release/name_generator_tests" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wshadow" />
+			<Add option="-Weffc++" />
+			<Add option="-pedantic-errors" />
+			<Add option="-pedantic" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-std=c++17" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../../../../apps/mw/name_generator/Gender.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/Gender.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/NameGenFunctions.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/NameGenFunctions.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/ArgonianNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/ArgonianNamesPurge.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/BretonNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/BretonNamesPurge.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/Generator.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/ImperialNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/ImperialNamesPurge.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesBoth.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesBoth.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesFemale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesFemale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesMale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesMale.hpp" />
+		<Unit filename="../../../../lib/base/UtilityFunctions.cpp" />
+		<Unit filename="../../../../lib/base/UtilityFunctions.hpp" />
+		<Unit filename="../../../../lib/mw/HelperIO.cpp" />
+		<Unit filename="../../../../lib/mw/HelperIO.hpp" />
+		<Unit filename="../../../../lib/mw/NPCs.hpp" />
+		<Unit filename="../../../../lib/mw/Races.hpp" />
+		<Unit filename="../../../../lib/mw/records/AIData.cpp" />
+		<Unit filename="../../../../lib/mw/records/AIData.hpp" />
+		<Unit filename="../../../../lib/mw/records/AIPackages.cpp" />
+		<Unit filename="../../../../lib/mw/records/AIPackages.hpp" />
+		<Unit filename="../../../../lib/mw/records/BasicRecord.cpp" />
+		<Unit filename="../../../../lib/mw/records/BasicRecord.hpp" />
+		<Unit filename="../../../../lib/mw/records/ItemRecord.cpp" />
+		<Unit filename="../../../../lib/mw/records/ItemRecord.hpp" />
+		<Unit filename="../../../../lib/mw/records/NPCRecord.cpp" />
+		<Unit filename="../../../../lib/mw/records/NPCRecord.hpp" />
+		<Unit filename="../../../../lib/mw/records/PreNPCRecord.cpp" />
+		<Unit filename="../../../../lib/mw/records/PreNPCRecord.hpp" />
+		<Unit filename="../../../../lib/mw/records/RaceRecord.cpp" />
+		<Unit filename="../../../../lib/mw/records/RaceRecord.hpp" />
+		<Unit filename="../../../../lib/mw/records/TravelDestination.cpp" />
+		<Unit filename="../../../../lib/mw/records/TravelDestination.hpp" />
+		<Unit filename="../../../lib/locate_catch.hpp" />
+		<Unit filename="Gender.cpp" />
+		<Unit filename="NameGenFunctions.cpp" />
+		<Unit filename="generators/NamesPurge.cpp" />
+		<Unit filename="generators/WholeNamesBoth.cpp" />
+		<Unit filename="generators/WholeNamesFemale.cpp" />
+		<Unit filename="generators/WholeNamesMale.cpp" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

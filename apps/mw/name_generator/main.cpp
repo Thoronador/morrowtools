@@ -143,7 +143,7 @@ int main(int argc, char **argv)
         //Does it have a trailing (back)slash? If not, add one.
         dataDir = slashify(dataDir);
         /*add Data Files dir to path, because installed path points only to
-          Morrowinds's main direkctory */
+          Morrowinds's main directory */
         dataDir = dataDir + "Data Files" + MWTP::pathDelimiter;
         std::cout << "Data Files directory was set to \"" << dataDir << "\" via registry.\n";
       }
@@ -214,9 +214,10 @@ int main(int argc, char **argv)
   const auto generator = MWTP::Factory::create(raceId, gender);
   if (generator == nullptr)
   {
-    std::cout << "Note / TODO: Currently only Breton, Imperial or Khajiit names can be generated.\n";
-    std::cout << "Error: The chosen selection is not implemented yet!\n";
-    std::cout << "More stuff will be implemented soon-ish!\n";
+    std::cout << "Note / TODO: Currently only Argonian, Breton, Imperial or "
+              << "Khajiit names can be generated.\n"
+              << "Error: The chosen selection is not implemented yet!\n"
+              << "More stuff will be implemented soon-ish!\n";
     return 0;
   }
 

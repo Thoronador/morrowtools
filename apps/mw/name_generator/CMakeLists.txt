@@ -24,8 +24,12 @@ set(name_generator_sources
     ESMReaderNameGen.cpp
     Gender.cpp
     NameGenFunctions.cpp
+    generators/ArgonianNamesPurge.cpp
     generators/BretonNamesPurge.cpp
     generators/Factory.cpp
+    generators/GeneratorArgonianBoth.cpp
+    generators/GeneratorArgonianFemale.cpp
+    generators/GeneratorArgonianMale.cpp
     generators/GeneratorBretonBoth.cpp
     generators/GeneratorBretonFemale.cpp
     generators/GeneratorBretonMale.cpp

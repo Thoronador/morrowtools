@@ -24,6 +24,7 @@
 #include "../../../../../apps/mw/name_generator/generators/BretonNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/ImperialNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.hpp"
+#include "../../../../../apps/mw/name_generator/generators/WoodElfNamesPurge.hpp"
 
 template<typename T>
 class PurgeGenerator: public T
@@ -62,6 +63,12 @@ TEST_CASE("MWTP name_generator: NamesPurge")
   SECTION("KhajiitNamesPurge")
   {
     PurgeGenerator<KhajiitNamesPurge> instance;
+    REQUIRE_FALSE( instance.purge().empty() );
+  }
+
+  SECTION("WoodElfNamesPurge")
+  {
+    PurgeGenerator<WoodElfNamesPurge> instance;
     REQUIRE_FALSE( instance.purge().empty() );
   }
 }

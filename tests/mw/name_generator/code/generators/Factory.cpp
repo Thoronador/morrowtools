@@ -32,6 +32,9 @@
 #include "../../../../../apps/mw/name_generator/generators/GeneratorKhajiitBoth.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorKhajiitFemale.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorWoodElfBoth.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorWoodElfFemale.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorWoodElfMale.hpp"
 
 TEST_CASE("MWTP name_generator: Factory")
 {
@@ -84,16 +87,31 @@ TEST_CASE("MWTP name_generator: Factory")
 
   SECTION("Khajiit")
   {
-    const auto arg_b = Factory::create("Khajiit", Gender::Both);
-    GeneratorKhajiitBoth* ptr_b = dynamic_cast<GeneratorKhajiitBoth*>(arg_b.get());
+    const auto kha_b = Factory::create("Khajiit", Gender::Both);
+    GeneratorKhajiitBoth* ptr_b = dynamic_cast<GeneratorKhajiitBoth*>(kha_b.get());
     REQUIRE( ptr_b != nullptr );
 
-    const auto arg_f = Factory::create("Khajiit", Gender::Female);
-    GeneratorKhajiitFemale* ptr_f = dynamic_cast<GeneratorKhajiitFemale*>(arg_f.get());
+    const auto kha_f = Factory::create("Khajiit", Gender::Female);
+    GeneratorKhajiitFemale* ptr_f = dynamic_cast<GeneratorKhajiitFemale*>(kha_f.get());
     REQUIRE( ptr_f != nullptr );
 
-    const auto arg_m = Factory::create("Khajiit", Gender::Male);
-    GeneratorKhajiitMale* ptr_m = dynamic_cast<GeneratorKhajiitMale*>(arg_m.get());
+    const auto kha_m = Factory::create("Khajiit", Gender::Male);
+    GeneratorKhajiitMale* ptr_m = dynamic_cast<GeneratorKhajiitMale*>(kha_m.get());
+    REQUIRE( ptr_m != nullptr );
+  }
+
+  SECTION("Wood Elf")
+  {
+    const auto bos_b = Factory::create("Wood Elf", Gender::Both);
+    GeneratorWoodElfBoth* ptr_b = dynamic_cast<GeneratorWoodElfBoth*>(bos_b.get());
+    REQUIRE( ptr_b != nullptr );
+
+    const auto bos_f = Factory::create("Wood Elf", Gender::Female);
+    GeneratorWoodElfFemale* ptr_f = dynamic_cast<GeneratorWoodElfFemale*>(bos_f.get());
+    REQUIRE( ptr_f != nullptr );
+
+    const auto bos_m = Factory::create("Wood Elf", Gender::Male);
+    GeneratorWoodElfMale* ptr_m = dynamic_cast<GeneratorWoodElfMale*>(bos_m.get());
     REQUIRE( ptr_m != nullptr );
   }
 

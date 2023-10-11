@@ -73,6 +73,12 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorKhajiitFemale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfBoth.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfBoth.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfFemale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfFemale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfMale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfMale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/ImperialNamesPurge.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/ImperialNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.cpp" />
@@ -89,6 +95,8 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesFemale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesMale.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/WholeNamesMale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WoodElfNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/WoodElfNamesPurge.hpp" />
 		<Unit filename="../../../../lib/base/UtilityFunctions.cpp" />
 		<Unit filename="../../../../lib/base/UtilityFunctions.hpp" />
 		<Unit filename="../../../../lib/mw/HelperIO.cpp" />
@@ -119,6 +127,7 @@
 		<Unit filename="generators/GeneratorBretonX.cpp" />
 		<Unit filename="generators/GeneratorImperialX.cpp" />
 		<Unit filename="generators/GeneratorKhajiitX.cpp" />
+		<Unit filename="generators/GeneratorWoodElfX.cpp" />
 		<Unit filename="generators/NamesPurge.cpp" />
 		<Unit filename="generators/SplitNamesBoth.cpp" />
 		<Unit filename="generators/SplitNamesFemale.cpp" />

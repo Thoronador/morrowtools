@@ -114,6 +114,12 @@
 		<Unit filename="generators/GeneratorKhajiitFemale.hpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.cpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.hpp" />
+		<Unit filename="generators/GeneratorWoodElfBoth.cpp" />
+		<Unit filename="generators/GeneratorWoodElfBoth.hpp" />
+		<Unit filename="generators/GeneratorWoodElfFemale.cpp" />
+		<Unit filename="generators/GeneratorWoodElfFemale.hpp" />
+		<Unit filename="generators/GeneratorWoodElfMale.cpp" />
+		<Unit filename="generators/GeneratorWoodElfMale.hpp" />
 		<Unit filename="generators/ImperialNamesPurge.cpp" />
 		<Unit filename="generators/ImperialNamesPurge.hpp" />
 		<Unit filename="generators/KhajiitNamesPurge.cpp" />
@@ -130,6 +136,8 @@
 		<Unit filename="generators/WholeNamesFemale.hpp" />
 		<Unit filename="generators/WholeNamesMale.cpp" />
 		<Unit filename="generators/WholeNamesMale.hpp" />
+		<Unit filename="generators/WoodElfNamesPurge.cpp" />
+		<Unit filename="generators/WoodElfNamesPurge.hpp" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<lib_finder disable_auto="1" />

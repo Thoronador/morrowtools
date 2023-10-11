@@ -39,6 +39,9 @@ set(name_generator_sources
     generators/GeneratorKhajiitBoth.cpp
     generators/GeneratorKhajiitFemale.cpp
     generators/GeneratorKhajiitMale.cpp
+    generators/GeneratorWoodElfBoth.cpp
+    generators/GeneratorWoodElfFemale.cpp
+    generators/GeneratorWoodElfMale.cpp
     generators/ImperialNamesPurge.cpp
     generators/KhajiitNamesPurge.cpp
     generators/SplitNamesBoth.cpp
@@ -47,6 +50,7 @@ set(name_generator_sources
     generators/WholeNamesBoth.cpp
     generators/WholeNamesFemale.cpp
     generators/WholeNamesMale.cpp
+    generators/WoodElfNamesPurge.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

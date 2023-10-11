@@ -39,11 +39,15 @@ set(name_generator_sources
     generators/GeneratorKhajiitBoth.cpp
     generators/GeneratorKhajiitFemale.cpp
     generators/GeneratorKhajiitMale.cpp
+    generators/GeneratorRedguardBoth.cpp
+    generators/GeneratorRedguardFemale.cpp
+    generators/GeneratorRedguardMale.cpp
     generators/GeneratorWoodElfBoth.cpp
     generators/GeneratorWoodElfFemale.cpp
     generators/GeneratorWoodElfMale.cpp
     generators/ImperialNamesPurge.cpp
     generators/KhajiitNamesPurge.cpp
+    generators/RedguardNamesPurge.cpp
     generators/SplitNamesBoth.cpp
     generators/SplitNamesFemale.cpp
     generators/SplitNamesMale.cpp

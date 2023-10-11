@@ -20,11 +20,15 @@ set(name_generator_mw_tests_sources
     ../../../../apps/mw/name_generator/generators/GeneratorKhajiitBoth.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorKhajiitFemale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorRedguardBoth.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorRedguardFemale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorRedguardMale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorWoodElfBoth.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorWoodElfFemale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorWoodElfMale.cpp
     ../../../../apps/mw/name_generator/generators/ImperialNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.cpp
+    ../../../../apps/mw/name_generator/generators/RedguardNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesBoth.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesFemale.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesMale.cpp
@@ -49,6 +53,7 @@ set(name_generator_mw_tests_sources
     generators/GeneratorBretonX.cpp
     generators/GeneratorImperialX.cpp
     generators/GeneratorKhajiitX.cpp
+    generators/GeneratorRedguardX.cpp
     generators/GeneratorWoodElfX.cpp
     generators/NamesPurge.cpp
     generators/SplitNamesBoth.cpp

@@ -73,6 +73,12 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorKhajiitFemale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorRedguardBoth.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorRedguardBoth.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorRedguardFemale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorRedguardFemale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorRedguardMale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorRedguardMale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfBoth.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfBoth.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfFemale.cpp" />
@@ -83,6 +89,8 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/ImperialNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/RedguardNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/RedguardNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesBoth.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesBoth.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesFemale.cpp" />
@@ -127,6 +135,7 @@
 		<Unit filename="generators/GeneratorBretonX.cpp" />
 		<Unit filename="generators/GeneratorImperialX.cpp" />
 		<Unit filename="generators/GeneratorKhajiitX.cpp" />
+		<Unit filename="generators/GeneratorRedguardX.cpp" />
 		<Unit filename="generators/GeneratorWoodElfX.cpp" />
 		<Unit filename="generators/NamesPurge.cpp" />
 		<Unit filename="generators/SplitNamesBoth.cpp" />

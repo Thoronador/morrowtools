@@ -215,7 +215,7 @@ int main(int argc, char **argv)
   if (generator == nullptr)
   {
     std::cout << "Note / TODO: Currently only Argonian, Breton, Imperial, "
-              << "Khajiit or Wood Elf names can be generated.\n"
+              << "Khajiit, Redguard or Wood Elf names can be generated.\n"
               << "Error: The chosen selection is not implemented yet!\n"
               << "More stuff will be implemented soon-ish!\n";
     return 0;

@@ -31,6 +31,9 @@
 #include "GeneratorKhajiitBoth.hpp"
 #include "GeneratorKhajiitFemale.hpp"
 #include "GeneratorKhajiitMale.hpp"
+#include "GeneratorRedguardBoth.hpp"
+#include "GeneratorRedguardFemale.hpp"
+#include "GeneratorRedguardMale.hpp"
 #include "GeneratorWoodElfBoth.hpp"
 #include "GeneratorWoodElfFemale.hpp"
 #include "GeneratorWoodElfMale.hpp"
@@ -89,6 +92,19 @@ std::unique_ptr<Generator> Factory::create(const std::string& race, const Gender
            return std::make_unique<GeneratorKhajiitFemale>();
       case Gender::Both:
            return std::make_unique<GeneratorKhajiitBoth>();
+    }
+  }
+
+  if (race == "Redguard")
+  {
+    switch (gender)
+    {
+      case Gender::Male:
+           return std::make_unique<GeneratorRedguardMale>();
+      case Gender::Female:
+           return std::make_unique<GeneratorRedguardFemale>();
+      case Gender::Both:
+           return std::make_unique<GeneratorRedguardBoth>();
     }
   }
 

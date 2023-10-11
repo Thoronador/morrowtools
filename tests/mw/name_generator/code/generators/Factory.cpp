@@ -32,6 +32,9 @@
 #include "../../../../../apps/mw/name_generator/generators/GeneratorKhajiitBoth.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorKhajiitFemale.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorRedguardBoth.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorRedguardFemale.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorRedguardMale.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorWoodElfBoth.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorWoodElfFemale.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorWoodElfMale.hpp"
@@ -97,6 +100,21 @@ TEST_CASE("MWTP name_generator: Factory")
 
     const auto kha_m = Factory::create("Khajiit", Gender::Male);
     GeneratorKhajiitMale* ptr_m = dynamic_cast<GeneratorKhajiitMale*>(kha_m.get());
+    REQUIRE( ptr_m != nullptr );
+  }
+
+  SECTION("Redguard")
+  {
+    const auto red_b = Factory::create("Redguard", Gender::Both);
+    GeneratorRedguardBoth* ptr_b = dynamic_cast<GeneratorRedguardBoth*>(red_b.get());
+    REQUIRE( ptr_b != nullptr );
+
+    const auto red_f = Factory::create("Redguard", Gender::Female);
+    GeneratorRedguardFemale* ptr_f = dynamic_cast<GeneratorRedguardFemale*>(red_f.get());
+    REQUIRE( ptr_f != nullptr );
+
+    const auto red_m = Factory::create("Redguard", Gender::Male);
+    GeneratorRedguardMale* ptr_m = dynamic_cast<GeneratorRedguardMale*>(red_m.get());
     REQUIRE( ptr_m != nullptr );
   }
 

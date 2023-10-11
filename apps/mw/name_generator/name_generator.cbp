@@ -114,6 +114,12 @@
 		<Unit filename="generators/GeneratorKhajiitFemale.hpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.cpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.hpp" />
+		<Unit filename="generators/GeneratorRedguardBoth.cpp" />
+		<Unit filename="generators/GeneratorRedguardBoth.hpp" />
+		<Unit filename="generators/GeneratorRedguardFemale.cpp" />
+		<Unit filename="generators/GeneratorRedguardFemale.hpp" />
+		<Unit filename="generators/GeneratorRedguardMale.cpp" />
+		<Unit filename="generators/GeneratorRedguardMale.hpp" />
 		<Unit filename="generators/GeneratorWoodElfBoth.cpp" />
 		<Unit filename="generators/GeneratorWoodElfBoth.hpp" />
 		<Unit filename="generators/GeneratorWoodElfFemale.cpp" />
@@ -124,6 +130,8 @@
 		<Unit filename="generators/ImperialNamesPurge.hpp" />
 		<Unit filename="generators/KhajiitNamesPurge.cpp" />
 		<Unit filename="generators/KhajiitNamesPurge.hpp" />
+		<Unit filename="generators/RedguardNamesPurge.cpp" />
+		<Unit filename="generators/RedguardNamesPurge.hpp" />
 		<Unit filename="generators/SplitNamesBoth.cpp" />
 		<Unit filename="generators/SplitNamesBoth.hpp" />
 		<Unit filename="generators/SplitNamesFemale.cpp" />

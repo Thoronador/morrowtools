@@ -41,8 +41,10 @@ set(name_generator_mw_tests_sources
     Gender.cpp
     NameGenFunctions.cpp
     generators/Factory.cpp
+    generators/GeneratorArgonianX.cpp
     generators/GeneratorBretonX.cpp
     generators/GeneratorImperialX.cpp
+    generators/GeneratorKhajiitX.cpp
     generators/NamesPurge.cpp
     generators/SplitNamesBoth.cpp
     generators/SplitNamesFemale.cpp

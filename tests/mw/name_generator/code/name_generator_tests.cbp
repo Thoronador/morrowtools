@@ -115,8 +115,10 @@
 		<Unit filename="Gender.cpp" />
 		<Unit filename="NameGenFunctions.cpp" />
 		<Unit filename="generators/Factory.cpp" />
+		<Unit filename="generators/GeneratorArgonianX.cpp" />
 		<Unit filename="generators/GeneratorBretonX.cpp" />
 		<Unit filename="generators/GeneratorImperialX.cpp" />
+		<Unit filename="generators/GeneratorKhajiitX.cpp" />
 		<Unit filename="generators/NamesPurge.cpp" />
 		<Unit filename="generators/SplitNamesBoth.cpp" />
 		<Unit filename="generators/SplitNamesFemale.cpp" />

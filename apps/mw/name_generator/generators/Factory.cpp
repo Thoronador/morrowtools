@@ -25,6 +25,9 @@
 #include "GeneratorBretonBoth.hpp"
 #include "GeneratorBretonFemale.hpp"
 #include "GeneratorBretonMale.hpp"
+#include "GeneratorHighElfBoth.hpp"
+#include "GeneratorHighElfFemale.hpp"
+#include "GeneratorHighElfMale.hpp"
 #include "GeneratorImperialBoth.hpp"
 #include "GeneratorImperialFemale.hpp"
 #include "GeneratorImperialMale.hpp"
@@ -66,6 +69,19 @@ std::unique_ptr<Generator> Factory::create(const std::string& race, const Gender
            return std::make_unique<GeneratorBretonFemale>();
       case Gender::Both:
            return std::make_unique<GeneratorBretonBoth>();
+    }
+  }
+
+  if (race == "High Elf")
+  {
+    switch (gender)
+    {
+      case Gender::Male:
+           return std::make_unique<GeneratorHighElfMale>();
+      case Gender::Female:
+           return std::make_unique<GeneratorHighElfFemale>();
+      case Gender::Both:
+           return std::make_unique<GeneratorHighElfBoth>();
     }
   }
 

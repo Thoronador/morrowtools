@@ -33,6 +33,9 @@ set(name_generator_sources
     generators/GeneratorBretonBoth.cpp
     generators/GeneratorBretonFemale.cpp
     generators/GeneratorBretonMale.cpp
+    generators/GeneratorHighElfBoth.cpp
+    generators/GeneratorHighElfFemale.cpp
+    generators/GeneratorHighElfMale.cpp
     generators/GeneratorImperialBoth.cpp
     generators/GeneratorImperialFemale.cpp
     generators/GeneratorImperialMale.cpp
@@ -45,6 +48,7 @@ set(name_generator_sources
     generators/GeneratorWoodElfBoth.cpp
     generators/GeneratorWoodElfFemale.cpp
     generators/GeneratorWoodElfMale.cpp
+    generators/HighElfNamesPurge.cpp
     generators/ImperialNamesPurge.cpp
     generators/KhajiitNamesPurge.cpp
     generators/RedguardNamesPurge.cpp

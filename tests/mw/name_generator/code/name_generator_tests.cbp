@@ -61,6 +61,12 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorBretonFemale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorBretonMale.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorBretonMale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfBoth.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfBoth.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfFemale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfFemale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfMale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfMale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorImperialBoth.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorImperialBoth.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorImperialFemale.cpp" />
@@ -85,6 +91,8 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfFemale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfMale.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorWoodElfMale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/HighElfNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/HighElfNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/ImperialNamesPurge.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/ImperialNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.cpp" />
@@ -133,6 +141,7 @@
 		<Unit filename="generators/Factory.cpp" />
 		<Unit filename="generators/GeneratorArgonianX.cpp" />
 		<Unit filename="generators/GeneratorBretonX.cpp" />
+		<Unit filename="generators/GeneratorHighElfX.cpp" />
 		<Unit filename="generators/GeneratorImperialX.cpp" />
 		<Unit filename="generators/GeneratorKhajiitX.cpp" />
 		<Unit filename="generators/GeneratorRedguardX.cpp" />

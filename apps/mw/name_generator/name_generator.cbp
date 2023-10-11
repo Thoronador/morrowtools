@@ -102,6 +102,12 @@
 		<Unit filename="generators/GeneratorBretonFemale.hpp" />
 		<Unit filename="generators/GeneratorBretonMale.cpp" />
 		<Unit filename="generators/GeneratorBretonMale.hpp" />
+		<Unit filename="generators/GeneratorHighElfBoth.cpp" />
+		<Unit filename="generators/GeneratorHighElfBoth.hpp" />
+		<Unit filename="generators/GeneratorHighElfFemale.cpp" />
+		<Unit filename="generators/GeneratorHighElfFemale.hpp" />
+		<Unit filename="generators/GeneratorHighElfMale.cpp" />
+		<Unit filename="generators/GeneratorHighElfMale.hpp" />
 		<Unit filename="generators/GeneratorImperialBoth.cpp" />
 		<Unit filename="generators/GeneratorImperialBoth.hpp" />
 		<Unit filename="generators/GeneratorImperialFemale.cpp" />
@@ -126,6 +132,8 @@
 		<Unit filename="generators/GeneratorWoodElfFemale.hpp" />
 		<Unit filename="generators/GeneratorWoodElfMale.cpp" />
 		<Unit filename="generators/GeneratorWoodElfMale.hpp" />
+		<Unit filename="generators/HighElfNamesPurge.cpp" />
+		<Unit filename="generators/HighElfNamesPurge.hpp" />
 		<Unit filename="generators/ImperialNamesPurge.cpp" />
 		<Unit filename="generators/ImperialNamesPurge.hpp" />
 		<Unit filename="generators/KhajiitNamesPurge.cpp" />

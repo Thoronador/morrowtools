@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2013, 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -54,6 +54,10 @@ GenericRecord& GenericRecord::operator=(const GenericRecord& other)
 {
   if (this == &other)
     return *this;
+  // data of base class BasicRecord
+  HeaderOne = other.HeaderOne;
+  HeaderFlags = other.HeaderFlags;
+  // data of GenericRecord
   m_DataSize = other.size();
   delete[] m_Data;
   if (m_DataSize > 0)

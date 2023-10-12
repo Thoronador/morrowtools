@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -95,8 +95,21 @@ TEST_CASE("MWTP::GenericRecord")
     SECTION("empty record")
     {
       GenericRecord record;
-      GenericRecord assigned = record;
+      REQUIRE( record.Header == 0 );
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      REQUIRE( record.size() == 0 );
+      REQUIRE( record.data() == nullptr );
 
+      GenericRecord assigned;
+      // fill in some bogus data
+      assigned.Header = cBOOK;
+      REQUIRE( assigned.Header == cBOOK );
+      assigned.setHeaderOne(0xF00BA12);
+      assigned.setHeaderFlags(0xF00BA12);
+
+      // assign
+      assigned = record;
       REQUIRE( assigned.Header == 0 );
       REQUIRE( assigned.getHeaderOne() == 0 );
       REQUIRE( assigned.getHeaderFlags() == 0 );
@@ -121,7 +134,13 @@ TEST_CASE("MWTP::GenericRecord")
       REQUIRE( record.loadFromStream(stream) );
 
       // assignment
-      GenericRecord assigned = record;
+      GenericRecord assigned;
+      assigned.setHeaderOne(42);
+      assigned.setHeaderFlags(1337);
+      REQUIRE( assigned.getHeaderOne() == 42 );
+      REQUIRE( assigned.getHeaderFlags() == 1337 );
+
+      assigned = record;
       REQUIRE( assigned.Header == cACTI );
       REQUIRE( assigned.getHeaderOne() == 0 );
       REQUIRE( assigned.getHeaderFlags() == 0 );
@@ -137,6 +156,33 @@ TEST_CASE("MWTP::GenericRecord")
       const auto originalContent = std::string_view(reinterpret_cast<const char*>(record.data()), record.size());
       REQUIRE( assignedContent == content );
       REQUIRE( originalContent == content );
+    }
+
+    SECTION("self assignment")
+    {
+      const auto data = "ACTI\x53\0\0\0\0\0\0\0\0\0\0\0NAME\x14\0\0\0active_akula_shield\0MODL\x1A\0\0\0i\\active_akula_shield.NIF\0FNAM\x0D\0\0\0Akula-Schild\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // skip ACTI, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      GenericRecord record;
+      record.Header = cACTI;
+      REQUIRE( record.loadFromStream(stream) );
+
+      const auto data_ptr_before = record.data();
+
+      record = record;
+
+      REQUIRE( record.Header == cACTI );
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      REQUIRE( record.size() == 83 );
+      REQUIRE_FALSE( record.data() == nullptr );
+      REQUIRE( record.data() == data_ptr_before );
     }
   }
 

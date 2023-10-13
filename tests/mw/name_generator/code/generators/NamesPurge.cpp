@@ -25,6 +25,7 @@
 #include "../../../../../apps/mw/name_generator/generators/HighElfNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/ImperialNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.hpp"
+#include "../../../../../apps/mw/name_generator/generators/OrcNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/RedguardNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/WoodElfNamesPurge.hpp"
 
@@ -71,6 +72,12 @@ TEST_CASE("MWTP name_generator: NamesPurge")
   SECTION("KhajiitNamesPurge")
   {
     PurgeGenerator<KhajiitNamesPurge> instance;
+    REQUIRE_FALSE( instance.purge().empty() );
+  }
+
+  SECTION("OrcNamesPurge")
+  {
+    PurgeGenerator<OrcNamesPurge> instance;
     REQUIRE_FALSE( instance.purge().empty() );
   }
 

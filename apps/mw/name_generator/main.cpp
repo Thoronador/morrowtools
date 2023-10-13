@@ -47,7 +47,7 @@ void showHelp()
 
 void showVersion()
 {
-  std::cout << "Name Generator for Morrowind, version 0.1.0-pre, 2023-10-12\n";
+  std::cout << "Name Generator for Morrowind, version 0.1.0-pre, 2023-10-14\n";
 }
 
 int main(int argc, char **argv)
@@ -215,7 +215,7 @@ int main(int argc, char **argv)
   if (generator == nullptr)
   {
     std::cout << "Note / TODO: Currently only Argonian, Breton, High Elf, "
-              << "Imperial, Khajiit, Redguard or Wood Elf names can be generated.\n"
+              << "Imperial, Khajiit, Orc, Redguard or Wood Elf names can be generated.\n"
               << "Error: The chosen selection is not implemented yet!\n"
               << "More stuff will be implemented soon-ish!\n";
     return 0;

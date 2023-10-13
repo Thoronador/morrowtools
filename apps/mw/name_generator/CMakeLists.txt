@@ -42,6 +42,9 @@ set(name_generator_sources
     generators/GeneratorKhajiitBoth.cpp
     generators/GeneratorKhajiitFemale.cpp
     generators/GeneratorKhajiitMale.cpp
+    generators/GeneratorOrcBoth.cpp
+    generators/GeneratorOrcFemale.cpp
+    generators/GeneratorOrcMale.cpp
     generators/GeneratorRedguardBoth.cpp
     generators/GeneratorRedguardFemale.cpp
     generators/GeneratorRedguardMale.cpp
@@ -51,10 +54,12 @@ set(name_generator_sources
     generators/HighElfNamesPurge.cpp
     generators/ImperialNamesPurge.cpp
     generators/KhajiitNamesPurge.cpp
+    generators/OrcNamesPurge.cpp
     generators/RedguardNamesPurge.cpp
     generators/SplitNamesBoth.cpp
     generators/SplitNamesFemale.cpp
     generators/SplitNamesMale.cpp
+    generators/SplitNamesOrc.cpp
     generators/WholeNamesBoth.cpp
     generators/WholeNamesFemale.cpp
     generators/WholeNamesMale.cpp

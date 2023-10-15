@@ -148,4 +148,42 @@ TEST_CASE("MWTP::GeneratorOrc...")
     REQUIRE( std::find(names.begin(), names.end(), "Ra'Gruzgob gro-Bulfim") != names.end() );
     REQUIRE( std::find(names.begin(), names.end(), "Ra'Gruzgob gro-Dush") != names.end() );
   }
+
+  SECTION("names not matching the usual format")
+  {
+    NPCRecord optio;
+    optio.recordID = "test_optio";
+    optio.Name = "Optio Bologra";
+    optio.RaceID = "Orc";
+    optio.NPC_Flag = 0;
+    REQUIRE_FALSE( optio.isFemale() );
+
+    NPCs::get().addRecord(optio);
+
+    GeneratorOrcMale generator;
+    const auto names = generator.generate(60);
+    REQUIRE( names.size() == 60 );
+
+    // Name "Somebody" should not be present due to different race id.
+    REQUIRE( std::find(names.begin(), names.end(), "Somebody Else") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Somebody Bologra") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Somebody gro-Dush") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Somebody gro-Bulfim") == names.end() );
+    // Name "Murzush" should NOT be present.
+    REQUIRE( std::find(names.begin(), names.end(), "Murzush gro-Bologra") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Murzush gro-Bulfim") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Murzush gro-Dush") == names.end() );
+    // Name "Gashnakh" should NOT be present.
+    REQUIRE( std::find(names.begin(), names.end(), "Gashnakh gro-Bologra") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Gashnakh gro-Bulfim") == names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Gashnakh gro-Dush") == names.end() );
+    // Name "Dul" should be present.
+    REQUIRE( std::find(names.begin(), names.end(), "Dul gro-Bologra") != names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Dul gro-Bulfim") != names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Dul gro-Dush") != names.end() );
+    // Name "Ra'Gruzgob" should be present.
+    REQUIRE( std::find(names.begin(), names.end(), "Ra'Gruzgob gro-Bologra") != names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Ra'Gruzgob gro-Bulfim") != names.end() );
+    REQUIRE( std::find(names.begin(), names.end(), "Ra'Gruzgob gro-Dush") != names.end() );
+  }
 }

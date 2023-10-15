@@ -120,6 +120,12 @@
 		<Unit filename="generators/GeneratorKhajiitFemale.hpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.cpp" />
 		<Unit filename="generators/GeneratorKhajiitMale.hpp" />
+		<Unit filename="generators/GeneratorNordBoth.cpp" />
+		<Unit filename="generators/GeneratorNordBoth.hpp" />
+		<Unit filename="generators/GeneratorNordFemale.cpp" />
+		<Unit filename="generators/GeneratorNordFemale.hpp" />
+		<Unit filename="generators/GeneratorNordMale.cpp" />
+		<Unit filename="generators/GeneratorNordMale.hpp" />
 		<Unit filename="generators/GeneratorOrcBoth.cpp" />
 		<Unit filename="generators/GeneratorOrcBoth.hpp" />
 		<Unit filename="generators/GeneratorOrcFemale.cpp" />
@@ -144,6 +150,8 @@
 		<Unit filename="generators/ImperialNamesPurge.hpp" />
 		<Unit filename="generators/KhajiitNamesPurge.cpp" />
 		<Unit filename="generators/KhajiitNamesPurge.hpp" />
+		<Unit filename="generators/NordNamesPurge.cpp" />
+		<Unit filename="generators/NordNamesPurge.hpp" />
 		<Unit filename="generators/OrcNamesPurge.cpp" />
 		<Unit filename="generators/OrcNamesPurge.hpp" />
 		<Unit filename="generators/RedguardNamesPurge.cpp" />

@@ -23,6 +23,9 @@ set(name_generator_mw_tests_sources
     ../../../../apps/mw/name_generator/generators/GeneratorKhajiitBoth.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorKhajiitFemale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorKhajiitMale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorNordBoth.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorNordFemale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorNordMale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorOrcBoth.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorOrcFemale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorOrcMale.cpp
@@ -35,6 +38,7 @@ set(name_generator_mw_tests_sources
     ../../../../apps/mw/name_generator/generators/HighElfNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/ImperialNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.cpp
+    ../../../../apps/mw/name_generator/generators/NordNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/OrcNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/RedguardNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesBoth.cpp
@@ -63,6 +67,7 @@ set(name_generator_mw_tests_sources
     generators/GeneratorHighElfX.cpp
     generators/GeneratorImperialX.cpp
     generators/GeneratorKhajiitX.cpp
+    generators/GeneratorNordX.cpp
     generators/GeneratorOrcX.cpp
     generators/GeneratorRedguardX.cpp
     generators/GeneratorWoodElfX.cpp

@@ -1,4 +1,3 @@
 List of things to do:
 
-- allow name generation for Dark Elves / Dunmer
 - let user specify how many names to generate

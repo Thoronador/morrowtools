@@ -26,6 +26,7 @@ set(name_generator_sources
     NameGenFunctions.cpp
     generators/ArgonianNamesPurge.cpp
     generators/BretonNamesPurge.cpp
+    generators/DarkElfNamesPurge.cpp
     generators/Factory.cpp
     generators/GeneratorArgonianBoth.cpp
     generators/GeneratorArgonianFemale.cpp
@@ -33,6 +34,9 @@ set(name_generator_sources
     generators/GeneratorBretonBoth.cpp
     generators/GeneratorBretonFemale.cpp
     generators/GeneratorBretonMale.cpp
+    generators/GeneratorDarkElfBoth.cpp
+    generators/GeneratorDarkElfFemale.cpp
+    generators/GeneratorDarkElfMale.cpp
     generators/GeneratorHighElfBoth.cpp
     generators/GeneratorHighElfFemale.cpp
     generators/GeneratorHighElfMale.cpp
@@ -61,6 +65,7 @@ set(name_generator_sources
     generators/OrcNamesPurge.cpp
     generators/RedguardNamesPurge.cpp
     generators/SplitNamesBoth.cpp
+    generators/SplitNamesDarkElf.cpp
     generators/SplitNamesFemale.cpp
     generators/SplitNamesMale.cpp
     generators/SplitNamesOrc.cpp

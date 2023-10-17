@@ -41,13 +41,13 @@ void showHelp()
             << "  --version          - displays the version of the program and quits\n"
             << "  -d DIRECTORY       - set path to the Data Files directory of Morrowind to\n"
             << "                       DIRECTORY. If omitted, the path will be read from the\n"
-            << "                       registry or a default value will be used.\n"
+            << "                       Windows registry or a default value will be used.\n"
             << "  -dir DIRECTORY     - same as -d\n";
 }
 
 void showVersion()
 {
-  std::cout << "Name Generator for Morrowind, version 0.1.0-pre, 2023-10-15\n";
+  std::cout << "Name Generator for Morrowind, version 0.2.0, 2023-10-17\n";
 }
 
 int main(int argc, char **argv)
@@ -214,10 +214,8 @@ int main(int argc, char **argv)
   const auto generator = MWTP::Factory::create(raceId, gender);
   if (generator == nullptr)
   {
-    std::cout << "Note / TODO: Currently only Argonian, Breton, High Elf, "
-              << "Imperial, Khajiit, Nord, Orc, Redguard or Wood Elf names can be generated.\n"
-              << "Error: The chosen selection is not implemented yet!\n"
-              << "More stuff will be implemented soon-ish!\n";
+    std::cout << "Note: Only Argonian, Breton, Dark Elf, High Elf, Imperial, "
+              << "Khajiit, Nord, Orc, Redguard or Wood Elf names can be generated.\n";
     return 0;
   }
 

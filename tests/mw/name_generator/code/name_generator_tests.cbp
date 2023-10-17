@@ -46,6 +46,8 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/ArgonianNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/BretonNamesPurge.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/BretonNamesPurge.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/DarkElfNamesPurge.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/DarkElfNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/Factory.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/Factory.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/Generator.hpp" />
@@ -61,6 +63,12 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorBretonFemale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorBretonMale.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorBretonMale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorDarkElfBoth.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorDarkElfBoth.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorDarkElfFemale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorDarkElfFemale.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorDarkElfMale.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorDarkElfMale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfBoth.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfBoth.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/GeneratorHighElfFemale.cpp" />
@@ -117,6 +125,8 @@
 		<Unit filename="../../../../apps/mw/name_generator/generators/RedguardNamesPurge.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesBoth.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesBoth.hpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesDarkElf.cpp" />
+		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesDarkElf.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesFemale.cpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesFemale.hpp" />
 		<Unit filename="../../../../apps/mw/name_generator/generators/SplitNamesMale.cpp" />
@@ -159,6 +169,7 @@
 		<Unit filename="generators/Factory.cpp" />
 		<Unit filename="generators/GeneratorArgonianX.cpp" />
 		<Unit filename="generators/GeneratorBretonX.cpp" />
+		<Unit filename="generators/GeneratorDarkElfX.cpp" />
 		<Unit filename="generators/GeneratorHighElfX.cpp" />
 		<Unit filename="generators/GeneratorImperialX.cpp" />
 		<Unit filename="generators/GeneratorKhajiitX.cpp" />
@@ -168,6 +179,7 @@
 		<Unit filename="generators/GeneratorWoodElfX.cpp" />
 		<Unit filename="generators/NamesPurge.cpp" />
 		<Unit filename="generators/SplitNamesBoth.cpp" />
+		<Unit filename="generators/SplitNamesDarkElf.cpp" />
 		<Unit filename="generators/SplitNamesFemale.cpp" />
 		<Unit filename="generators/SplitNamesMale.cpp" />
 		<Unit filename="generators/WholeNamesBoth.cpp" />

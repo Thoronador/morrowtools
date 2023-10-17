@@ -26,6 +26,9 @@
 #include "../../../../../apps/mw/name_generator/generators/GeneratorBretonBoth.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorBretonFemale.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorBretonMale.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorDarkElfBoth.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorDarkElfFemale.hpp"
+#include "../../../../../apps/mw/name_generator/generators/GeneratorDarkElfMale.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorHighElfBoth.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorHighElfFemale.hpp"
 #include "../../../../../apps/mw/name_generator/generators/GeneratorHighElfMale.hpp"
@@ -79,6 +82,21 @@ TEST_CASE("MWTP name_generator: Factory")
 
     const auto arg_m = Factory::create("Breton", Gender::Male);
     GeneratorBretonMale* ptr_m = dynamic_cast<GeneratorBretonMale*>(arg_m.get());
+    REQUIRE( ptr_m != nullptr );
+  }
+
+  SECTION("Dark Elf")
+  {
+    const auto dun_b = Factory::create("Dark Elf", Gender::Both);
+    GeneratorDarkElfBoth* ptr_b = dynamic_cast<GeneratorDarkElfBoth*>(dun_b.get());
+    REQUIRE( ptr_b != nullptr );
+
+    const auto dun_f = Factory::create("Dark Elf", Gender::Female);
+    GeneratorDarkElfFemale* ptr_f = dynamic_cast<GeneratorDarkElfFemale*>(dun_f.get());
+    REQUIRE( ptr_f != nullptr );
+
+    const auto dun_m = Factory::create("Dark Elf", Gender::Male);
+    GeneratorDarkElfMale* ptr_m = dynamic_cast<GeneratorDarkElfMale*>(dun_m.get());
     REQUIRE( ptr_m != nullptr );
   }
 

@@ -87,6 +87,8 @@
 		<Unit filename="generators/ArgonianNamesPurge.hpp" />
 		<Unit filename="generators/BretonNamesPurge.cpp" />
 		<Unit filename="generators/BretonNamesPurge.hpp" />
+		<Unit filename="generators/DarkElfNamesPurge.cpp" />
+		<Unit filename="generators/DarkElfNamesPurge.hpp" />
 		<Unit filename="generators/Factory.cpp" />
 		<Unit filename="generators/Factory.hpp" />
 		<Unit filename="generators/Generator.hpp" />
@@ -102,6 +104,12 @@
 		<Unit filename="generators/GeneratorBretonFemale.hpp" />
 		<Unit filename="generators/GeneratorBretonMale.cpp" />
 		<Unit filename="generators/GeneratorBretonMale.hpp" />
+		<Unit filename="generators/GeneratorDarkElfBoth.cpp" />
+		<Unit filename="generators/GeneratorDarkElfBoth.hpp" />
+		<Unit filename="generators/GeneratorDarkElfFemale.cpp" />
+		<Unit filename="generators/GeneratorDarkElfFemale.hpp" />
+		<Unit filename="generators/GeneratorDarkElfMale.cpp" />
+		<Unit filename="generators/GeneratorDarkElfMale.hpp" />
 		<Unit filename="generators/GeneratorHighElfBoth.cpp" />
 		<Unit filename="generators/GeneratorHighElfBoth.hpp" />
 		<Unit filename="generators/GeneratorHighElfFemale.cpp" />
@@ -158,6 +166,8 @@
 		<Unit filename="generators/RedguardNamesPurge.hpp" />
 		<Unit filename="generators/SplitNamesBoth.cpp" />
 		<Unit filename="generators/SplitNamesBoth.hpp" />
+		<Unit filename="generators/SplitNamesDarkElf.cpp" />
+		<Unit filename="generators/SplitNamesDarkElf.hpp" />
 		<Unit filename="generators/SplitNamesFemale.cpp" />
 		<Unit filename="generators/SplitNamesFemale.hpp" />
 		<Unit filename="generators/SplitNamesMale.cpp" />

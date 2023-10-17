@@ -72,6 +72,7 @@ paths inside the build directory:
 * Morrowind tools:
   * Cell Translator: `apps/mw/cell_translator/cell_translator.exe`
   * Data Cleaner: `apps/mw/data_cleaner/data_cleaner.exe`
+  * Name Generator: `apps/mw/name_generator/name_generator.exe`
   * Skill Rebalancer: `apps/mw/skill_rebalance/skill_rebalance.exe`
   * Spell Renamer: `apps/mw/spell_rename/spell_rename.exe`
 

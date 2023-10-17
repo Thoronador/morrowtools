@@ -7,6 +7,7 @@ set(name_generator_mw_tests_sources
     ../../../../apps/mw/name_generator/NameGenFunctions.cpp
     ../../../../apps/mw/name_generator/generators/ArgonianNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/BretonNamesPurge.cpp
+    ../../../../apps/mw/name_generator/generators/DarkElfNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/Factory.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorArgonianBoth.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorArgonianFemale.cpp
@@ -14,6 +15,9 @@ set(name_generator_mw_tests_sources
     ../../../../apps/mw/name_generator/generators/GeneratorBretonBoth.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorBretonFemale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorBretonMale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorDarkElfBoth.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorDarkElfFemale.cpp
+    ../../../../apps/mw/name_generator/generators/GeneratorDarkElfMale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorHighElfBoth.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorHighElfFemale.cpp
     ../../../../apps/mw/name_generator/generators/GeneratorHighElfMale.cpp
@@ -42,6 +46,7 @@ set(name_generator_mw_tests_sources
     ../../../../apps/mw/name_generator/generators/OrcNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/RedguardNamesPurge.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesBoth.cpp
+    ../../../../apps/mw/name_generator/generators/SplitNamesDarkElf.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesFemale.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesMale.cpp
     ../../../../apps/mw/name_generator/generators/SplitNamesOrc.cpp
@@ -64,6 +69,7 @@ set(name_generator_mw_tests_sources
     generators/Factory.cpp
     generators/GeneratorArgonianX.cpp
     generators/GeneratorBretonX.cpp
+    generators/GeneratorDarkElfX.cpp
     generators/GeneratorHighElfX.cpp
     generators/GeneratorImperialX.cpp
     generators/GeneratorKhajiitX.cpp
@@ -73,6 +79,7 @@ set(name_generator_mw_tests_sources
     generators/GeneratorWoodElfX.cpp
     generators/NamesPurge.cpp
     generators/SplitNamesBoth.cpp
+    generators/SplitNamesDarkElf.cpp
     generators/SplitNamesFemale.cpp
     generators/SplitNamesMale.cpp
     generators/WholeNamesBoth.cpp

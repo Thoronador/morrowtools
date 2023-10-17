@@ -22,6 +22,7 @@
 #include "../../../../../apps/mw/name_generator/generators/Generator.hpp"
 #include "../../../../../apps/mw/name_generator/generators/ArgonianNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/BretonNamesPurge.hpp"
+#include "../../../../../apps/mw/name_generator/generators/DarkElfNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/HighElfNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/ImperialNamesPurge.hpp"
 #include "../../../../../apps/mw/name_generator/generators/KhajiitNamesPurge.hpp"
@@ -55,6 +56,12 @@ TEST_CASE("MWTP name_generator: NamesPurge")
   SECTION("BretonNamesPurge")
   {
     PurgeGenerator<BretonNamesPurge> instance;
+    REQUIRE_FALSE( instance.purge().empty() );
+  }
+
+  SECTION("DarkElfNamesPurge")
+  {
+    PurgeGenerator<DarkElfNamesPurge> instance;
     REQUIRE_FALSE( instance.purge().empty() );
   }
 

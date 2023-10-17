@@ -8,7 +8,7 @@ Contents of directory:
                  program
 
 - name_generator - directory containing the files specific to the character name
-                   generator program (work in progress)
+                   generator program
 
 - skill_rebalance - program to create a plugin that makes leveling up skills
                     harder or easier, depending on the specified scaling factor

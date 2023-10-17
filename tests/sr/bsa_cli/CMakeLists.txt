@@ -48,3 +48,13 @@ add_test(NAME bsa_cli_help_info
          COMMAND $<TARGET_FILE:bsa-cli> help info)
 add_test(NAME bsa_cli_help_list
          COMMAND $<TARGET_FILE:bsa-cli> help list)
+
+# scripted test for invalid parameter use
+if (NOT WIN32)
+  set(EXT "sh")
+else ()
+  set(EXT "cmd")
+endif()
+
+add_test(NAME bsa_cli_parameter_misuse
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.${EXT} $<TARGET_FILE:bsa-cli>)

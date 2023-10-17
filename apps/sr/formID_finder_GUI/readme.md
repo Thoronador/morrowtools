@@ -1,7 +1,9 @@
 # GUI for formID_finder
 
-This directory contains the source code for the GUI to the formID_finder
-command-line program.
+This directory contains the source code for the GUI to the `formID_finder`
+command-line program. It needs the `formID_finder` executable and a working
+installation of The Elder Scrolls V: Skyrim. Any edition available for PC will
+do.
 
 ## Building from source
 

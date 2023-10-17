@@ -1,10 +1,14 @@
 # formID_finder - a command-line interface to search for form IDs in Skyrim
 
-formID_finder is a command-line tool to search for
+`formID_finder` is a command-line tool to search for
 [form IDs](https://en.uesp.net/wiki/Skyrim:Form_ID) in TES V: Skyrim's game
 data, more specifically its ESM files. Form IDs are a kind of identifier used
 for everything in the game. They are mainly used in console commands on PC,
 e. g. as a workaround to fix broken quests or similar bugs.
+
+This tool needs a working installation of The Elder Scrolls V: Skyrim. Any of
+the available editions for PC - the original Skyrim, Skyrim Legendary Edition,
+Skyrim Special Edition or Skyrim Anniversary Edition - will do.
 
 The search is performed based on the name of objects in the game. This means
 that a player using an English language version of Skyrim might get different

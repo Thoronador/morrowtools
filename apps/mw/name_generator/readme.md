@@ -1,7 +1,11 @@
 # name_generator - a simple name generator for Morrowind
 
 `name_generator` is a command-line tool to generate lore-friendly character
-names by using the names of TES III: Morrowind as reference.
+names by using the names of The Elder Scrolls III: Morrowind as reference.
+
+The name generator needs an existing installation of TES III: Morrowind in order
+to work. Addons Tribunal and Bloodmoon are recommended to get a broader range of
+names, but they are not required.
 
 ## Usage
 

@@ -1,7 +1,15 @@
 # bsa-cli - a simple command-line interface for BSA files
 
-bsa-cli is a command-line tool to perform some operations on BSA files, an
-archive format that is used by TES V: Skyrim (and some other games).
+`bsa-cli` is a command-line tool to perform some operations on BSA files, an
+archive format that is used by The Elder Scrolls V: Skyrim (and some other
+games). It may also work with BSA files of The Elder Scrolls IV: Oblivion, but
+this has not been tested yet. It will certainly _not_ work with BSA files of
+The Elder Scrolls III: Morrowind, because Morrowind uses a different BSA format,
+despite using the same file extension.
+
+While this tool technically does not need a working installation of The Elder
+Scrolls V: Skyrim, it needs BSA files to operate on, and those usually come with
+Skyrim (and also with some other games).
 
 ## Usage
 

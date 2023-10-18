@@ -95,4 +95,11 @@ if %ERRORLEVEL% NEQ 1 (
   exit /B 1
 )
 
+:: unknown / invalid parameter
+"%EXECUTABLE%" --not-a-known-option -p plugin.esp
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when an unknown option was given twice.
+  exit /B 1
+)
+
 exit 0

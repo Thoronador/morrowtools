@@ -106,4 +106,12 @@ then
   exit 1
 fi
 
+# unknown / invalid parameter
+"$EXECUTABLE" --not-a-known-option -p plugin.esp
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when an unknown option was given."
+  exit 1
+fi
+
 exit 0

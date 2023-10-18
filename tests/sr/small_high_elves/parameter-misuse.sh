@@ -50,4 +50,12 @@ then
   exit 1
 fi
 
+# unknown / invalid parameter
+"$EXECUTABLE" --not-a-known-option -d /opt/foo/bar
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when an unknown option was given."
+  exit 1
+fi
+
 exit 0

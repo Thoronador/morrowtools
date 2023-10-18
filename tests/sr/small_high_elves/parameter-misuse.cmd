@@ -46,4 +46,11 @@ if %ERRORLEVEL% NEQ 1 (
   exit /B 1
 )
 
+:: unknown / invalid parameter
+"%EXECUTABLE%" --not-a-known-option -d blah\foo\data
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when an unknown option was given.
+  exit /B 1
+)
+
 exit 0

@@ -12,7 +12,7 @@ add_test(NAME conv_cams_help
          COMMAND $<TARGET_FILE:conv_cams> --help)
 
 # short help parameter with question mark "-?"
-add_test(NAME comv_cams_help_question_mark
+add_test(NAME conv_cams_help_question_mark
          COMMAND $<TARGET_FILE:conv_cams> -?)
 
 # Windows-style help parameter "/?"
@@ -22,5 +22,21 @@ if (NOT DEFINED ENV{GITHUB_ACTIONS} OR NOT MINGW)
 endif ()
 
 # parameter to show version number
-add_test(NAME comv_cams_version
+add_test(NAME conv_cams_version
          COMMAND $<TARGET_FILE:conv_cams> --version)
+
+
+# scripted tests
+if (NOT WIN32)
+  set(EXT "sh")
+else ()
+  set(EXT "cmd")
+endif()
+
+# -- request version via exit code
+add_test(NAME conv_cams_version_from_exit_code
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/version-with-exitcode.${EXT} $<TARGET_FILE:conv_cams>)
+
+# -- invalid parameter usage
+add_test(NAME formID_finder_parameter_misuse
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.${EXT} $<TARGET_FILE:conv_cams>)

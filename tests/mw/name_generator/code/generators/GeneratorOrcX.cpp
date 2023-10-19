@@ -161,8 +161,8 @@ TEST_CASE("MWTP::GeneratorOrc...")
     NPCs::get().addRecord(optio);
 
     GeneratorOrcMale generator;
-    const auto names = generator.generate(60);
-    REQUIRE( names.size() == 60 );
+    const auto names = generator.generate(96);
+    REQUIRE( names.size() == 96 );
 
     // Name "Somebody" should not be present due to different race id.
     REQUIRE( std::find(names.begin(), names.end(), "Somebody Else") == names.end() );

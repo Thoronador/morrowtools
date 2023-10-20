@@ -23,3 +23,14 @@ endif ()
 # parameter to show version number
 add_test(NAME skill_rebalance_version
          COMMAND $<TARGET_FILE:skill_rebalance> --version)
+
+# scripted tests
+if (NOT WIN32)
+  set(EXT "sh")
+else ()
+  set(EXT "cmd")
+endif()
+
+# -- invalid parameter usage
+add_test(NAME skill_rebalance_parameter_misuse
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.${EXT} $<TARGET_FILE:skill_rebalance>)

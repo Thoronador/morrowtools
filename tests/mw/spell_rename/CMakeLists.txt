@@ -23,3 +23,18 @@ endif ()
 # parameter to show version number
 add_test(NAME spell_rename_version
          COMMAND $<TARGET_FILE:spell_rename> --version)
+
+# scripted tests
+if (NOT WIN32)
+  set(EXT "sh")
+else ()
+  set(EXT "cmd")
+endif()
+
+# -- request version via exit code
+add_test(NAME spell_rename_version_from_exit_code
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/version-with-exitcode.${EXT} $<TARGET_FILE:spell_rename>)
+
+# -- invalid parameter usage
+add_test(NAME spell_rename_parameter_misuse
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.${EXT} $<TARGET_FILE:spell_rename>)

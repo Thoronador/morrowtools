@@ -39,17 +39,24 @@ if %ERRORLEVEL% NEQ 1 (
   exit /B 1
 )
 
-:: no file name after parameter for output file
-"%EXECUTABLE%" -o
-if %ERRORLEVEL% NEQ 1 (
-  echo Executable did not exit with code 1 when -o was given without file name.
-  exit /B 1
-)
-
-:: no file name after parameter for plugin input file
+:: no file name after parameter for plugin file
 "%EXECUTABLE%" -f
 if %ERRORLEVEL% NEQ 1 (
   echo Executable did not exit with code 1 when -f was given without file name.
+  exit /B 1
+)
+
+:: --explicit is given twice
+"%EXECUTABLE%" --explicit --explicit
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when --explicit was given twice.
+  exit /B 1
+)
+
+:: --all is given twice
+"%EXECUTABLE%" --all --all
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when --all was given twice.
   exit /B 1
 )
 

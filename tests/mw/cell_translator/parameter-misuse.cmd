@@ -146,14 +146,14 @@ if %ERRORLEVEL% NEQ 10 (
 :: output file is the Tribunal master file
 "%EXECUTABLE%" -f foo.esp -o Tribunal.esm
 if %ERRORLEVEL% NEQ 10 (
-  echo Executable did not exit with code 10 when an invalid output file (TR) was given.
+  echo Executable did not exit with code 10 when an invalid output file, TR.esm, was given.
   exit /B 1
 )
 
 :: output file is the Bloodmoon master file
 "%EXECUTABLE%" -f foo.esp -o Bloodmoon.esm
 if %ERRORLEVEL% NEQ 10 (
-  echo Executable did not exit with code 10 when an invalid output file (BM) was given.
+  echo Executable did not exit with code 10 when an invalid output file, BM.esm, was given.
   exit /B 1
 )
 

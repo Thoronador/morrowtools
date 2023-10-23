@@ -50,6 +50,30 @@ then
   exit 1
 fi
 
+# --male is given twice
+"$EXECUTABLE" --male --male
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when --male was given twice."
+  exit 1
+fi
+
+# --female is given twice
+"$EXECUTABLE" --female --female
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when --female was given twice."
+  exit 1
+fi
+
+# --both is given twice
+"$EXECUTABLE" --both --both
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when --both was given twice."
+  exit 1
+fi
+
 # unknown / invalid parameter
 "$EXECUTABLE" --not-a-known-option
 if [ $? -ne 1 ]

@@ -46,6 +46,27 @@ if %ERRORLEVEL% NEQ 1 (
   exit /B 1
 )
 
+:: --male is given twice
+"%EXECUTABLE%" --male --male
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when --male was given twice.
+  exit /B 1
+)
+
+:: --female is given twice
+"%EXECUTABLE%" --female --female
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when --female was given twice.
+  exit /B 1
+)
+
+:: --both is given twice
+"%EXECUTABLE%" --both --both
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when --both was given twice.
+  exit /B 1
+)
+
 :: unknown / invalid parameter
 "%EXECUTABLE%" --not-a-known-option
 if %ERRORLEVEL% NEQ 1 (

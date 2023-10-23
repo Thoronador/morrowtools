@@ -18,8 +18,14 @@ options:
   --version          - displays the version of the program and quits
   -d DIRECTORY       - set path to the Data Files directory of Morrowind to
                        DIRECTORY. If omitted, the path will be read from the
-                       registry or a default value will be used.
+                       Windows registry or a default value will be used.
   -dir DIRECTORY     - same as -d
+  --male             - generate male names
+  --female           - generate female names
+  --both             - generate both male and female names
+                       If none of --male, --female or --both is given, then the
+                       program will prompt the user to select one of those
+                       options.
 ```
 
 ## Copyright and Licensing

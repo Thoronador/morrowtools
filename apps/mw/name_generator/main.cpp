@@ -42,17 +42,24 @@ void showHelp()
             << "  -d DIRECTORY       - set path to the Data Files directory of Morrowind to\n"
             << "                       DIRECTORY. If omitted, the path will be read from the\n"
             << "                       Windows registry or a default value will be used.\n"
-            << "  -dir DIRECTORY     - same as -d\n";
+            << "  -dir DIRECTORY     - same as -d\n"
+            << "  --male             - generate male names\n"
+            << "  --female           - generate female names\n"
+            << "  --both             - generate both male and female names\n"
+            << "                       If none of --male, --female or --both is given, then the\n"
+            << "                       program will prompt the user to select one of those\n"
+            << "                       options.\n";
 }
 
 void showVersion()
 {
-  std::cout << "Name Generator for Morrowind, version 0.2.0, 2023-10-17\n";
+  std::cout << "Name Generator for Morrowind, version 0.3.0, 2023-10-23\n";
 }
 
 int main(int argc, char **argv)
 {
   std::string dataDir = "";
+  std::optional<MWTP::Gender> opt_gender;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -108,6 +115,33 @@ int main(int argc, char **argv)
             return MWTP::rcInvalidParameter;
           }
         } // data files directory
+        else if ((param == "--male") || (param == "-m"))
+        {
+          if (opt_gender.has_value())
+          {
+            std::cout << "Error: Gender of names to generate was already set!\n";
+            return MWTP::rcInvalidParameter;
+          }
+          opt_gender = MWTP::Gender::Male;
+        }
+        else if ((param == "--female") || (param == "-f"))
+        {
+          if (opt_gender.has_value())
+          {
+            std::cout << "Error: Gender of names to generate was already set!\n";
+            return MWTP::rcInvalidParameter;
+          }
+          opt_gender = MWTP::Gender::Female;
+        }
+        else if ((param == "--both") || (param == "-b"))
+        {
+          if (opt_gender.has_value())
+          {
+            std::cout << "Error: Gender of names to generate was already set!\n";
+            return MWTP::rcInvalidParameter;
+          }
+          opt_gender = MWTP::Gender::Both;
+        }
         else
         {
           // unknown or wrong parameter
@@ -203,12 +237,11 @@ int main(int argc, char **argv)
   const auto& race = MWTP::Races::get().getRecord(raceId);
   std::cout << "Selected race is " << race.Name << " (ID \"" << raceId << "\").\n";
 
-  std::optional<MWTP::Gender> opt_g;
-  while (!opt_g.has_value())
+  while (!opt_gender.has_value())
   {
-    opt_g = MWTP::selectGender();
+    opt_gender = MWTP::selectGender();
   }
-  const auto gender = opt_g.value();
+  const auto gender = opt_gender.value();
   std::cout << "Selected gender is " << to_string(gender) << ".\n";
 
   const auto generator = MWTP::Factory::create(raceId, gender);

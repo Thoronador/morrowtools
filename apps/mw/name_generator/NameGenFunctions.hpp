@@ -21,6 +21,7 @@
 #ifndef MW_NAMEGENFUNCTIONS_HPP
 #define MW_NAMEGENFUNCTIONS_HPP
 
+#include <cstdint>
 #include <optional>
 #include <string>
 #include "Gender.hpp"

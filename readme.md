@@ -8,6 +8,32 @@ difficult to do with Morrowind's own modkit.
 Some programs for The Elder Scrolls V: Skyrim were added more recently. So
 despite its name the project also contains tools for Skyrim.
 
+## Available programs
+
+### Skyrim-related programs
+
+* **bsa_cli**: a command-line interface for BSA archives of Skyrim
+* **conv_cams**: _(obsolete)_ tool to convert CAMS records in an ESM file to the
+  pre-1.5 patch state
+* **formID_finder**: command-line interface to search for form IDs in Skyrim
+* **formID_finder_GUI**: a GUI that wraps `formID_finder` calls in a more
+  user-friendly way
+* **small_high_elves**: _(just for fun)_ command-line tool that creates a Skyrim
+  plugin which adjusts the size of high elves to be not so high anymore
+
+### Morrowind-related programs
+
+* **cell_translator**: _(incomplete)_ translates Morrowind plugins from one
+  language into another
+* **data_cleaner**: helps to find and delete unused files within the Data Files
+  directory of Morrowind
+* **name_generator**: generates lore-friendly character names by using the names
+  of The Elder Scrolls III: Morrowind as reference
+* **skill_rebalance**: creates a Morrowind plugin that makes leveling up skills
+  harder or easier
+* **spell_rename**: helps to sort the spells in Morrowind's spell menu according
+  to their spell schools by creating a plugin file that changes the spell names
+
 ## Contents of repository
 
 - **apps**: contains code for application programs

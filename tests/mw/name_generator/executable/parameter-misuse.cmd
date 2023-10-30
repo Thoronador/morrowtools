@@ -67,6 +67,34 @@ if %ERRORLEVEL% NEQ 1 (
   exit /B 1
 )
 
+:: count is given twice
+"%EXECUTABLE%" --count 5 --count 8
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when count was given twice.
+  exit /B 1
+)
+
+:: no number after parameter for count
+"%EXECUTABLE%" --count
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when --count was given without a number.
+  exit /B 1
+)
+
+:: count is less than one
+"%EXECUTABLE%" --count -3
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when count was less than one.
+  exit /B 1
+)
+
+:: count is not a valid number
+"%EXECUTABLE%" --count f0034
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when count was not a number.
+  exit /B 1
+)
+
 :: unknown / invalid parameter
 "%EXECUTABLE%" --not-a-known-option
 if %ERRORLEVEL% NEQ 1 (

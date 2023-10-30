@@ -74,6 +74,38 @@ then
   exit 1
 fi
 
+# count is given twice
+"$EXECUTABLE" --count 5 --count 8
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when count was given twice."
+  exit 1
+fi
+
+# no number after parameter for count
+"$EXECUTABLE" --count
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when --count was given without a number."
+  exit 1
+fi
+
+# count is less than one
+"$EXECUTABLE" --count -3
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when count was less than one."
+  exit 1
+fi
+
+# count is not a valid number
+"$EXECUTABLE" --count foo34
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when count was not a number."
+  exit 1
+fi
+
 # unknown / invalid parameter
 "$EXECUTABLE" --not-a-known-option
 if [ $? -ne 1 ]

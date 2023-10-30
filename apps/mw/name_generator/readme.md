@@ -26,6 +26,9 @@ options:
                        If none of --male, --female or --both is given, then the
                        program will prompt the user to select one of those
                        options.
+ --count N           - generate N names.
+                       If this option is not set, then the program will prompt
+                       the user to enter the number of names to generate.
 ```
 
 ## Copyright and Licensing

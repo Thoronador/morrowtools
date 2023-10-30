@@ -48,18 +48,22 @@ void showHelp()
             << "  --both             - generate both male and female names\n"
             << "                       If none of --male, --female or --both is given, then the\n"
             << "                       program will prompt the user to select one of those\n"
-            << "                       options.\n";
+            << "                       options.\n"
+            << " --count N           - generate N names.\n"
+            << "                       If this option is not set, then the program will prompt\n"
+            << "                       the user to enter the number of names to generate.\n";
 }
 
 void showVersion()
 {
-  std::cout << "Name Generator for Morrowind, version 0.3.0, 2023-10-23\n";
+  std::cout << "Name Generator for Morrowind, version 0.4.0, 2023-10-30\n";
 }
 
 int main(int argc, char **argv)
 {
   std::string dataDir = "";
   std::optional<MWTP::Gender> opt_gender;
+  std::optional<uint_least16_t> opt_count;
 
   if ((argc > 1) && (argv != nullptr))
   {
@@ -141,6 +145,38 @@ int main(int argc, char **argv)
             return MWTP::rcInvalidParameter;
           }
           opt_gender = MWTP::Gender::Both;
+        }
+        else if ((param == "-c") || (param == "--count"))
+        {
+          // set more than once?
+          if (opt_count.has_value())
+          {
+            std::cout << "Error: Count was already set!\n";
+            return MWTP::rcInvalidParameter;
+          }
+          // enough parameters?
+          if ((i+1 < argc) && (argv[i+1] != nullptr))
+          {
+            int16_t count = -1;
+            if (!stringToShort(argv[i+1], count))
+            {
+              std::cout << "Error: \"" << argv[i+1] << "\" is not a valid number or is outside of the allowed range." << std::endl;
+              return MWTP::rcInvalidParameter;
+            }
+            if (count < 1)
+            {
+              std::cout << "Error: Count must be larger than zero.\n";
+              return MWTP::rcInvalidParameter;
+            }
+            opt_count = static_cast<uint_least16_t>(count);
+            ++i; // skip next parameter, because that is the number
+          }
+          else
+          {
+            std::cout << "Error: You have to specify a number after \""
+                      << param << "\".\n";
+            return MWTP::rcInvalidParameter;
+          }
         }
         else
         {
@@ -258,7 +294,12 @@ int main(int argc, char **argv)
     MWTP::NPCs::get().removeRecord(id);
   }
 
-  const auto names = generator->generate(10);
+  while (!opt_count.has_value())
+  {
+    opt_count = MWTP::selectCount();
+  }
+
+  const auto names = generator->generate(opt_count.value());
   for (const auto& name: names)
   {
     std::cout << name << '\n';

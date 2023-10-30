@@ -47,6 +47,14 @@ std::string selectRace();
  */
 std::optional<Gender> selectGender();
 
+
+/** \brief Lets the user select the number of names to generate.
+ *
+ * \return Returns the count, if a valid input was made.
+ *         Returns an empty optional, if the input was invalid.
+ */
+std::optional<uint_least16_t> selectCount();
+
 } // namespace
 
 #endif // MW_NAMEGENFUNCTIONS_HPP

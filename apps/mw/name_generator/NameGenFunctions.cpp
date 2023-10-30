@@ -122,4 +122,30 @@ std::optional<Gender> selectGender()
   return std::nullopt;
 }
 
+std::optional<uint_least16_t> selectCount()
+{
+  std::cout << "Enter number of names to generate: ";
+
+  std::string userInput;
+  std::getline(std::cin, userInput);
+  int16_t count = -1;
+  if (!stringToShort(userInput, count))
+  {
+    std::cout << "Error: \"" << userInput << "\" is not a valid number." << std::endl;
+  }
+  else
+  {
+    if (count < 1)
+    {
+      std::cout << "Error: The number must be larger than zero." << std::endl;
+    }
+    else
+    {
+      return static_cast<uint_least16_t>(count);
+    }
+  }
+
+  return std::nullopt;
+}
+
 } // namespace

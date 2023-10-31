@@ -53,6 +53,11 @@ Use 'bsa-cli help <command>' for more information on a specific command.
 
 A changelog is available in [changelog.md](./changelog.md).
 
+## Third-party libraries
+
+Used third-party libraries and their copyright notices are listed in
+[third-party.md](./third-party.md).
+
 ## Copyright and Licensing
 
 Copyright 2021, 2022, 2023  Dirk Stolle

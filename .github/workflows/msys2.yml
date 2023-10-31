@@ -88,6 +88,7 @@ jobs:
           cp build-static/apps/sr/bsa_cli/bsa-cli.exe bsa-cli/
           cp apps/sr/bsa_cli/readme.md bsa-cli/
           cp apps/sr/bsa_cli/changelog.md bsa-cli/
+          cp apps/sr/bsa_cli/third-party.md bsa-cli/
           cp LICENSE bsa-cli/
       - name: Create bsa-cli artifact
         uses: actions/upload-artifact@v3

@@ -68,6 +68,8 @@
 		<Unit filename="../../../lib/mw/records/ArmourRecord.hpp" />
 		<Unit filename="../../../lib/mw/records/BasicRecord.cpp" />
 		<Unit filename="../../../lib/mw/records/BasicRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/BirthSignRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/BirthSignRecord.hpp" />
 		<Unit filename="../../../lib/mw/records/BodyPartAssociation.cpp" />
 		<Unit filename="../../../lib/mw/records/BodyPartAssociation.hpp" />
 		<Unit filename="../../../lib/mw/records/BodyPartRecord.cpp" />
@@ -157,6 +159,7 @@
 		<Unit filename="records/ApparatusRecord.cpp" />
 		<Unit filename="records/ArmourRecord.cpp" />
 		<Unit filename="records/BasicRecord.cpp" />
+		<Unit filename="records/BirthSignRecord.cpp" />
 		<Unit filename="records/BodyPartAssociation.cpp" />
 		<Unit filename="records/BodyPartRecord.cpp" />
 		<Unit filename="records/BookRecord.cpp" />

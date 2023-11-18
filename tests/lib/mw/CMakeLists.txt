@@ -23,6 +23,7 @@ set(lib_mw_tests_sources
     ../../../lib/mw/records/ApparatusRecord.cpp
     ../../../lib/mw/records/ArmourRecord.cpp
     ../../../lib/mw/records/BasicRecord.cpp
+    ../../../lib/mw/records/BirthSignRecord.cpp
     ../../../lib/mw/records/BodyPartAssociation.cpp
     ../../../lib/mw/records/BodyPartRecord.cpp
     ../../../lib/mw/records/BookRecord.cpp
@@ -75,6 +76,7 @@ set(lib_mw_tests_sources
     records/ApparatusRecord.cpp
     records/ArmourRecord.cpp
     records/BasicRecord.cpp
+    records/BirthSignRecord.cpp
     records/BodyPartAssociation.cpp
     records/BodyPartRecord.cpp
     records/BookRecord.cpp

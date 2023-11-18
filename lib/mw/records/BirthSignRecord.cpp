@@ -23,6 +23,7 @@
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
+#include "../../base/UtilityFunctions.hpp"
 
 namespace MWTP
 {
@@ -299,7 +300,7 @@ bool BirthSignRecord::loadFromStream(std::istream& in_File)
 
 bool operator<(const BirthSignRecord& left, const BirthSignRecord& right)
 {
-  return (left.recordID.compare(right.recordID)<0);
+  return lowerCaseCompare(left.recordID, right.recordID) < 0;
 }
 
 } //namespace

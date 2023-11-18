@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -48,28 +48,27 @@ BirthSignRecord::BirthSignRecord(const std::string& ID)
 
 bool BirthSignRecord::equals(const BirthSignRecord& other) const
 {
-  return ((recordID==other.recordID) and (Name==other.Name)
-      and (Texture==other.Texture) and (Description==other.Description)
-      and (SignSpells==other.SignSpells));
+  return (recordID == other.recordID) && (Name == other.Name)
+      && (Texture == other.Texture) && (Description == other.Description)
+      && (SignSpells == other.SignSpells);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool BirthSignRecord::saveToStream(std::ostream& output) const
 {
   output.write((const char*) &cBSGN, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for length */
-        +Name.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* TNAM */ +4 /* 4 bytes for length */
-        +Texture.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DESC */ +4 /* 4 bytes for length */
-        +Description.length()+1 /* length of name +1 byte for NUL termination */
-        +SignSpells.size()*(4 /* NPCS */ +4 /* 4 bytes for length */ +32 /* fixed length of 32 bytes - rest is filled with NUL */);
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* FNAM */ + 4 /* 4 bytes for length */
+        + Name.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* TNAM */ + 4 /* 4 bytes for length */
+        + Texture.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* DESC */ + 4 /* 4 bytes for length */
+        + Description.length() + 1 /* length of name +1 byte for NUL termination */
+        + SignSpells.size() * (4 /* NPCS */ + 4 /* 4 bytes for length */ + 32 /* fixed length of 32 bytes - rest is filled with NUL */);
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Birth Sign
 	NAME = Sign ID string
@@ -79,67 +78,58 @@ bool BirthSignRecord::saveToStream(std::ostream& output) const
 	NPCS = Spell/ability (32 bytes), multiple
   */
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  uint32_t SubLength = recordID.length()+1;
-  //write NAME's length
-  output.write((const char*) &SubLength, 4);
-  //write ID
+  // write ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
-  SubLength = Name.length()+1;
-  //write FNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write sign's name
+  // write sign's name (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  SubLength = Name.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Name.c_str(), SubLength);
 
-  //write TNAM
-  output.write((const char*) &cTNAM, 4);
-  SubLength = Texture.length()+1;
-  //write TNAM's length
-  output.write((const char*) &SubLength, 4);
-  //write texture name
+  // write texture name (TNAM)
+  output.write(reinterpret_cast<const char*>(&cTNAM), 4);
+  SubLength = Texture.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Texture.c_str(), SubLength);
 
-  //write DESC
-  output.write((const char*) &cDESC, 4);
-  SubLength = Description.length()+1;
-  //write DESC's length
-  output.write((const char*) &SubLength, 4);
-  //write description text
+  // write description tet (DESC)
+  output.write(reinterpret_cast<const char*>(&cDESC), 4);
+  SubLength = Description.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(Description.c_str(), SubLength);
 
-  //write spells/abilities
-  unsigned int i;
-  for (i=0; i<SignSpells.size(); ++i)
+  // write spells / abilities
+  for (const auto& spell_id: SignSpells)
   {
-    //write NPCS
-    output.write((const char*) &cNPCS, 4);
-    SubLength = 32; //length is fixed at 32 bytes, rest is NULs
-    //write NPCS's length
-    output.write((const char*) &SubLength, 4);
+    // write spell ID (NPCS)
+    output.write(reinterpret_cast<const char*>(&cNPCS), 4);
+    // length is fixed at 32 bytes, rest is filled with NULs
+    SubLength = 32;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
     //write spell ID
-    const unsigned int len = SignSpells[i].length()+1;
-    output.write(SignSpells[i].c_str(), len);
-    if (len<32)
+    const unsigned int len = spell_id.length() + 1;
+    output.write(spell_id.c_str(), len);
+    if (len < 32)
     {
-      //fill rest up to 32 bytes with null bytes
-      output.write(NULof32, 32-len);
+      // fill rest up to 32 bytes with null bytes
+      output.write(NULof32, 32 - len);
     }
-  }//for
+  }
 
   return output.good();
 }
 #endif
 
-bool BirthSignRecord::loadFromStream(std::istream& in_File)
+bool BirthSignRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size { 0 };
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Birth Sign
     NAME = Sign ID string
@@ -149,153 +139,52 @@ bool BirthSignRecord::loadFromStream(std::istream& in_File)
     NPCS = Spell/ability (32 bytes), multiple
   */
 
-  uint32_t SubRecName;
-  uint32_t SubLength, BytesRead;
-  SubRecName = SubLength = 0;
-
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead = 4;
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord NAME of BSGN is longer than 255 characters.\n";
-    return false;
-  }
-  //read birth sign ID
+  // read record id (NAME)
+  uint32_t BytesRead = 0;
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of BSGN!\n";
+    std::cerr << "Error while reading sub record NAME of BSGN!\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cFNAM)
+  // read localized name (FNAM)
+  if (!loadString256WithHeader(input, Name, Buffer, cFNAM, BytesRead))
   {
-    UnexpectedRecord(cFNAM, SubRecName);
+    std::cerr << "Error while reading sub record FNAM of BSGN!\n";
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord FNAM of BSGN is longer than 255 characters.\n";
-    return false;
-  }
-  //read birth sign name
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord FNAM of BSGN!\n";
-    return false;
-  }
-  Name = std::string(Buffer);
 
-  //read TNAM
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cTNAM)
+  // read texture path (TNAM)
+  if (!loadString256WithHeader(input, Texture, Buffer, cTNAM, BytesRead))
   {
-    UnexpectedRecord(cTNAM, SubRecName);
+    std::cerr << "Error while reading sub record TNAM of BSGN!\n";
     return false;
   }
-  //TNAM's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord TNAM of BSGN is longer than 255 characters.\n";
-    return false;
-  }
-  //read texture path
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord TNAM of BSGN!\n";
-    return false;
-  }
-  Texture = std::string(Buffer);
 
-  //read DESC
-  in_File.read((char*) &SubRecName, 4);
-  BytesRead += 4;
-  if (SubRecName!=cDESC)
+  // read description text (DESC)
+  if (!loadString256WithHeader(input, Description, Buffer, cDESC, BytesRead))
   {
-    UnexpectedRecord(cDESC, SubRecName);
+    std::cerr << "Error while reading sub record DESC of BSGN!\n";
     return false;
   }
-  //DESC's length
-  in_File.read((char*) &SubLength, 4);
-  BytesRead += 4;
-  if (SubLength>255)
-  {
-    std::cout << "Error: Subrecord DESC of BSGN is longer than 255 characters.\n";
-    return false;
-  }
-  //read description
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  BytesRead += SubLength;
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord DESC of BSGN!\n";
-    return false;
-  }
-  Description = std::string(Buffer);
 
-  //read spells
+  // read spells
   SignSpells.clear();
 
-  while (BytesRead<Size)
+  while (BytesRead < Size)
   {
-    //read NPCS
-    in_File.read((char*) &SubRecName, 4);
-    BytesRead += 4;
-    if (SubRecName!=cNPCS)
+    // read spell id (NPCS)
+    std::string temp;
+    if (!loadString256WithHeader(input, temp, Buffer, cNPCS, BytesRead))
     {
-      UnexpectedRecord(cNPCS, SubRecName);
+      std::cerr << "Error while reading sub record NPCS of BSGN!\n";
       return false;
     }
-    //NPCS's length
-    in_File.read((char*) &SubLength, 4);
-    BytesRead += 4;
-    if (SubLength>255)
-    {
-      std::cout << "Error: Subrecord NPCS of BSGN is longer than 255 characters.\n";
-      return false;
-    }
-    //read description
-    memset(Buffer, '\0', 256);
-    in_File.read(Buffer, SubLength);
-    BytesRead += SubLength;
-    if (!in_File.good())
-    {
-      std::cout << "Error while reading subrecord NPCS of BSGN!\n";
-      return false;
-    }
-    SignSpells.push_back(std::string(Buffer));
-  }//while
+    SignSpells.emplace_back(temp);
+  }
 
-  return in_File.good();
+  return input.good();
 }
 
 bool operator<(const BirthSignRecord& left, const BirthSignRecord& right)
@@ -303,4 +192,4 @@ bool operator<(const BirthSignRecord& left, const BirthSignRecord& right)
   return lowerCaseCompare(left.recordID, right.recordID) < 0;
 }
 
-} //namespace
+} // namespace

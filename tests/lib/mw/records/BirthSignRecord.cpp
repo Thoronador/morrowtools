@@ -39,6 +39,17 @@ TEST_CASE("MWTP::BirthSignRecord")
     REQUIRE( record.SignSpells.empty() );
   }
 
+  SECTION("constructor with id")
+  {
+    BirthSignRecord record("foo_id");
+
+    REQUIRE( record.recordID == "foo_id" );
+    REQUIRE( record.Name.empty() );
+    REQUIRE( record.Texture.empty() );
+    REQUIRE( record.Description.empty() );
+    REQUIRE( record.SignSpells.empty() );
+  }
+
   SECTION("equals")
   {
     BirthSignRecord a;

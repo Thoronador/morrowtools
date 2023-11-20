@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -147,16 +147,14 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load potion with a single effect")
     {
       const auto data = "ALCH\xA4\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0p_slowfall_s\0MODL\x1B\0\0\0m\\Misc_Potion_Fresh_01.nif\0TEXT\x19\0\0\0m\\Tx_potion_fresh_01.tga\0FNAM\x0F\0\0\0Federflugtrank\0ALDT\x0C\0\0\0\0\0\x80?#\0\0\0\0\0\0\0ENAM\x18\0\0\0\x0B\0\xFF\xFF\0\0\0\0\0\0\0\0\x0F\0\0\0\x0A\0\0\0\x0A\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -201,8 +199,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -256,8 +254,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -302,8 +300,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -317,8 +315,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -332,8 +330,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -347,8 +345,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -362,8 +360,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -377,8 +375,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -392,8 +390,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -407,8 +405,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -422,8 +420,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -437,8 +435,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -452,8 +450,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -467,8 +465,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -482,8 +480,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -497,8 +495,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -512,8 +510,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -527,8 +525,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -542,8 +540,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -557,8 +555,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -572,8 +570,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -587,8 +585,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -602,8 +600,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -618,8 +616,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read ALCH, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip ALCH, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -632,8 +630,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read ALCH, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip ALCH, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -648,8 +646,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -663,8 +661,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -678,8 +676,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -693,8 +691,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -708,8 +706,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -723,8 +721,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -738,8 +736,8 @@ TEST_CASE("MWTP::AlchemyPotionRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ALCH, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

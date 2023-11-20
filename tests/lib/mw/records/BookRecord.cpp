@@ -177,16 +177,14 @@ TEST_CASE("MWTP::BookRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record without script, text and enchantment ID")
     {
       const auto data = "BOOK\x84\0\0\0\0\0\0\0\0\0\0\0NAME\x0F\0\0\0sc_paper plain\0MODL\x1A\0\0\0m\\Misc_paper_plain_01.nif\0FNAM\x07\0\0\0Papier\0BKDT\x14\0\0\0\0\0\x80?\x03\0\0\0\x01\0\0\0\xFF\xFF\xFF\xFF\x32\0\0\0ITEX\x18\0\0\0m\\Tx_paper_plain_01.tga\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -223,8 +221,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -261,8 +259,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -299,8 +297,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -314,8 +312,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -329,8 +327,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -344,8 +342,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -359,8 +357,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -374,8 +372,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -389,8 +387,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -404,8 +402,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -419,8 +417,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -434,8 +432,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -449,8 +447,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -465,8 +463,8 @@ TEST_CASE("MWTP::BookRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read BOOK, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip BOOK, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -479,8 +477,8 @@ TEST_CASE("MWTP::BookRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read BOOK, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip BOOK, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -495,8 +493,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -510,8 +508,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -525,8 +523,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -540,8 +538,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -555,8 +553,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -570,8 +568,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -585,8 +583,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -600,8 +598,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -615,8 +613,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -630,8 +628,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -645,8 +643,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -660,8 +658,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -675,8 +673,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -690,8 +688,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -705,8 +703,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -720,8 +718,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -735,8 +733,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -750,8 +748,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -765,8 +763,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -780,8 +778,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -795,8 +793,8 @@ TEST_CASE("MWTP::BookRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read BOOK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip BOOK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

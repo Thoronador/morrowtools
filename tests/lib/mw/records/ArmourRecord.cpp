@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -187,16 +187,14 @@ TEST_CASE("MWTP::ArmourRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record without script")
     {
       const auto data = "ARMO\xCF\0\0\0\0\0\0\0\0\0\0\0NAME\x16\0\0\0bloodworm_helm_unique\0MODL\x17\0\0\0a\\A_Trollbone_Helm.NIF\0FNAM\x13\0\0\0Helm des Blutwurms\0AODT\x18\0\0\0\0\0\0\0\0\0\0A\xD0\x84\0\0X\x02\0\0\xDC\x05\0\0\x12\0\0\0ITEX\x18\0\0\0a\\tx_Trollbone_helm.tga\0INDX\x01\0\0\0\x01\x42NAM\x10\0\0\0a_trollbone_helmENAM\x0E\0\0\0grip of death\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -239,8 +237,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -287,8 +285,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -331,8 +329,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -346,8 +344,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -361,8 +359,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -376,8 +374,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -391,8 +389,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -406,8 +404,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -421,8 +419,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -436,8 +434,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -451,8 +449,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -466,8 +464,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -481,8 +479,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -497,8 +495,8 @@ TEST_CASE("MWTP::ArmourRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read ARMO, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip ARMO, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -511,8 +509,8 @@ TEST_CASE("MWTP::ArmourRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read ARMO, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip ARMO, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -527,8 +525,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -542,8 +540,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -557,8 +555,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -572,8 +570,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -587,8 +585,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -602,8 +600,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -618,8 +616,8 @@ TEST_CASE("MWTP::ArmourRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read ARMO, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip ARMO, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -632,8 +630,8 @@ TEST_CASE("MWTP::ArmourRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read ARMO, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip ARMO, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -648,8 +646,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -663,8 +661,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -678,8 +676,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -693,8 +691,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -708,8 +706,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -723,8 +721,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -738,8 +736,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -753,8 +751,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -768,8 +766,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -783,8 +781,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -798,8 +796,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -813,8 +811,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -828,8 +826,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -843,8 +841,8 @@ TEST_CASE("MWTP::ArmourRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ARMO, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ARMO, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

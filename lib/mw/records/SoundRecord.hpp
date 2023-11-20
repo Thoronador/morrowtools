@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012  Thoronador
+    Copyright (C) 2011, 2012, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,35 +30,41 @@ namespace MWTP
 
 struct SoundRecord: public BasicRecord
 {
-  std::string recordID; //formerly SoundID
-  std::string Filename;
+  std::string recordID;
+  std::string FileName;
   uint8_t Volume;
   uint8_t MinRange;
   uint8_t MaxRange;
 
-  /* constructor */
   SoundRecord();
 
-  /* returns true, of content of other record is equal to this one */
+  /** \brief Checks whether another instance contains the same data.
+   *
+   * \param other   the other record to compare with
+   * \return Returns true, if @other contains the same data as this instance.
+   *         Returns false otherwise.
+   */
   bool equals(const SoundRecord& other) const;
 
   #ifndef MW_UNSAVEABLE_RECORDS
-  /* writes the record to the given output stream and returns true on success
-
-    parameters:
-        output - the output stream
-  */
+  /** \brief Writes the record to the given output stream.
+   *
+   * \param output  the output stream
+   * \return Returns true on success (record was written to stream).
+   *         Returns false, if an error occurred.
+   */
   bool saveToStream(std::ostream& output) const override;
   #endif
 
-  /* loads the record from the given input stream and returns true on success
+  /** \brief Loads the record from the given input stream.
+   *
+   * \param input    the input stream
+   * \return Returns true on success (record was loaded from stream).
+   *         Returns false, if an error occurred.
+   */
+  bool loadFromStream(std::istream& input) override;
+}; // struct
 
-    parameters:
-        in_File - the input stream
-  */
-  bool loadFromStream(std::istream& in_File) override;
-}; //struct
-
-} //namespace
+} // namespace
 
 #endif // MW_SOUNDRECORD_HPP

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012  Thoronador
+    Copyright (C) 2009, 2011, 2012, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ namespace MWTP
 SoundRecord::SoundRecord()
 : BasicRecord(),
   recordID(""),
-  Filename(""),
+  FileName(""),
   Volume(0),
   MinRange(0),
   MaxRange(0)
@@ -38,24 +38,23 @@ SoundRecord::SoundRecord()
 
 bool SoundRecord::equals(const SoundRecord& other) const
 {
-  return ((recordID==other.recordID) and (Filename==other.Filename)
-      and (Volume==other.Volume) and (MinRange==other.MinRange)
-      and (MaxRange==other.MaxRange));
+  return (recordID == other.recordID) && (FileName == other.FileName)
+      && (Volume == other.Volume) && (MinRange == other.MinRange)
+      && (MaxRange == other.MaxRange);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
 bool SoundRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cSOUN, 4);
-  uint32_t Size;
-  Size = 4 /* NAME */ +4 /* 4 bytes for length */
-        +recordID.length()+1 /* length of ID +1 byte for NUL termination */
-        +4 /* FNAM */ +4 /* 4 bytes for FNAM's length */
-        +Filename.length()+1 /*length of name plus one for NUL-termination */
-        +4 /* DATA */ +4 /* DATA's length */ +3 /*size of sound data (DATA)*/;
-  output.write((const char*) &Size, 4);
-  output.write((const char*) &HeaderOne, 4);
-  output.write((const char*) &HeaderFlags, 4);
+  output.write(reinterpret_cast<const char*>(&cSOUN), 4);
+  const uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
+        + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
+        + 4 /* FNAM */ + 4 /* 4 bytes for FNAM's length */
+        + FileName.length() + 1 /*length of name plus one for NUL-termination */
+        + 4 /* DATA */ + 4 /* DATA's length */ + 3 /*size of sound data (DATA)*/;
+  output.write(reinterpret_cast<const char*>(&Size), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
+  output.write(reinterpret_cast<const char*>(&HeaderFlags), 4);
 
   /*Sound:
     NAME = Sound ID
@@ -65,42 +64,36 @@ bool SoundRecord::saveToStream(std::ostream& output) const
         byte MinRange
         byte MaxRange*/
 
-  //write NAME
-  output.write((const char*) &cNAME, 4);
-  //NAME's length
-  uint32_t SubLength = recordID.length()+1;//length of string plus one for NUL-termination
-  output.write((const char*) &SubLength, 4);
-  //write name/ID
+  // write sound name / ID (NAME)
+  output.write(reinterpret_cast<const char*>(&cNAME), 4);
+  uint32_t SubLength = recordID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
-  //write FNAM
-  output.write((const char*) &cFNAM, 4);
-  //FNAM's length
-  SubLength = Filename.length()+1; //length of string plus one for NUL-termination
-  output.write((const char*) &SubLength, 4);
-  //write file name
-  output.write(Filename.c_str(), SubLength);
+  // write file name (FNAM)
+  output.write(reinterpret_cast<const char*>(&cFNAM), 4);
+  SubLength = FileName.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(FileName.c_str(), SubLength);
 
-  //write DATA
-  output.write((const char*) &cDATA, 4);
-  //DATA's length
-  SubLength = 3; //length of DATA (sound data) is always three bytes
-  output.write((const char*) &SubLength, 4);
-  // write sound data
-  output.write((const char*) &Volume, 1);
-  output.write((const char*) &MinRange, 1);
-  output.write((const char*) &MaxRange, 1);
+  // write sound data (DATA)
+  output.write(reinterpret_cast<const char*>(&cDATA), 4);
+  SubLength = 3; // length of DATA (sound data) is always three bytes
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(reinterpret_cast<const char*>(&Volume), 1);
+  output.write(reinterpret_cast<const char*>(&MinRange), 1);
+  output.write(reinterpret_cast<const char*>(&MaxRange), 1);
 
   return output.good();
 }
 #endif
 
-bool SoundRecord::loadFromStream(std::istream& in_File)
+bool SoundRecord::loadFromStream(std::istream& input)
 {
-  uint32_t Size;
-  in_File.read((char*) &Size, 4);
-  in_File.read((char*) &HeaderOne, 4);
-  in_File.read((char*) &HeaderFlags, 4);
+  uint32_t Size { 0 };
+  input.read(reinterpret_cast<char*>(&Size), 4);
+  input.read(reinterpret_cast<char*>(&HeaderOne), 4);
+  input.read(reinterpret_cast<char*>(&HeaderFlags), 4);
 
   /*Sound:
     NAME = Sound ID
@@ -110,83 +103,49 @@ bool SoundRecord::loadFromStream(std::istream& in_File)
         byte MinRange
         byte MaxRange*/
 
-  uint32_t SubRecName;
-  uint32_t SubLength;
-  SubRecName = SubLength = 0;
-
-  //read NAME
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cNAME)
-  {
-    UnexpectedRecord(cNAME, SubRecName);
-    return false;
-  }
-  //NAME's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord NAME of SOUN is longer than 255 characters.\n";
-    return false;
-  }
-  //read the name/ID
+  // read name / id (NAME)
   char Buffer[256];
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
+  uint32_t BytesRead { 0 };
+  if (!loadString256WithHeader(input, recordID, Buffer, cNAME, BytesRead))
   {
-    std::cout << "Error while reading subrecord NAME of SOUN.\n";
+    std::cerr << "Error while reading sub record NAME of SOUN.\n";
     return false;
   }
-  recordID = std::string(Buffer);
 
-  //read FNAM
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cFNAM)
+  // read file name (FNAM)
+  if (!loadString256WithHeader(input, FileName, Buffer, cFNAM, BytesRead))
   {
-    UnexpectedRecord(cFNAM, SubRecName);
+    std::cerr << "Error while reading sub record FNAM of SOUN.\n";
     return false;
   }
-  //FNAM's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength>255)
-  {
-    std::cout << "Error: subrecord FNAM of SOUN is longer than 255 characters.\n";
-    return false;
-  }
-  //read file name
-  memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
-  if (!in_File.good())
-  {
-    std::cout << "Error while reading subrecord FNAM of SOUN.\n";
-    return false;
-  }
-  Filename = std::string(Buffer);
 
-  //read DATA
-  in_File.read((char*) &SubRecName, 4);
-  if (SubRecName!=cDATA)
+  // read sound data (DATA)
+  uint32_t SubRecName = 0;
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
+  if (SubRecName != cDATA)
   {
     UnexpectedRecord(cDATA, SubRecName);
     return false;
   }
-  //DATA's length
-  in_File.read((char*) &SubLength, 4);
-  if (SubLength!=3)
+  // DATA's length
+  uint32_t SubLength = 0;
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
+  if (SubLength != 3)
   {
-    std::cout << "Error: sub record DATA of SOUN has invalid length ("
+    std::cerr << "Error: Sub record DATA of SOUN has invalid length ("
               << SubLength << " bytes). Should be 3 bytes.\n";
     return false;
   }
-  //read sound data
-  in_File.read((char*) &Volume, 1);
-  in_File.read((char*) &MinRange, 1);
-  in_File.read((char*) &MaxRange, 1);
-  if (!in_File.good())
+  // read sound data
+  input.read(reinterpret_cast<char*>(&Volume), 1);
+  input.read(reinterpret_cast<char*>(&MinRange), 1);
+  input.read(reinterpret_cast<char*>(&MaxRange), 1);
+  if (!input.good())
   {
-    std::cout << "Error while reading subrecord DATA of SOUN.\n";
+    std::cerr << "Error while reading sub record DATA of SOUN.\n";
+    return false;
   }
-  return in_File.good();
+  return true;
 }
 
-} //namespace
+} // namespace

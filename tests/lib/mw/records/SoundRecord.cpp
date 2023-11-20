@@ -33,7 +33,7 @@ TEST_CASE("MWTP::SoundRecord")
     SoundRecord record;
 
     REQUIRE( record.recordID.empty() );
-    REQUIRE( record.Filename.empty() );
+    REQUIRE( record.FileName.empty() );
     REQUIRE( record.Volume == 0 );
     REQUIRE( record.MinRange == 0 );
     REQUIRE( record.MaxRange == 0 );
@@ -47,10 +47,10 @@ TEST_CASE("MWTP::SoundRecord")
     SECTION("equal")
     {
       a.recordID = "Foo";
-      a.Filename = "blob.wav";
+      a.FileName = "blob.wav";
 
       b.recordID = "Foo";
-      b.Filename = "blob.wav";
+      b.FileName = "blob.wav";
 
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
@@ -69,8 +69,8 @@ TEST_CASE("MWTP::SoundRecord")
 
       SECTION("FileName mismatch")
       {
-        a.Filename = "foo.wav";
-        b.Filename = "bar.wav";
+        a.FileName = "foo.wav";
+        b.FileName = "bar.wav";
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -126,7 +126,7 @@ TEST_CASE("MWTP::SoundRecord")
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
       REQUIRE( record.recordID == "DefaultLandWater" );
-      REQUIRE( record.Filename == "Fx\\FOOT\\splsh.wav" );
+      REQUIRE( record.FileName == "Fx\\FOOT\\splsh.wav" );
       REQUIRE( record.Volume == 255 );
       REQUIRE( record.MinRange == 0 );
       REQUIRE( record.MaxRange == 0 );

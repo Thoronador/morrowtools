@@ -114,18 +114,18 @@ bool TES3Record::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&NumRecords), 4);
   if (!output.good())
   {
-    std::cerr << "Error while writing subrecord HEDR of TES3!\n";
+    std::cerr << "Error while writing sub record HEDR of TES3!\n";
     return false;
   }
   // ---- write dependencies
   for (size_t i = 0; i < dependencies.getSize(); ++i)
   {
-    // write MAST subrecord
+    // write MAST sub record
     output.write(reinterpret_cast<const char*>(&cMAST), 4);
     SubLength = dependencies.at(i).name.length() + 1;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(dependencies.at(i).name.c_str(), SubLength);
-    // write DATA subrecord
+    // write DATA sub record
     output.write(reinterpret_cast<const char*>(&cDATA), 4);
     SubLength = 8;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
@@ -182,7 +182,7 @@ bool TES3Record::loadFromStream(std::istream& input)
   BytesRead += 4;
   if (SubLength != 300)
   {
-    std::cerr << "Error: Subrecord HEDR of TES3 has wrong size."
+    std::cerr << "Error: Sub record HEDR of TES3 has wrong size."
               << " Actual size: " << SubLength << " bytes. Must-have size: 300 bytes.\n";
     return false;
   }
@@ -194,7 +194,7 @@ bool TES3Record::loadFromStream(std::istream& input)
   BytesRead += 8;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading sub record HEDR of TES3!\n";
     return false;
   }
   // ---- read company name
@@ -203,7 +203,7 @@ bool TES3Record::loadFromStream(std::istream& input)
   input.read(Buffer, 32);
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading sub record HEDR of TES3!\n";
     return false;
   }
   companyName = std::string(Buffer);
@@ -212,7 +212,7 @@ bool TES3Record::loadFromStream(std::istream& input)
   input.read(Buffer, 256);
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading sub record HEDR of TES3!\n";
     return false;
   }
   description = std::string(Buffer);
@@ -221,7 +221,7 @@ bool TES3Record::loadFromStream(std::istream& input)
   BytesRead += (32 + 256 + 4);
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord HEDR of TES3!\n";
+    std::cerr << "Error while reading sub record HEDR of TES3!\n";
     return false;
   }
 
@@ -233,7 +233,7 @@ bool TES3Record::loadFromStream(std::istream& input)
     // read MAST
     if (!loadString256WithHeader(input, temp_file_info.name, Buffer, cMAST, BytesRead))
     {
-      std::cerr << "Error while reading subrecord MAST of TES3!\n";
+      std::cerr << "Error while reading sub record MAST of TES3!\n";
       return false;
     }
 
@@ -250,7 +250,7 @@ bool TES3Record::loadFromStream(std::istream& input)
     BytesRead += 4;
     if (SubLength != 8)
     {
-      std::cerr << "Error: Subrecord DATA of TES3 has invalid size ("
+      std::cerr << "Error: Sub record DATA of TES3 has invalid size ("
                 << SubLength << " bytes). Should be 8 bytes.\n";
       return false;
     }
@@ -259,7 +259,7 @@ bool TES3Record::loadFromStream(std::istream& input)
     BytesRead += 8;
     if (!input.good())
     {
-      std::cerr << "Error while reading subrecord DATA of TES3.\n";
+      std::cerr << "Error while reading sub record DATA of TES3.\n";
       return false;
     }
     temp_file_info.modified = -1; // guess / preset

@@ -53,6 +53,7 @@ set(lib_mw_tests_sources
     ../../../lib/mw/records/RepairItemRecord.cpp
     ../../../lib/mw/records/ScriptRecord.cpp
     ../../../lib/mw/records/SkillRecord.cpp
+    ../../../lib/mw/records/SoundRecord.cpp
     ../../../lib/mw/records/SpellRecord.cpp
     ../../../lib/mw/records/StartScriptRecord.cpp
     ../../../lib/mw/records/StaticRecord.cpp
@@ -116,6 +117,7 @@ set(lib_mw_tests_sources
     records/ScriptRecord.cpp
     records/SkillRecord.cpp
     records/SoundChanceRecord.cpp
+    records/SoundRecord.cpp
     records/SpellRecord.cpp
     records/StartScriptRecord.cpp
     records/StaticRecord.cpp

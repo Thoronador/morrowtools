@@ -128,6 +128,8 @@
 		<Unit filename="../../../lib/mw/records/ScriptRecord.hpp" />
 		<Unit filename="../../../lib/mw/records/SkillRecord.cpp" />
 		<Unit filename="../../../lib/mw/records/SkillRecord.hpp" />
+		<Unit filename="../../../lib/mw/records/SoundRecord.cpp" />
+		<Unit filename="../../../lib/mw/records/SoundRecord.hpp" />
 		<Unit filename="../../../lib/mw/records/SpellRecord.cpp" />
 		<Unit filename="../../../lib/mw/records/SpellRecord.hpp" />
 		<Unit filename="../../../lib/mw/records/StartScriptRecord.cpp" />
@@ -199,6 +201,7 @@
 		<Unit filename="records/ScriptRecord.cpp" />
 		<Unit filename="records/SkillRecord.cpp" />
 		<Unit filename="records/SoundChanceRecord.cpp" />
+		<Unit filename="records/SoundRecord.cpp" />
 		<Unit filename="records/SpellRecord.cpp" />
 		<Unit filename="records/StartScriptRecord.cpp" />
 		<Unit filename="records/StaticRecord.cpp" />

@@ -56,7 +56,7 @@ bool BirthSignRecord::equals(const BirthSignRecord& other) const
 #ifndef MW_UNSAVEABLE_RECORDS
 bool BirthSignRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cBSGN, 4);
+  output.write(reinterpret_cast<const char*>(&cBSGN), 4);
   uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
         + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
         + 4 /* FNAM */ + 4 /* 4 bytes for length */

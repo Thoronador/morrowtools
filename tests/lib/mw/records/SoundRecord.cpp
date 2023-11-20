@@ -336,4 +336,29 @@ TEST_CASE("MWTP::SoundRecord")
       REQUIRE_FALSE( record.loadFromStream(stream) );
     }
   }
+
+  SECTION("normalizedVolume")
+  {
+    SoundRecord record;
+
+    record.Volume = 0;
+    REQUIRE( record.normalizedVolume() == 0.0 );
+
+    record.Volume = 255;
+    REQUIRE( record.normalizedVolume() == 1.0 );
+
+    record.Volume = 1;
+    REQUIRE( record.normalizedVolume() >= 0.0039215 );
+    REQUIRE( record.normalizedVolume() <= 0.0039216 );
+
+    record.Volume = 51;
+    REQUIRE( record.normalizedVolume() == 0.2 );
+
+    record.Volume = 128;
+    REQUIRE( record.normalizedVolume() >= 0.5019607 );
+    REQUIRE( record.normalizedVolume() <= 0.5019608 );
+
+    record.Volume = 204;
+    REQUIRE( record.normalizedVolume() == 0.8 );
+  }
 }

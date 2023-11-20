@@ -148,4 +148,9 @@ bool SoundRecord::loadFromStream(std::istream& input)
   return true;
 }
 
+double SoundRecord::normalizedVolume() const
+{
+  return static_cast<double>(Volume) / 255.0;
+}
+
 } // namespace

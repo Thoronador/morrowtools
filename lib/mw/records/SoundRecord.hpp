@@ -63,6 +63,12 @@ struct SoundRecord: public BasicRecord
    *         Returns false, if an error occurred.
    */
   bool loadFromStream(std::istream& input) override;
+
+  /** \brief Get the volume value normalized to the interval [0;1].
+   *
+   * \return Returns the volume value normalized to the interval [0;1].
+   */
+  double normalizedVolume() const;
 }; // struct
 
 } // namespace

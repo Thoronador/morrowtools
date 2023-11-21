@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -167,16 +167,14 @@ TEST_CASE("MWTP::ClothingRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record without body parts and script")
     {
       const auto data = "CLOT\xA1\0\0\0\0\0\0\0\0\0\0\0NAME\x14\0\0\0ring_shashev_unique\0MODL\x19\0\0\0c\\C_Ring_exquisite_1.NIF\0FNAM\x0E\0\0\0Shashevs Ring\0CTDT\x0C\0\0\0\x08\0\0\0\xCD\xCC\xCC=\xF0U,\x01ITEX\x1A\0\0\0c\\tx_ring_exquisite01.tga\0ENAM\x10\0\0\0devil's bite_en\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -212,8 +210,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -278,8 +276,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -324,8 +322,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -361,8 +359,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -376,8 +374,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -391,8 +389,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -406,8 +404,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -421,8 +419,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -436,8 +434,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -451,8 +449,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -466,8 +464,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -481,8 +479,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -496,8 +494,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -511,8 +509,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -527,8 +525,8 @@ TEST_CASE("MWTP::ClothingRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CLOT, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CLOT, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -541,8 +539,8 @@ TEST_CASE("MWTP::ClothingRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CLOT, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CLOT, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -557,8 +555,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -572,8 +570,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -587,8 +585,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -602,8 +600,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -617,8 +615,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -632,8 +630,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -648,8 +646,8 @@ TEST_CASE("MWTP::ClothingRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CLOT, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CLOT, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -662,8 +660,8 @@ TEST_CASE("MWTP::ClothingRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CLOT, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CLOT, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -678,8 +676,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -693,8 +691,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -708,8 +706,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -723,8 +721,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -738,8 +736,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -753,8 +751,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -768,8 +766,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -783,8 +781,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -798,8 +796,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -813,8 +811,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -828,8 +826,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -843,8 +841,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -858,8 +856,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -873,8 +871,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -888,8 +886,8 @@ TEST_CASE("MWTP::ClothingRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CLOT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CLOT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -147,16 +147,14 @@ TEST_CASE("MWTP::LockpickRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record without script")
     {
       const auto data = "LOCK\x81\0\0\0\0\0\0\0\0\0\0\0NAME\x0D\0\0\0skeleton_key\0MODL\x13\0\0\0m\\Skeleton_key.NIF\0FNAM\x13\0\0\0Der Schlosswandler\0LKDT\x10\0\0\0\0\0\0?\xE8\x03\0\0\0\0\xA0@2\0\0\0ITEX\x16\0\0\0m\\tx_skeleton_key.tga\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -190,8 +188,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -225,8 +223,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -240,8 +238,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -255,8 +253,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -270,8 +268,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -285,8 +283,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -300,8 +298,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -315,8 +313,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -330,8 +328,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -345,8 +343,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -360,8 +358,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -375,8 +373,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -391,8 +389,8 @@ TEST_CASE("MWTP::LockpickRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read LOCK, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip LOCK, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -405,8 +403,8 @@ TEST_CASE("MWTP::LockpickRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read LOCK, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip LOCK, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -421,8 +419,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -436,8 +434,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -451,8 +449,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -466,8 +464,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -481,8 +479,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -496,8 +494,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -511,8 +509,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -526,8 +524,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -541,8 +539,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -556,8 +554,8 @@ TEST_CASE("MWTP::LockpickRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read LOCK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip LOCK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

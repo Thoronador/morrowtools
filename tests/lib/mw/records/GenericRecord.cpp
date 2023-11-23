@@ -60,9 +60,8 @@ TEST_CASE("MWTP::GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ACTI, because header is handled before loadFromStream.
-      uint32_t dummy = 0;
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ACTI, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -123,9 +122,8 @@ TEST_CASE("MWTP::GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ACTI, because header is handled before loadFromStream.
-      uint32_t dummy = 0;
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ACTI, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -188,16 +186,14 @@ TEST_CASE("MWTP::GenericRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record")
     {
       const auto data = "ACTI\x53\0\0\0\0\0\0\0\0\0\0\0NAME\x14\0\0\0active_akula_shield\0MODL\x1A\0\0\0i\\active_akula_shield.NIF\0FNAM\x0D\0\0\0Akula-Schild\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ACTI, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ACTI, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -227,8 +223,8 @@ TEST_CASE("MWTP::GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ACTI, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ACTI, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -242,8 +238,8 @@ TEST_CASE("MWTP::GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ACTI, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ACTI, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -257,8 +253,8 @@ TEST_CASE("MWTP::GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read ACTI, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip ACTI, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

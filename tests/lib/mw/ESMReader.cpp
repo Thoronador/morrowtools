@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -172,19 +172,18 @@ TEST_CASE("MWTP::ESMReader")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      uint32_t dummy = 0;
-      // read STAT, because header is handled before skipRecord.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip STAT, because header is handled before skipRecord.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       REQUIRE( reader.skipRecord(stream) == 0);
 
       // Check that the stream is really at the right position by reading the
-      // next bytes, which should be "XXXX".
-      dummy = 0;
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // next bytes, which should be "APPA".
+      uint32_t next_four_bytes = 0;
+      stream.read(reinterpret_cast<char*>(&next_four_bytes), 4);
       REQUIRE( stream.good() );
-      REQUIRE( dummy == cAPPA );
+      REQUIRE( next_four_bytes == cAPPA );
     }
 
     SECTION("corrupt stream: stream end before full record can be skipped")
@@ -193,9 +192,8 @@ TEST_CASE("MWTP::ESMReader")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      uint32_t dummy;
-      // read STAT, because header is handled before skipRecord.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip STAT, because header is handled before skipRecord.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       REQUIRE( reader.skipRecord(stream) == -1 );

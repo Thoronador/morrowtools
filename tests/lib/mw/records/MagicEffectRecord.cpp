@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -267,16 +267,14 @@ TEST_CASE("MWTP::MagicEffectRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record")
     {
       const auto data = "MGEF\x21\x01\0\0\0\0\0\0\0\0\0\0INDX\x04\0\0\0d\0\0\0MEDT$\0\0\0\x05\0\0\0\0\0pA\0\0\0\0\x82\0\0\0\xA4\0\0\0\xFD\0\0\0\0\0\x80?\0\0\x80?\0\0HBITEX\x14\0\0\0s\\Tx_S_remcurse.tga\0PTEX\x12\0\0\0vfx_bluecloud.tga\0CVFX\x14\0\0\0VFX_RestorationCast\0BVFX\x10\0\0\0VFX_RestoreBolt\0HVFX\x13\0\0\0VFX_RestorationHit\0AVFX\x14\0\0\0VFX_RestorationArea\0DESC@\0\0\0Befreit das Ziel des Zaubers von den Auswirkungen eines Fluches."sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -324,8 +322,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -373,8 +371,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -388,8 +386,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -404,8 +402,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read MGEF, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip MGEF, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -418,8 +416,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read MGEF, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip MGEF, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -434,8 +432,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -449,8 +447,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -465,8 +463,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read MGEF, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip MGEF, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -479,8 +477,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read MGEF, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip MGEF, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -495,8 +493,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -510,8 +508,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -525,8 +523,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -540,8 +538,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -555,8 +553,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -570,8 +568,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -585,8 +583,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -600,8 +598,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -615,8 +613,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -630,8 +628,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -645,8 +643,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -660,8 +658,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -675,8 +673,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -690,8 +688,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -705,8 +703,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -720,8 +718,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -735,8 +733,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -750,8 +748,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -765,8 +763,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -780,8 +778,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -795,8 +793,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -810,8 +808,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -825,8 +823,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -840,8 +838,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -855,8 +853,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -870,8 +868,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -885,8 +883,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -900,8 +898,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -915,8 +913,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -930,8 +928,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -945,8 +943,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -960,8 +958,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -975,8 +973,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -990,8 +988,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1005,8 +1003,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1020,8 +1018,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1035,8 +1033,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1050,8 +1048,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1065,8 +1063,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1080,8 +1078,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1095,8 +1093,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1110,8 +1108,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1125,8 +1123,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1140,8 +1138,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1155,8 +1153,8 @@ TEST_CASE("MWTP::MagicEffectRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read MGEF, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip MGEF, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

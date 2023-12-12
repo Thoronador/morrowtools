@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -119,16 +119,14 @@ TEST_CASE("MWTP::PathGridRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record of interior cell")
     {
       const auto data = "PGRD\x0B\x01\0\0\0\0\0\0\0\0\0\0DATA\x0C\0\0\0\0\0\0\0\0\0\0\0\0\x04\x08\0NAME\x1F\0\0\0Zainab Lager, Zelt des Ashkhan\0PGRP\x80\0\0\0\xF9\xFF\xFF\xFF)\x01\0\0\xF7\xFE\xFF\xFF\x01\x02\0\0}\0\0\0\xB8\x01\0\0\xF5\xFE\xFF\xFF\x01\x02\0\0p\xFF\xFF\xFF\xBB\x01\0\0\xF2\xFE\xFF\xFF\x01\x02\0\0\xF7\xFF\xFF\xFF#\x02\0\0\xF2\xFE\xFF\xFF\x01\x02\0\0\xA2\xFF\xFF\xFFt\x01\0\0\xF5\xFE\xFF\xFF\x01\x02\0\0\xA6\xFF\xFF\xFF\x15\x02\0\0\xF8\xFE\xFF\xFF\x01\x02\0\0P\0\0\0\x09\x02\0\0\xF5\xFE\xFF\xFF\x01\x02\0\0J\0\0\0m\x01\0\0\xF5\xFE\xFF\xFF\x01\x02\0\0PGRC@\0\0\0\x04\0\0\0\x07\0\0\0\x06\0\0\0\x07\0\0\0\x04\0\0\0\x05\0\0\0\x05\0\0\0\x06\0\0\0\0\0\0\0\x02\0\0\0\x02\0\0\0\x03\0\0\0\x01\0\0\0\x03\0\0\0\0\0\0\0\x01\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -264,8 +262,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -279,8 +277,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -295,8 +293,8 @@ TEST_CASE("MWTP::PathGridRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read PGRD, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip PGRD, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -309,8 +307,8 @@ TEST_CASE("MWTP::PathGridRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read PGRD, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip PGRD, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -325,8 +323,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -340,8 +338,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -355,8 +353,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -370,8 +368,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -385,8 +383,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -400,8 +398,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -415,8 +413,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -432,8 +430,8 @@ TEST_CASE("MWTP::PathGridRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read PGRD, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip PGRD, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -447,8 +445,8 @@ TEST_CASE("MWTP::PathGridRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read PGRD, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip PGRD, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -463,8 +461,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -478,8 +476,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -493,8 +491,8 @@ TEST_CASE("MWTP::PathGridRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PGRD, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PGRD, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

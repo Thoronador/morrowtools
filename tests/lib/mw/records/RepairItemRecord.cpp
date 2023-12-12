@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -231,16 +231,14 @@ TEST_CASE("MWTP::RepairItemRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record without script")
     {
       const auto data = "REPA\x91\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0repair_master_01\0MODL\x17\0\0\0m\\Repair_Master_01.nif\0FNAM\x1C\0\0\0Schmiedehammer des Meisters\0RIDT\x10\0\0\0\0\0\0@2\0\0\0\x0A\0\0\0ff\xA6?ITEX\x15\0\0\0m\\Tx_repair_M_01.tga\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -274,8 +272,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -309,8 +307,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -324,8 +322,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -339,8 +337,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -354,8 +352,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -369,8 +367,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -384,8 +382,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -399,8 +397,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -414,8 +412,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -429,8 +427,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -444,8 +442,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -459,8 +457,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -475,8 +473,8 @@ TEST_CASE("MWTP::RepairItemRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read REPA, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip REPA, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -489,8 +487,8 @@ TEST_CASE("MWTP::RepairItemRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read REPA, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip REPA, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -505,8 +503,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -520,8 +518,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -535,8 +533,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -550,8 +548,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -565,8 +563,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -580,8 +578,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -595,8 +593,8 @@ TEST_CASE("MWTP::RepairItemRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REPA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REPA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

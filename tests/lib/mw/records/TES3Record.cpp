@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -115,16 +115,14 @@ TEST_CASE("MWTP::TES3Record")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record without dependencies")
     {
       const auto data = "TES3\x34\x01\0\0\0\0\0\0\0\0\0\0HEDR,\x01\0\0\x9A\x99\x99?\x01\0\0\0Bethesda Softworks\0\0\0\0\0\0\0\0\0\0\0\0\0\0Hauptdatei f\xFCr Morrowind\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\xA1\xBC\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -155,8 +153,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -189,8 +187,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -204,8 +202,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -220,8 +218,8 @@ TEST_CASE("MWTP::TES3Record")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read TES3, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip TES3, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -234,8 +232,8 @@ TEST_CASE("MWTP::TES3Record")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read TES3, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip TES3, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -250,8 +248,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -265,8 +263,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -280,8 +278,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -295,8 +293,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -310,8 +308,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -325,8 +323,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -340,8 +338,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -355,8 +353,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -371,8 +369,8 @@ TEST_CASE("MWTP::TES3Record")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read TES3, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip TES3, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -385,8 +383,8 @@ TEST_CASE("MWTP::TES3Record")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read TES3, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip TES3, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -401,8 +399,8 @@ TEST_CASE("MWTP::TES3Record")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read TES3, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip TES3, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2023  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -257,16 +257,14 @@ TEST_CASE("MWTP::WeaponRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
-
     SECTION("default: load record without script")
     {
       const auto data = "WEAP\xB4\0\0\0\0\0\0\0\0\0\0\0NAME\x18\0\0\0daedric dagger_soultrap\0MODL\x17\0\0\0w\\W_Dagger_daedric.nif\0FNAM\x0E\0\0\0Seelentrinker\0WPDT \0\0\0\0\0\x10\x41\xF8*\0\0\0\0\xBC\x02\0\0 @\0\0\x80?<\0\x08\x0C\x08\x0C\x08\x0C\x01\0\0\0ITEX\x18\0\0\0w\\Tx_Dagger_daedric.tga\0ENAM\x0F\0\0\0we_soultrap_en\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -311,8 +309,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -357,8 +355,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -372,8 +370,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -387,8 +385,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -402,8 +400,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -417,8 +415,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -432,8 +430,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -447,8 +445,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -462,8 +460,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -477,8 +475,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -492,8 +490,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -507,8 +505,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -523,8 +521,8 @@ TEST_CASE("MWTP::WeaponRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read WEAP, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip WEAP, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -537,8 +535,8 @@ TEST_CASE("MWTP::WeaponRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read WEAP, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip WEAP, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -553,8 +551,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -568,8 +566,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -583,8 +581,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -598,8 +596,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -613,8 +611,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -628,8 +626,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -643,8 +641,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -658,8 +656,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -673,8 +671,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -688,8 +686,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -703,8 +701,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -718,8 +716,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -733,8 +731,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -748,8 +746,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -763,8 +761,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -778,8 +776,8 @@ TEST_CASE("MWTP::WeaponRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read WEAP, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip WEAP, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

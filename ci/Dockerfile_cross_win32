@@ -26,6 +26,7 @@ RUN mkdir -p /opt/morrowtools/build/artifacts && \
     cd /opt/morrowtools/build && \
     cp apps/mw/cell_translator/cell_translator.exe artifacts/ && \
     cp apps/mw/data_cleaner/data_cleaner.exe artifacts/ && \
+    cp apps/mw/name_generator/name_generator_mw.exe artifacts/ && \
     cp apps/mw/skill_rebalance/skill_rebalance.exe artifacts/ && \
     cp apps/mw/spell_rename/spell_rename.exe artifacts/ && \
     cp apps/sr/bsa_cli/bsa-cli.exe artifacts/ && \

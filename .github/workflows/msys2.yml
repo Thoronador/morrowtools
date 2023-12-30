@@ -57,7 +57,7 @@ jobs:
           # Morrowind tools
           cmake --build . -j2 --target cell_translator
           cmake --build . -j2 --target data_cleaner
-          cmake --build . -j2 --target name_generator
+          cmake --build . -j2 --target name_generator_mw
           cmake --build . -j2 --target skill_rebalance
           cmake --build . -j2 --target spell_rename
       - name: Collect statically linked artifacts
@@ -67,7 +67,7 @@ jobs:
           cd "$GITHUB_WORKSPACE"
           cp build-static/apps/mw/cell_translator/cell_translator.exe artifacts/
           cp build-static/apps/mw/data_cleaner/data_cleaner.exe artifacts/
-          cp build-static/apps/mw/name_generator/name_generator.exe artifacts/
+          cp build-static/apps/mw/name_generator/name_generator_mw.exe artifacts/
           cp build-static/apps/mw/skill_rebalance/skill_rebalance.exe artifacts/
           cp build-static/apps/mw/spell_rename/spell_rename.exe artifacts/
           cp build-static/apps/sr/bsa_cli/bsa-cli.exe artifacts/

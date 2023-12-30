@@ -1,6 +1,6 @@
-# name_generator - a simple name generator for Morrowind
+# name_generator_mw - a simple name generator for Morrowind
 
-`name_generator` is a command-line tool to generate lore-friendly character
+`name_generator_mw` is a command-line tool to generate lore-friendly character
 names by using the names of The Elder Scrolls III: Morrowind as reference.
 
 The name generator needs an existing installation of TES III: Morrowind in order
@@ -10,7 +10,7 @@ names, but they are not required.
 ## Usage
 
 ```
-name_generator [-d DIRECTORY]
+name_generator_mw [-d DIRECTORY]
 
 options:
   --help             - displays this help message and quits

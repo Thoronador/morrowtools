@@ -1,9 +1,9 @@
 # We might support earlier versions, too, but try to use a recent one.
 cmake_minimum_required (VERSION 3.8)
 
-project(name_generator)
+project(name_generator_mw)
 
-set(name_generator_sources
+set(name_generator_mw_sources
     ../../../lib/base/DirectoryFunctions.cpp
     ../../../lib/base/RegistryFunctions.cpp
     ../../../lib/base/UtilityFunctions.cpp
@@ -92,17 +92,17 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 if (ENABLE_LTO)
-  set(TARGET name_generator PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
+  set(TARGET name_generator_mw PROPERTY INTERPROCEDURAL_OPTIMIZATION TRUE)
 endif ()
 
-add_executable(name_generator ${name_generator_sources})
+add_executable(name_generator_mw ${name_generator_mw_sources})
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.1.0")
-  target_link_libraries(name_generator stdc++fs)
+  target_link_libraries(name_generator_mw stdc++fs)
 endif ()
 
 # Clang before 9.0 needs to link to libc++fs explicitly.
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0")
-  target_link_libraries(name_generator c++fs)
+  target_link_libraries(name_generator_mw c++fs)
 endif ()

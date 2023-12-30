@@ -33,7 +33,7 @@
 
 void showHelp()
 {
-  std::cout << "\nname_generator [-d DIRECTORY]\n"
+  std::cout << "\nname_generator_mw [-d DIRECTORY]\n"
             << "\n"
             << "options:\n"
             << "  --help             - displays this help message and quits\n"
@@ -56,7 +56,7 @@ void showHelp()
 
 void showVersion()
 {
-  std::cout << "Name Generator for Morrowind, version 0.4.0, 2023-10-30\n";
+  std::cout << "Name Generator for Morrowind, version 0.4.1, 2023-12-30\n";
 }
 
 int main(int argc, char **argv)

@@ -27,8 +27,8 @@ despite its name the project also contains tools for Skyrim.
   language into another
 * **data_cleaner**: helps to find and delete unused files within the Data Files
   directory of Morrowind
-* **name_generator**: generates lore-friendly character names by using the names
-  of The Elder Scrolls III: Morrowind as reference
+* **name_generator_mw**: generates lore-friendly character names by using the
+  names of The Elder Scrolls III: Morrowind as reference
 * **skill_rebalance**: creates a Morrowind plugin that makes leveling up skills
   harder or easier
 * **spell_rename**: helps to sort the spells in Morrowind's spell menu according

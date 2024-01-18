@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,6 +32,13 @@ namespace MWTP
  * \return Returns s with all backslashes replaced by forward slashes.
  */
 std::string flipBackslashes(std::string s);
+
+/** \brief Replaces all forward slashes in a string by backslashes.
+ *
+ * \param s  the string where forward slashes shall be flipped.
+ * \return Returns s with all forward slashes replaced by backslashes.
+ */
+std::string flipForwardSlashes(std::string s);
 
 } // namespace
 

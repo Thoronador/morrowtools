@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,6 +28,15 @@ std::string flipBackslashes(std::string s)
   for (auto pos = s.find('\\'); pos != std::string::npos; pos = s.find('\\', pos))
   {
      s.replace(pos, 1, 1, '/');
+  }
+  return s;
+}
+
+std::string flipForwardSlashes(std::string s)
+{
+  for (auto pos = s.find('/'); pos != std::string::npos; pos = s.find('/', pos))
+  {
+     s.replace(pos, 1, 1, '\\');
   }
   return s;
 }

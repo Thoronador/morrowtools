@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -54,6 +54,38 @@ TEST_CASE("SlashFunctions")
       REQUIRE( flipBackslashes("foo\\bar\\baz") == "foo/bar/baz" );
       REQUIRE( flipBackslashes("foo\\bar\\baz\\") == "foo/bar/baz/" );
       REQUIRE( flipBackslashes("\\foo\\bar\\baz\\") == "/foo/bar/baz/" );
+    }
+  }
+
+  SECTION("flipForwardSlashes")
+  {
+    SECTION("empty string")
+    {
+      REQUIRE( flipForwardSlashes("") == "" );
+    }
+
+    SECTION("no forward slashes - no changes")
+    {
+      REQUIRE( flipForwardSlashes("\\") == "\\" );
+      REQUIRE( flipForwardSlashes("foo") == "foo" );
+      REQUIRE( flipForwardSlashes("\\foo") == "\\foo" );
+      REQUIRE( flipForwardSlashes("foo\\") == "foo\\" );
+      REQUIRE( flipForwardSlashes("foo\\bar") == "foo\\bar" );
+      REQUIRE( flipForwardSlashes("foo\\bar\\baz") == "foo\\bar\\baz" );
+    }
+
+    SECTION("all forward slashes get flipped")
+    {
+      REQUIRE( flipForwardSlashes("/") == "\\" );
+      REQUIRE( flipForwardSlashes("foo") == "foo" );
+      REQUIRE( flipForwardSlashes("/foo") == "\\foo" );
+      REQUIRE( flipForwardSlashes("foo/") == "foo\\" );
+      REQUIRE( flipForwardSlashes("foo/bar") == "foo\\bar" );
+      REQUIRE( flipForwardSlashes("foo//bar") == "foo\\\\bar" );
+      REQUIRE( flipForwardSlashes("foo/bar/") == "foo\\bar\\" );
+      REQUIRE( flipForwardSlashes("foo/bar/baz") == "foo\\bar\\baz" );
+      REQUIRE( flipForwardSlashes("foo/bar/baz/") == "foo\\bar\\baz\\" );
+      REQUIRE( flipForwardSlashes("/foo/bar/baz/") == "\\foo\\bar\\baz\\" );
     }
   }
 }

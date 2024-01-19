@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2014, 2021, 2022, 2023  Dirk Stolle
+    Copyright (C) 2011, 2012, 2014, 2021, 2022, 2023, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -371,6 +371,33 @@ bool BSA::hasAllStructureData() const
 bool BSA::hasDirectory(const std::string& directoryName) const
 {
   return getIndexOfDirectory(directoryName).has_value();
+}
+
+bool BSA::hasIntermediateDirectory(const std::string& directoryName) const
+{
+  if (!hasAllStructureData())
+  {
+    std::cerr << "BSA::hasIntermediateDirectory: Error: Not all structure data "
+              << "is present to properly fulfill the requested operation!\n";
+    return false;
+  }
+
+  // Handle special case of empty path for root directory within the archive.
+  if (directoryName.empty() && !m_DirectoryBlocks.empty())
+  {
+    return true;
+  }
+
+  // Handle regular cases.
+  const std::string name = directoryName + "\\";
+  const auto name_length = name.size();
+  for(const auto& block: m_DirectoryBlocks)
+  {
+    if (block.name.substr(0, name_length) == name)
+      return true;
+  }
+
+  return false;
 }
 
 std::optional<uint32_t> BSA::getIndexOfDirectory(std::string directoryName) const

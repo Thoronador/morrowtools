@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2022, 2023  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -809,6 +809,58 @@ TEST_CASE("BSA")
       REQUIRE_FALSE( bsa.hasDirectory("foo") );
       REQUIRE_FALSE( bsa.hasDirectory("does\\not\\exist") );
       REQUIRE_FALSE( bsa.hasDirectory("is\\missing") );
+    }
+  }
+
+  SECTION("hasIntermediateDirectory")
+  {
+    SECTION("no structure data")
+    {
+      BSA bsa;
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("foo") );
+    }
+
+    SECTION("valid data")
+    {
+      using namespace std::string_view_literals;
+      const std::filesystem::path path{"test_sr_bsa_hasIntermediateDirectory_v104_uncompressed.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // Root directory / empty directory should return true.
+      REQUIRE( bsa.hasIntermediateDirectory("") );
+
+      // Check existing intermediate directories.
+      REQUIRE( bsa.hasIntermediateDirectory("some") );
+      REQUIRE( bsa.hasIntermediateDirectory("something") );
+
+      // Check non-existent intermediate directories.
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("s") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("so") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("som") );
+      // "some" exists, so don't check it here.
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("somet") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("someth") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("somethi") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("somethin") );
+
+      // Partial paths don't match, it has to be the full path.
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("thing") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("else") );
+
+      // Existing non-intermediate directories do not count.
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("some\\thing") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("something\\else") );
+
+      // Non-existent paths.
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("foo") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("foo\\bar") );
+      REQUIRE_FALSE( bsa.hasIntermediateDirectory("foo\\bar\\baz") );
     }
   }
 

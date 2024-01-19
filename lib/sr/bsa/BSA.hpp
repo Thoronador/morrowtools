@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2022, 2023  Dirk Stolle
+    Copyright (C) 2011, 2012, 2022, 2023, 2023, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -96,6 +96,25 @@ struct BSA
      *         Returns false otherwise.
      */
     bool hasDirectory(const std::string& directoryName) const;
+
+
+    /** \brief Checks whether the given intermediate directory is in the archive.
+     *
+     * \remark An intermediate directory is a directory which does not directly
+     *         exist in the archive but is part of the directory hierarchy. For
+     *         example, an archive may have the directory "foo\bar\baz", but
+     *         that does not mean that either "foo" or "foo\bar" have to exist
+     *         as separate directories in the BSA. That can be a hurdle when
+     *         one attempts to mirror the directory structure of the BSA to a
+     *         real file system which, unlike the BSA format, does not allow to
+     *         leave out those intermediate directories. This method tries to
+     *         bridge that gap.
+     * \param directoryName  name of the directory (should be all lower case)
+     * \return Returns true, if the intermediate directory exists within the
+     *         directory hierarchy of the archive.
+     *         Returns false otherwise.
+     */
+    bool hasIntermediateDirectory(const std::string& directoryName) const;
 
     /** \brief Gets the index of the given directory in the archive.
      *

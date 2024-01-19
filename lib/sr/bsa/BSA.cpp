@@ -400,6 +400,31 @@ bool BSA::hasIntermediateDirectory(const std::string& directoryName) const
   return false;
 }
 
+std::unordered_set<std::string> BSA::getVirtualSubDirectories(const std::string& directoryName)
+{
+  if (!hasAllStructureData())
+  {
+    std::cerr << "BSA::getVirtualSubDirectories: Error: Not all structure data "
+              << "is present to properly fulfill the requested operation!\n";
+    return std::unordered_set<std::string>();
+  }
+
+  const std::string name = directoryName.empty() ? "" : directoryName + "\\";
+  const auto name_length = name.size();
+
+  std::unordered_set<std::string> result;
+  for (const auto& block: m_DirectoryBlocks)
+  {
+    if (block.name.substr(0, name_length) == name)
+    {
+      const auto position = block.name.find('\\', name_length);
+      result.insert(block.name.substr(name_length, position - name_length));
+    }
+  }
+
+  return result;
+}
+
 std::optional<uint32_t> BSA::getIndexOfDirectory(std::string directoryName) const
 {
   if (!hasAllStructureData())

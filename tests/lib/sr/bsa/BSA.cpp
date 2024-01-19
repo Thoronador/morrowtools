@@ -864,6 +864,53 @@ TEST_CASE("BSA")
     }
   }
 
+  SECTION("getVirtualSubDirectories")
+  {
+    SECTION("no structure data")
+    {
+      BSA bsa;
+      REQUIRE( bsa.getVirtualSubDirectories("foo").empty() );
+    }
+
+    SECTION("valid structure data")
+    {
+      using namespace std::string_view_literals;
+      const std::filesystem::path path{"test_sr_bsa_getVirtualSubDirectories.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0This is a test.\x0A\x66oobar\x0A\x66oo was here.\x0A"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      // Root directory / empty directory should have some sub-directories.
+      auto sub_directories = bsa.getVirtualSubDirectories("");
+      REQUIRE( sub_directories.size() == 2 );
+      REQUIRE( sub_directories.find("some") != sub_directories.end() );
+      REQUIRE( sub_directories.find("something") != sub_directories.end() );
+
+      // Directory "some" should have sub-directory "thing".
+      sub_directories = bsa.getVirtualSubDirectories("some");
+      REQUIRE( sub_directories.size() == 1 );
+      REQUIRE( *sub_directories.begin() == "thing" );
+
+      // Directory "something" should have sub-directory "else".
+      sub_directories = bsa.getVirtualSubDirectories("something");
+      REQUIRE( sub_directories.size() == 1 );
+      REQUIRE( *sub_directories.begin() == "else" );
+
+      // Leaf directories should have no sub-directories.
+      REQUIRE( bsa.getVirtualSubDirectories("some\\thing").empty() );
+      REQUIRE( bsa.getVirtualSubDirectories("something\\else").empty() );
+
+      // Non-existent directories should not have any virtual sub-directories.
+      REQUIRE( bsa.getVirtualSubDirectories("foo").empty() );
+      REQUIRE( bsa.getVirtualSubDirectories("someth").empty() );
+      REQUIRE( bsa.getVirtualSubDirectories("something\\el").empty() );
+    }
+  }
+
   SECTION("isFileCompressed")
   {
     using namespace std::string_view_literals;

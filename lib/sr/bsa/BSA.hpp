@@ -26,6 +26,7 @@
 #include "BSADirectoryRecord.hpp"
 #include <filesystem>
 #include <optional>
+#include <unordered_set>
 #include <vector>
 
 namespace SRTP
@@ -115,6 +116,24 @@ struct BSA
      *         Returns false otherwise.
      */
     bool hasIntermediateDirectory(const std::string& directoryName) const;
+
+
+    /** \brief Gets virtual sub-directories of a given directory.
+     *
+     * \remark A "virtual" sub-directory is a directory which may or may not
+     *         exist in the archive, but is part of the directory hierarchy
+     *         directly below the given directory. For example, an archive may
+     *         have the directory "foo\bar\baz", but that does not mean that
+     *         either "foo" or "foo\bar" have to exist as separate directories
+     *         in the BSA. However, this method will return "bar" as a virtual
+     *         sub-directory of "foo" and "baz" as a virtual sub-directory of
+     *         "foo\bar" in that case.
+     * \param directoryName  name of the directory (should be all lower case)
+     * \return Returns a container containing all virtual sub-directories of a
+     *         directory.
+     */
+    std::unordered_set<std::string> getVirtualSubDirectories(const std::string& directoryName);
+
 
     /** \brief Gets the index of the given directory in the archive.
      *

@@ -285,7 +285,7 @@ bool BSA::grabFileNames()
   return true;
 }
 
-void BSA::listFileNames(bool withCompressionStatus)
+void BSA::listFileNames(std::ostream& stream, bool withCompressionStatus)
 {
   if (m_Status != Status::OpenFileNames)
   {
@@ -303,22 +303,22 @@ void BSA::listFileNames(bool withCompressionStatus)
       {
         if (isFileCompressed(directoryIdx, fileIdx))
         {
-          std::cout << "(cmp) ";
+          stream << "(cmp) ";
           ++compressedFiles;
         }
         else
         {
-          std::cout << "(raw) ";
+          stream << "(raw) ";
           ++rawFiles;
         }
       } // if compression info requested
-      std::cout << directory << m_DirectoryBlocks[directoryIdx].files[fileIdx].fileName << "\n";
+      stream << directory << m_DirectoryBlocks[directoryIdx].files[fileIdx].fileName << "\n";
     }
   }
   if (withCompressionStatus)
   {
-    std::cout << "Compressed files in archive: " << compressedFiles
-              << "\nUncompressed files in archive: " << rawFiles << "\n";
+    stream << "Compressed files in archive: " << compressedFiles
+           << "\nUncompressed files in archive: " << rawFiles << "\n";
   }
 }
 

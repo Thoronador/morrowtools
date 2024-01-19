@@ -456,6 +456,53 @@ TEST_CASE("BSA")
     }
   }
 
+  SECTION("listFileNames")
+  {
+    SECTION("BSA has not been opened")
+    {
+      std::ostringstream stream;
+
+      BSA bsa;
+      bsa.listFileNames(stream, false);
+      REQUIRE( stream.str().empty() );
+      bsa.listFileNames(stream, true);
+      REQUIRE( stream.str().empty() );
+    }
+
+    SECTION("successful listing")
+    {
+      using namespace std::string_view_literals;
+      const std::filesystem::path path{"test_sr_bsa_listFileNames_v104_fine.bsa"};
+      FileGuard guard{path};
+      const auto data = "BSA\0\x68\0\0\0\x24\0\0\0\x03\0\0\0\x02\0\0\0\x03\0\0\0\x1A\0\0\0\x19\0\0\0\0\x01\0\0gn\x0As@r\xBE\x0B\x01\0\0\0]\0\0\0es\x0Es\xDC\x92\x84Z\x02\0\0\0y\0\0\0\x0Bsome\\thing\0ts\x04t'\xA7\xD0\x95\x10\0\0\0\xA9\0\0\0\x0Fsomething\\\x65lse\0ra\x03\x62\xC2\xA6\xD0\x95\x07\0\0\0\xB9\0\0\0oo\x03\x66\xC2\xA6\xD0\x95\x0E\0\0\0\xC0\0\0\0test.txt\0bar.txt\0foo.txt\0"sv;
+      REQUIRE( writeBsa(data, path) );
+
+      std::ostringstream stream;
+      BSA bsa;
+      REQUIRE( bsa.open(path.string()) );
+      REQUIRE( bsa.grabAllStructureData() );
+
+      bsa.listFileNames(stream, false);
+      const auto output = stream.str();
+      REQUIRE( output.find("some\\thing\\test.txt") != std::string::npos );
+      REQUIRE( output.find("something\\else\\foo.txt") != std::string::npos );
+      REQUIRE( output.find("something\\else\\bar.txt") != std::string::npos );
+      // No compression status.
+      REQUIRE( output.find("Compressed files in archive") == std::string::npos );
+      REQUIRE( output.find("Uncompressed files in archive") == std::string::npos );
+
+      std::ostringstream stream_compressed;
+      bsa.listFileNames(stream_compressed, true);
+      const auto output_compressed = stream_compressed.str();
+      REQUIRE( output_compressed.find("(raw) some\\thing\\test.txt") != std::string::npos );
+      REQUIRE( output_compressed.find("(raw) something\\else\\foo.txt") != std::string::npos );
+      REQUIRE( output_compressed.find("(raw) something\\else\\bar.txt") != std::string::npos );
+      // Output includes compression status.
+      REQUIRE( output_compressed.find("Compressed files in archive: 0") != std::string::npos );
+      REQUIRE( output_compressed.find("Uncompressed files in archive: 3") != std::string::npos );
+    }
+  }
+
   SECTION("getDirectoryNames")
   {
     using namespace std::string_view_literals;

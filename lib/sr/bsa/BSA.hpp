@@ -26,6 +26,7 @@
 #include "BSADirectoryRecord.hpp"
 #include <filesystem>
 #include <optional>
+#include <ostream>
 #include <unordered_set>
 #include <vector>
 
@@ -219,10 +220,11 @@ struct BSA
 
     /** \brief Lists all files within the archive.
      *
+     * \param stream  the output stream where the listing shall appear
      * \param withCompressionStatus  if set to true, it will also be listed,
      *                               whether or not a file is compressed
      */
-    void listFileNames(bool withCompressionStatus);
+    void listFileNames(std::ostream& stream, bool withCompressionStatus);
 
     /** Gets all directory names within the archive.
      *

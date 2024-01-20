@@ -21,7 +21,9 @@
 #include "bsafs.hpp"
 #include <cerrno>
 #include <cstring>
+#ifdef BSAFS_DEBUG
 #include <iostream>
+#endif // BSAFS_DEBUG
 #include <unistd.h>
 #include "../../../lib/base/SlashFunctions.hpp"
 
@@ -64,7 +66,9 @@ void set_file_attributes(struct stat& attr)
 
 int bsa_getattr(const char * pathname, struct stat * attr)
 {
+  #ifdef BSAFS_DEBUG
   std::clog << "DEBUG: getattr(" << pathname << ", ...)\n";
+  #endif // BSAFS_DEBUG
   if (pathname == nullptr)
   {
     return -ENOENT;
@@ -118,9 +122,11 @@ int bsa_mknod([[maybe_unused]] const char* path, [[maybe_unused]] mode_t mode, [
 }
 
 int bsa_readdir(const char* path, void* buffer, fuse_fill_dir_t filler,
-                off_t offset, [[maybe_unused]] struct fuse_file_info* info)
+                [[maybe_unused]] off_t offset, [[maybe_unused]] struct fuse_file_info* info)
 {
+  #ifdef BSAFS_DEBUG
   std::clog << "DEBUG: readdir(" << path << ", ..., ..., offset=" << offset << ", ...)\n";
+  #endif // BSAFS_DEBUG
   struct stat attr;
   std::memset(&attr, 0, sizeof(attr));
   set_directory_attributes(attr);

@@ -24,6 +24,7 @@
 #ifdef BSAFS_DEBUG
 #include <iostream>
 #endif // BSAFS_DEBUG
+#include <sys/stat.h>
 #include <unistd.h>
 #include "../../../lib/base/SlashFunctions.hpp"
 
@@ -31,6 +32,27 @@ namespace SRTP::bsafs
 {
 
 BSA archive;
+std::time_t access_time;
+std::time_t modification_time;
+std::time_t status_change_time;
+
+void set_time_values(const std::filesystem::path& bsa_path)
+{
+  struct stat statbuf;
+  std::memset(&statbuf, 0, sizeof(statbuf));
+  if (stat(bsa_path.string().c_str(), &statbuf) == 0)
+  {
+    access_time = statbuf.st_atime;
+    modification_time = statbuf.st_mtime;
+    status_change_time = statbuf.st_ctime;
+  }
+  else
+  {
+    access_time = time(nullptr);
+    modification_time = time(nullptr);
+    status_change_time = time(nullptr);
+  }
+}
 
 std::string fuseVersion()
 {
@@ -44,8 +66,9 @@ void set_common_attributes(struct stat& attr)
 {
   attr.st_uid = getuid();
   attr.st_gid = getgid();
-  attr.st_atime = time(nullptr);
-  attr.st_mtime = time(nullptr);
+  attr.st_atime = access_time;
+  attr.st_mtime = modification_time;
+  attr.st_ctime = status_change_time;
 }
 
 void set_directory_attributes(struct stat& attr)
@@ -95,8 +118,10 @@ int bsa_getattr(const char * pathname, struct stat * attr)
       const auto opt_size = archive.getExtractedFileSize(dir_index.value(), file_index.value());
       if (opt_size.has_value())
       {
+        const auto file_size = opt_size.value();
         set_file_attributes(*attr);
-        attr->st_size = opt_size.value();
+        attr->st_size = file_size;
+        attr->st_blocks = file_size / 512 + (file_size % 512 != 0);
         return 0;
       }
       else

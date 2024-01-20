@@ -31,6 +31,19 @@ namespace SRTP::bsafs
 
 extern BSA archive; /**< global BSA instance for all file operations */
 
+extern std::time_t access_time;        /**< last access time of the archive */
+extern std::time_t modification_time;  /**< modification time of the archive */
+extern std::time_t status_change_time; /**< last status change of the archive */
+
+/** \brief Sets the values of the three time_t variables above based on the given file.
+ *
+ * \param bsa_path   path to the BSA file
+ * \remarks This function should be called once before the file system is
+ *          mounted. Otherwise the time values reported for the files are
+ *          incorrect / set to the start of the Unix epoch.
+ */
+void set_time_values(const std::filesystem::path& bsa_path);
+
 /** \brief Gets version of the FUSE library.
  *
  * \return Returns a string containing FUSE's version.

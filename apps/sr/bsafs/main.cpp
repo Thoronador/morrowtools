@@ -29,7 +29,7 @@
 
 void showVersion()
 {
-  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.1.0, 2024-01-20\n"
+  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.1.1, 2024-01-20\n"
             << "\nLibrary versions:\n"
             << " * fuse: " << SRTP::bsafs::fuseVersion() << "\n"
             << " * lz4:  " << MWTP::lz4Version() << "\n"
@@ -53,8 +53,6 @@ void showHelp()
 
 int main(int argc, char* argv[])
 {
-  std::cout << "Hello world!" << std::endl;
-
   std::unique_ptr<char*[]> fuse_args = std::make_unique<char*[]>(argc + 1);
   int fuse_argc = 0;
   fuse_args[argc] = nullptr;
@@ -137,7 +135,9 @@ int main(int argc, char* argv[])
   }
 
   if (!SRTP::bsafs::archive.open(archive_path))
+  {
     return SRTP::rcFileError;
+  }
   // Some BSA files do not contain information about directory and file names.
   // These are useless for us.
   const auto& header = SRTP::bsafs::archive.getHeader();
@@ -149,7 +149,10 @@ int main(int argc, char* argv[])
     return 0;
   }
   if (!SRTP::bsafs::archive.grabAllStructureData())
+  {
     return SRTP::rcFileError;
+  }
+  SRTP::bsafs::set_time_values(archive_path);
 
   for (int i = fuse_argc + 1; i < argc; ++i)
   {

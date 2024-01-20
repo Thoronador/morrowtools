@@ -15,7 +15,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake clang-${{ matrix.version }} liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch2 cmake clang-${{ matrix.version }} libfuse-dev liblz4-dev pkg-config zlib1g-dev
       - name: Install LLVM C++ Standard Library
         run: |
           sudo apt-get install -y libc++-${{ matrix.version }}-dev
@@ -23,6 +23,7 @@ jobs:
       - name: Syntax check
         run: |
           export CXX=clang++-${{ matrix.version }}
+          export CFLAGS=-D_FILE_OFFSET_BITS=64
           ./ci/cpplint.sh
         if: matrix.version == 11
       - name: Build with Clang ${{ matrix.version }}
@@ -62,7 +63,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake clang-14 liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch2 cmake clang-14 libfuse-dev liblz4-dev pkg-config zlib1g-dev
       - name: Build with Clang 14
         run: |
           export CXX=clang++-14

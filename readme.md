@@ -13,6 +13,7 @@ despite its name the project also contains tools for Skyrim.
 ### Skyrim-related programs
 
 * **bsa_cli**: a command-line interface for BSA archives of Skyrim
+* **bsafs**: _(Linux only)_ a FUSE file system for BSA archives of Skyrim
 * **conv_cams**: _(obsolete)_ tool to convert CAMS records in an ESM file to the
   pre-1.5 patch state
 * **formID_finder**: command-line interface to search for form IDs in Skyrim

@@ -29,7 +29,7 @@
 
 void showVersion()
 {
-  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.1.1, 2024-01-20\n"
+  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.1.2, 2024-01-20\n"
             << "\nLibrary versions:\n"
             << " * fuse: " << SRTP::bsafs::fuseVersion() << "\n"
             << " * lz4:  " << MWTP::lz4Version() << "\n"
@@ -41,12 +41,12 @@ void showHelp()
   std::cout << "bsafs [OPTIONS] --archive BSA_FILE MOUNT_POINT\n"
             << "\n"
             << "options:\n"
-            << "  --help            - Displays this help message and quits.\n"
-            << "  -?                - same as --help\n"
-            << "  --version         - Displays the version of the program and quits.\n"
-            << "  -v                - same as --version\n"
-            << " --archive BSA_FILE - Set path to the BSA file to operate on to BSA_FILE.\n"
-            << "                      The BSA_FILE must be given.\n"
+            << "  --help             - Displays this help message and quits.\n"
+            << "  -?                 - same as --help\n"
+            << "  --version          - Displays the version of the program and quits.\n"
+            << "  -v                 - same as --version\n"
+            << "  --archive BSA_FILE - Set path to the BSA file to operate on to BSA_FILE.\n"
+            << "                       The BSA_FILE must be given.\n"
             << "\n"
             << "Furthermore, some FUSE-specific parameters apply.\n";
 }

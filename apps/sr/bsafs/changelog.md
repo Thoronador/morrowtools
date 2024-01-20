@@ -1,5 +1,9 @@
 # Version history of bsafs
 
+## Version 0.1.2 (2024-01-20)
+
+Incorrect formatting in the binary's help message is fixed.
+
 ## Version 0.1.1 (2024-01-20)
 
 * The block size of a file is now reported correctly instead of always being

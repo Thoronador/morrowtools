@@ -18,12 +18,12 @@ Skyrim (and also with some other games).
 bsafs [OPTIONS] --archive BSA_FILE MOUNT_POINT
 
 options:
-  --help            - Displays this help message and quits.
-  -?                - same as --help
-  --version         - Displays the version of the program and quits.
-  -v                - same as --version
- --archive BSA_FILE - Set path to the BSA file to operate on to BSA_FILE.
-                      The BSA_FILE must be given.
+  --help             - Displays this help message and quits.
+  -?                 - same as --help
+  --version          - Displays the version of the program and quits.
+  -v                 - same as --version
+  --archive BSA_FILE - Set path to the BSA file to operate on to BSA_FILE.
+                       The BSA_FILE must be given.
 
 Furthermore, some FUSE-specific parameters apply.
 ```

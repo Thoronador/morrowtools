@@ -32,7 +32,7 @@ else ()
 endif ()
 
 if (LZ4_FIND_REQUIRED)
-  if (NOT SQLite3_FOUND)
+  if (NOT LZ4_FOUND)
     message(FATAL_ERROR "Could not find liblz4!")
   endif ()
 endif ()

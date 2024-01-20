@@ -5,11 +5,14 @@
 *.compiled
 *.ppu
 fpc-res.*
-link.res
+*.res
 ppas.bat
 
 # binaries
 *.exe
+formID_gui
+formID_gui.or
+formID_finder
 
 # 7zipped archives
 *.7z

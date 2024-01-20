@@ -473,7 +473,7 @@ int ESMReaderAll::readNextRecord(std::istream& input, const uint32_t recName, co
          return WorldSpaces::get().readNextRecord(input, localized, table);
          break;
     default:
-         // Rhis branch should not be necessary once the reader class is finished.
+         // This branch should not be necessary once the reader class is finished.
          if (encounters.find(recName) == encounters.end())
          {
            std::cout << "Warning: unknown record type \"" << IntTo4Char(recName)

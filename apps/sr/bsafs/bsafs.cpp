@@ -27,6 +27,7 @@
 #include <sys/stat.h>
 #include <unistd.h>
 #include "../../../lib/base/SlashFunctions.hpp"
+#include "../../../lib/base/RandomFunctions.hpp"
 
 namespace SRTP::bsafs
 {
@@ -245,6 +246,77 @@ int bsa_truncate([[maybe_unused]] const char* path, [[maybe_unused]] off_t lengt
   return -EROFS;
 }
 
+int bsa_read(const char* path, char* buffer, size_t count, off_t offset,
+		     [[maybe_unused]] struct fuse_file_info* info)
+{
+  namespace fs = std::filesystem;
+  #ifdef BSAFS_DEBUG
+  std::clog << "DEBUG: read(" << path << ", ..., count=" << count << ", offset="
+            << offset << ", ...)\n";
+  #endif // BSAFS_DEBUG
+
+  const std::string real_path = MWTP::flipForwardSlashes(path).substr(1);
+  // Check for directory.
+  auto dir_index = archive.getIndexOfDirectory(real_path);
+  if (dir_index.has_value() || archive.hasIntermediateDirectory(real_path))
+  {
+    return -EISDIR;
+  }
+
+  // Is it an existing file?
+  std::optional<uint32_t> file_index = std::nullopt;
+  if (!archive.getIndexPairForFile(real_path, dir_index, file_index))
+  {
+    return -EIO;
+  }
+
+  if (!dir_index.has_value() || !file_index.has_value())
+  {
+    // File does not exist.
+    return -ENOENT;
+  }
+
+  const auto extracted_size = archive.getExtractedFileSize(dir_index.value(),
+                                                           file_index.value());
+  if (!extracted_size.has_value())
+  {
+    return -EIO;
+  }
+
+  if ((offset >= extracted_size) && (count > 0))
+  {
+    return -EIO;
+  }
+  std::error_code error;
+  auto temp_file_path = fs::temp_directory_path(error);
+  if (error)
+  {
+    return -EIO;
+  }
+  temp_file_path /= MWTP::randomAlphaNumericSequence(12).append(".tmp");
+  if (!archive.extractFile(dir_index.value(), file_index.value(), temp_file_path.string()))
+  {
+    (void) fs::remove(temp_file_path, error);
+    return -EIO;
+  }
+
+  std::ifstream stream(temp_file_path);
+  stream.seekg(offset);
+  if (!stream.good())
+  {
+    return -EIO;
+  }
+  stream.read(buffer, count);
+  if (!stream.good())
+  {
+    return -EIO;
+  }
+  const auto bytes_read = stream.gcount();
+  stream.close();
+  (void) fs::remove(temp_file_path, error);
+  return bytes_read;
+}
+
 fuse_operations get_operations()
 {
   fuse_operations ops;
@@ -263,6 +335,7 @@ fuse_operations get_operations()
   ops.chmod = bsa_chmod;
   ops.chown = bsa_chown;
   ops.truncate = bsa_truncate;
+  ops.read = bsa_read;
 
   return ops;
 }

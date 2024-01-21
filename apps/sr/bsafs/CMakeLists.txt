@@ -7,6 +7,7 @@ set(bsafs_sources
     ../../../lib/base/DirectoryFunctions.cpp
     ../../../lib/base/FileFunctions.cpp
     ../../../lib/base/lz4Compression.cpp
+    ../../../lib/base/RandomFunctions.cpp
     ../../../lib/base/SlashFunctions.cpp
     ../../../lib/base/UtilityFunctions.cpp
     ../../../lib/sr/bsa/BSA.cpp

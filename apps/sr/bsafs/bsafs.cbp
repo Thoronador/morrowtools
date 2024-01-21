@@ -48,6 +48,8 @@
 		<Unit filename="../../../lib/base/CompressionFunctions.hpp" />
 		<Unit filename="../../../lib/base/DirectoryFunctions.cpp" />
 		<Unit filename="../../../lib/base/DirectoryFunctions.hpp" />
+		<Unit filename="../../../lib/base/RandomFunctions.cpp" />
+		<Unit filename="../../../lib/base/RandomFunctions.hpp" />
 		<Unit filename="../../../lib/base/SlashFunctions.cpp" />
 		<Unit filename="../../../lib/base/SlashFunctions.hpp" />
 		<Unit filename="../../../lib/base/UtilityFunctions.cpp" />

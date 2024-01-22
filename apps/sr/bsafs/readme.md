@@ -66,6 +66,35 @@ umount /tmp/my_bsa
 
 That's it. Have fun.
 
+## Use cases
+
+### When to use `bsafs`
+
+Typical use cases of `bsafs` include:
+
+* You want to browse the contents of a BSA file without the need to extract
+  those contents manually.
+* You want to inspect the contents of files within a BSA file and do not need
+  to modify those files.
+
+### When not to use `bsafs`
+
+While `bsafs` is a good way to inspect BSA files interactively, it may not fit
+all use cases. Among such use cases are:
+
+* You want to modify the content of a BSA file. Since `bsafs` only provides
+  read-only access, it is obviously not fit for that purpose.
+* You want to inspect most or all of the files in a BSA archive. While this is
+  possible with `bsafs`, it may be a bit slow, because it extracts any file
+  from which users read in the background. In that case it is more effective to
+  use a tool like `bsa_cli` and just extract all the content of the BSA file
+  once and work on that extracted content directly.
+* You mainly want to read from a very large file inside a BSA file. The reason
+  is the same as for the previous bullet point: background extraction of files.
+  It works, but it will probably be a bit slow. So the obvious workaround here
+  is again to use a tool like `bsa_cli` instead and just extract the large file
+  from the BSA and then directly work on the extracted file.
+
 ## History of changes
 
 A changelog is available in [changelog.md](./changelog.md).

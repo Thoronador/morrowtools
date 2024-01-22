@@ -23,3 +23,7 @@ endif ()
 # parameter to show version number
 add_test(NAME bsafs_version
          COMMAND $<TARGET_FILE:bsafs> --version)
+
+# scripted test for invalid parameter use
+add_test(NAME bsafs_parameter_misuse
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.sh $<TARGET_FILE:bsafs>)

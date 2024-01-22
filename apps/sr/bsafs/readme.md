@@ -12,6 +12,11 @@ While this tool technically does not need a working installation of The Elder
 Scrolls V: Skyrim, it needs BSA files to operate on, and those usually come with
 Skyrim (and also with some other games).
 
+`bsafs` only allows reading from the files in an archive but not writing to
+them. In that way it behaves like a read-only file system. This means that files
+in `bsafs` cannot be deleted, moved / renamed or written to by the user. It also
+does not allow the creation of new files in the archive.
+
 ## Usage
 
 ```
@@ -27,6 +32,39 @@ options:
 
 Furthermore, some FUSE-specific parameters apply.
 ```
+
+## Quick start
+
+_Note: This section assumes that the `bsafs` executable is reachable via
+`$PATH`, i. e. it can be invoked directly as `bsafs` without the need to specify
+the full path to it._
+
+First, you have to create a new directory where you want to mount the BSA file.
+In this example we are going to use `/tmp/my_bsa` as mount point:
+
+```sh
+mkdir /tmp/my_bsa
+```
+
+Next, a BSA file is needed. Let's assume the file is located at
+`/opt/games/some-plugin/archive.bsa` on your machine. Then it can be mounted to
+the previously created mount point via:
+
+```
+bsafs --archive /opt/games/some-plugin/archive.bsa /tmp/my_bsa
+```
+
+After that, the files that are in the archive can be seen in `/tmp/my_bsa`.
+You can now browse those files in the usual fashion, but remember that they are
+read-only, so no modifications are possible.
+
+Finally, if you do not need it anymore, you can unmount the archive:
+
+```
+umount /tmp/my_bsa
+```
+
+That's it. Have fun.
 
 ## History of changes
 

@@ -59,6 +59,9 @@ int bsa_getattr(const char* pathname, struct stat * attr);
 int bsa_readdir(const char* path, void* buffer, fuse_fill_dir_t filler,
                 off_t offset, struct fuse_file_info* info);
 
+int bsa_read(const char* path, char* buffer, size_t count, off_t offset,
+		     struct fuse_file_info* info);
+
 int bsa_readlink(const char* path, char* buffer, size_t buffer_size);
 
 // All those function change files or create new ones, but the bsafs is a read-
@@ -73,8 +76,6 @@ int bsa_link(const char* old_path, const char* new_path);
 int bsa_chmod(const char* path, mode_t mode);
 int bsa_chown(const char* path, uid_t owner, gid_t group);
 int bsa_truncate(const char* path, off_t length);
-int bsa_read(const char* path, char* buffer, size_t count, off_t offset,
-		     struct fuse_file_info* info);
 
 fuse_operations get_operations();
 

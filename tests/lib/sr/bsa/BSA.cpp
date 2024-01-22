@@ -20,6 +20,7 @@
 
 #include "../../locate_catch.hpp"
 #include <filesystem>
+#include "../../../../lib/base/FileGuard.hpp"
 #include "../../../../lib/sr/bsa/BSA.hpp"
 
 void writeBsaHeaderForTest(const std::string& fileName)
@@ -44,29 +45,11 @@ bool writeBsa(const std::string_view content, const std::filesystem::path& path)
   return stream.good();
 }
 
-// guard to ensure file deletion when it goes out of scope
-class FileGuard
-{
-  private:
-    std::filesystem::path path;
-  public:
-    FileGuard(const std::filesystem::path& filePath)
-    : path(filePath)
-    { }
-
-    FileGuard(const FileGuard& op) = delete;
-    FileGuard(FileGuard&& op) = delete;
-
-    ~FileGuard()
-    {
-      std::filesystem::remove(path);
-    }
-};
-
 
 TEST_CASE("BSA")
 {
   using namespace SRTP;
+  using FileGuard = MWTP::FileGuard;
 
   SECTION("constructor")
   {

@@ -19,13 +19,16 @@
 */
 
 #include "bsafs.hpp"
+#include <algorithm>
 #include <cerrno>
 #include <cstring>
 #ifdef BSAFS_DEBUG
 #include <iostream>
 #endif // BSAFS_DEBUG
 #include <sys/stat.h>
+#include <type_traits>
 #include <unistd.h>
+#include "../../../lib/base/FileGuard.hpp"
 #include "../../../lib/base/SlashFunctions.hpp"
 #include "../../../lib/base/RandomFunctions.hpp"
 
@@ -246,6 +249,28 @@ int bsa_truncate([[maybe_unused]] const char* path, [[maybe_unused]] off_t lengt
   return -EROFS;
 }
 
+std::optional<std::filesystem::path> temporary_file_path(const std::filesystem::path& directory)
+{
+  namespace fs = std::filesystem;
+
+  fs::path file_path = directory / MWTP::randomAlphaNumericSequence(12).append(".tmp");
+  unsigned int i = 0;
+  while (fs::exists(file_path))
+  {
+    ++i;
+    if (i > 10)
+    {
+      #ifdef BSAFS_DEBUG
+      std::cerr << "Error: Could not find suitable temporary file path.\n";
+      #endif // BSAFS_DEBUG
+      return std::nullopt;
+    }
+    file_path = directory / MWTP::randomAlphaNumericSequence(12).append(".tmp");
+  }
+
+  return file_path;
+}
+
 int bsa_read(const char* path, char* buffer, size_t count, off_t offset,
 		     [[maybe_unused]] struct fuse_file_info* info)
 {
@@ -280,6 +305,9 @@ int bsa_read(const char* path, char* buffer, size_t count, off_t offset,
                                                            file_index.value());
   if (!extracted_size.has_value())
   {
+    #ifdef BSAFS_DEBUG
+    std::clog << "DEBUG: Could not calculate extracted file size.\n";
+    #endif // BSAFS_DEBUG
     return -EIO;
   }
 
@@ -288,32 +316,56 @@ int bsa_read(const char* path, char* buffer, size_t count, off_t offset,
     return -EIO;
   }
   std::error_code error;
-  auto temp_file_path = fs::temp_directory_path(error);
+  auto temp_dir_path = fs::temp_directory_path(error);
   if (error)
   {
-    return -EIO;
-  }
-  temp_file_path /= MWTP::randomAlphaNumericSequence(12).append(".tmp");
-  if (!archive.extractFile(dir_index.value(), file_index.value(), temp_file_path.string()))
-  {
-    (void) fs::remove(temp_file_path, error);
+    #ifdef BSAFS_DEBUG
+    std::clog << "DEBUG: Could not get temporary directory path.\n";
+    #endif // BSAFS_DEBUG
     return -EIO;
   }
 
-  std::ifstream stream(temp_file_path);
-  stream.seekg(offset);
-  if (!stream.good())
+  const auto file_path = temporary_file_path(temp_dir_path);
+  if (!file_path.has_value())
   {
     return -EIO;
   }
-  stream.read(buffer, count);
+  MWTP::FileGuard guard {file_path.value()};
+  if (!archive.extractFile(dir_index.value(), file_index.value(), file_path.value().string()))
+  {
+    #ifdef BSAFS_DEBUG
+    std::clog << "DEBUG: File extraction from archive failed.\n";
+    #endif // BSAFS_DEBUG
+    return -EIO;
+  }
+
+  std::ifstream stream(file_path.value());
+  stream.seekg(offset);
   if (!stream.good())
   {
+    #ifdef BSAFS_DEBUG
+    std::clog << "DEBUG: Could not jump to offset " << offset << ".\n";
+    #endif // BSAFS_DEBUG
+    return -EIO;
+  }
+  using cast_type = std::make_unsigned_t<decltype(offset)>;
+  const auto max_bytes = std::min(count, extracted_size.value() - static_cast<cast_type>(offset));
+  stream.read(buffer, max_bytes);
+  if (stream.fail())
+  {
+    #ifdef BSAFS_DEBUG
+    std::clog << "DEBUG: Reading data to buffer failed.\n";
+    std::clog << "DEBUG: eof: " << std::boolalpha << stream.eof() << ", bad: "
+              << stream.bad() << ", fail: " << stream.fail() << "\n";
+    #endif // BSAFS_DEBUG
     return -EIO;
   }
   const auto bytes_read = stream.gcount();
   stream.close();
-  (void) fs::remove(temp_file_path, error);
+  #ifdef BSAFS_DEBUG
+  std::clog << "DEBUG: Transferred " << bytes_read << " of the requested "
+            << count << " bytes.\n";
+  #endif // BSAFS_DEBUG
   return bytes_read;
 }
 

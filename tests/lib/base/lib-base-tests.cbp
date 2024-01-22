@@ -45,6 +45,7 @@
 		<Unit filename="../../../lib/base/DirectoryFunctions.hpp" />
 		<Unit filename="../../../lib/base/FileFunctions.cpp" />
 		<Unit filename="../../../lib/base/FileFunctions.hpp" />
+		<Unit filename="../../../lib/base/FileGuard.hpp" />
 		<Unit filename="../../../lib/base/RandomFunctions.cpp" />
 		<Unit filename="../../../lib/base/RandomFunctions.hpp" />
 		<Unit filename="../../../lib/base/RegistryFunctions.cpp" />
@@ -62,6 +63,7 @@
 		<Unit filename="CompressionFunctions.cpp" />
 		<Unit filename="DirectoryFunctions.cpp" />
 		<Unit filename="FileFunctions.cpp" />
+		<Unit filename="FileGuard.cpp" />
 		<Unit filename="RandomFunctions.cpp" />
 		<Unit filename="RegistryFunctions.cpp" />
 		<Unit filename="SlashFunctions.cpp" />

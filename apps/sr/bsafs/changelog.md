@@ -1,5 +1,10 @@
 # Version history of bsafs
 
+## Version 0.?.? (2024-01-??)
+
+Files from archives can now be read. The required decompression happens on the
+fly.
+
 ## Version 0.1.2 (2024-01-20)
 
 Incorrect formatting in the binary's help message is fixed.

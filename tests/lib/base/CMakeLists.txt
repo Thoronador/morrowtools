@@ -20,6 +20,7 @@ set(lib_base_tests_sources
     CompressionFunctions.cpp
     DirectoryFunctions.cpp
     FileFunctions.cpp
+    FileGuard.cpp
     lz4Compression.cpp
     RandomFunctions.cpp
     RegistryFunctions.cpp

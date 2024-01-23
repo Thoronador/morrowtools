@@ -45,7 +45,7 @@ jobs:
           cp apps/sr/formID_finder/formID_finder.exe artifacts/
           cp apps/sr/small_high_elves/small_high_elves.exe artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-dynamic-linking
           path: |
@@ -88,7 +88,7 @@ jobs:
           cp apps/sr/formID_finder/formID_finder.exe artifacts/
           cp apps/sr/small_high_elves/small_high_elves.exe artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: build-artifacts-static-linking
           path: |

@@ -1,0 +1,99 @@
+name: Alpine
+
+on: push
+
+jobs:
+  alpine:
+    runs-on: ubuntu-22.04
+    container: alpine:latest
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v4
+      - name: Install packages
+        run: |
+          apk update
+          apk add catch2 cmake fuse-dev g++ git lz4-dev make pkgconf zlib-dev
+          apk add fuse-static lz4-static zlib-static
+      - name: Build statically linked binaries
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          mkdir build-static
+          cd build-static
+          cmake ../ -DENABLE_LTO=ON -DENABLE_STATIC_LINKING=ON
+          # Skyrim tools
+          cmake --build . -j2 --target bsa-cli
+          cmake --build . -j2 --target bsafs
+          cmake --build . -j2 --target conv_cams
+          cmake --build . -j2 --target formID_finder
+          cmake --build . -j2 --target small_high_elves
+          # Morrowind tools
+          cmake --build . -j2 --target cell_translator
+          cmake --build . -j2 --target data_cleaner
+          cmake --build . -j2 --target name_generator_mw
+          cmake --build . -j2 --target skill_rebalance
+          cmake --build . -j2 --target spell_rename
+      - name: Collect statically linked artifacts
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/artifacts
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/mw/cell_translator/cell_translator artifacts/
+          cp build-static/apps/mw/data_cleaner/data_cleaner artifacts/
+          cp build-static/apps/mw/name_generator/name_generator_mw artifacts/
+          cp build-static/apps/mw/skill_rebalance/skill_rebalance artifacts/
+          cp build-static/apps/mw/spell_rename/spell_rename artifacts/
+          cp build-static/apps/sr/bsa_cli/bsa-cli artifacts/
+          cp build-static/apps/sr/bsafs/bsafs artifacts/
+          cp build-static/apps/sr/conv_cams/conv_cams artifacts/
+          cp build-static/apps/sr/formID_finder/formID_finder artifacts/
+          cp build-static/apps/sr/small_high_elves/small_high_elves artifacts/
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpine-artifacts-static-linking
+          path: |
+            artifacts/*
+      - name: Collect files for bsa-cli
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/bsa-cli
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/sr/bsa_cli/bsa-cli bsa-cli/
+          cp apps/sr/bsa_cli/readme.md bsa-cli/
+          cp apps/sr/bsa_cli/changelog.md bsa-cli/
+          cp apps/sr/bsa_cli/third-party.md bsa-cli/
+          cp LICENSE bsa-cli/
+      - name: Create bsa-cli artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsa-cli-static-alpine
+          path: |
+            bsa-cli/*
+      - name: Collect files for bsafs
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/bsafs
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/sr/bsafs/bsafs bsafs/
+          cp apps/sr/bsafs/readme.md bsafs/
+          cp apps/sr/bsafs/changelog.md bsafs/
+          cp apps/sr/bsafs/third-party.md bsafs/
+          cp LICENSE bsafs/
+      - name: Create bsafs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsafs-static-alpine
+          path: |
+            bsafs/*
+      - name: Collect files for Form ID finder
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/formID_finder
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/sr/formID_finder/formID_finder formID_finder/
+          cp apps/sr/formID_finder/readme.md formID_finder/
+          cp apps/sr/formID_finder/ChangeLog.de.md formID_finder/
+          cp apps/sr/formID_finder/ChangeLog.en.md formID_finder/
+          cp LICENSE formID_finder/
+      - name: Create Form ID finder artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: formID-finder-static-alpine
+          path: |
+            formID_finder/*

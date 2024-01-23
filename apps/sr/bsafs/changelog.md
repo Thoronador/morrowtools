@@ -1,9 +1,12 @@
 # Version history of bsafs
 
-## Version 0.?.? (2024-01-??)
+## Version 0.2.0 (2024-01-23)
 
 Files from archives can now be read. The required decompression happens on the
 fly.
+
+This is the first version of `bsafs` which is feature-complete by providing a
+full implementation of a read-only file system for Skyrim BSA files.
 
 ## Version 0.1.2 (2024-01-20)
 

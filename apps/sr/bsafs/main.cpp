@@ -30,7 +30,7 @@
 
 void showVersion()
 {
-  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.1.2, 2024-01-20\n"
+  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.2.0, 2024-01-23\n"
             << "\nLibrary versions:\n"
             << " * fuse: " << SRTP::bsafs::fuseVersion() << "\n"
             << " * lz4:  " << MWTP::lz4Version() << "\n"

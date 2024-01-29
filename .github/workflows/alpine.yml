@@ -69,7 +69,7 @@ jobs:
           cp apps/sr/bsa_cli/changelog.md bsa-cli/
           cp apps/sr/bsa_cli/third-party.md bsa-cli/
           cp LICENSE bsa-cli/
-          VERSION=$(git describe --always --match=bsa_cli_*)
+          VERSION=$(git describe --always --match=bsa_cli_* | cut -d'_' -f3-)
           mv bsa-cli bsa-cli_$VERSION
           tar czf bsa-cli_${VERSION}_linux-amd64-generic.tar.gz bsa-cli_$VERSION
       - name: Create bsa-cli artifact
@@ -87,12 +87,15 @@ jobs:
           cp apps/sr/bsafs/changelog.md bsafs/
           cp apps/sr/bsafs/third-party.md bsafs/
           cp LICENSE bsafs/
+          VERSION=$(git describe --always --match=bsafs_* | cut -d'_' -f2-)
+          mv bsafs bsafs_$VERSION
+          tar czf bsafs_${VERSION}_linux-amd64-generic.tar.gz bsafs_$VERSION
       - name: Create bsafs artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bsafs-static-alpine
+          name: bsafs_linux-amd64-generic
           path: |
-            bsafs/*
+            bsafs_*_linux-amd64-generic.tar.gz
       - name: Collect files for Form ID finder
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/formID_finder
@@ -103,9 +106,12 @@ jobs:
           cp apps/sr/formID_finder/ChangeLog.en.md formID_finder/
           cp apps/sr/formID_finder/third-party.md formID_finder/
           cp LICENSE formID_finder/
+          VERSION=$(git describe --always --match=formID_finder_* | cut -d'_' -f3-)
+          mv formID_finder formID_finder_$VERSION
+          tar czf formID_finder_${VERSION}_linux-amd64-generic.tar.gz formID_finder_$VERSION
       - name: Create Form ID finder artifact
         uses: actions/upload-artifact@v4
         with:
-          name: formID-finder-static-alpine
+          name: formID-finder_linux-amd64-generic
           path: |
-            formID_finder/*
+            formID_finder_*_linux-amd64-generic.tar.gz

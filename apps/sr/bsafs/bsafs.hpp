@@ -40,7 +40,7 @@ extern std::time_t status_change_time; /**< last status change of the archive */
  * \param bsa_path   path to the BSA file
  * \remarks This function should be called once before the file system is
  *          mounted. Otherwise the time values reported for the files are
- *          incorrect / set to the start of the Unix epoch.
+ *          incorrect / set to the current time.
  */
 void set_time_values(const std::filesystem::path& bsa_path);
 

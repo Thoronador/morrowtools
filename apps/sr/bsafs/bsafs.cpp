@@ -102,7 +102,7 @@ int bsa_getattr(const char * pathname, struct stat * attr, [[maybe_unused]] stru
   #ifdef BSAFS_DEBUG
   std::clog << "DEBUG: getattr(" << pathname << ", ...)\n";
   #endif // BSAFS_DEBUG
-  if (pathname == nullptr)
+  if ((pathname == nullptr) || (pathname[0] == '\0'))
   {
     return -ENOENT;
   }

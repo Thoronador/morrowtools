@@ -32,19 +32,42 @@
 		</Compiler>
 		<Linker>
 			<Add library="z" />
+			<Add library="fuse3" />
+			<Add library="lz4" />
 		</Linker>
+		<Unit filename="../../../apps/sr/bsafs/bsafs.cpp" />
+		<Unit filename="../../../apps/sr/bsafs/bsafs.hpp" />
 		<Unit filename="../../../apps/sr/formID_finder/AuxFunctions.cpp" />
 		<Unit filename="../../../apps/sr/formID_finder/AuxFunctions.hpp" />
 		<Unit filename="../../../lib/base/CompressionFunctions.cpp" />
 		<Unit filename="../../../lib/base/CompressionFunctions.hpp" />
+		<Unit filename="../../../lib/base/DirectoryFunctions.cpp" />
+		<Unit filename="../../../lib/base/DirectoryFunctions.hpp" />
+		<Unit filename="../../../lib/base/FileGuard.hpp" />
+		<Unit filename="../../../lib/base/RandomFunctions.cpp" />
+		<Unit filename="../../../lib/base/RandomFunctions.hpp" />
+		<Unit filename="../../../lib/base/SlashFunctions.cpp" />
+		<Unit filename="../../../lib/base/SlashFunctions.hpp" />
 		<Unit filename="../../../lib/base/UtilityFunctions.cpp" />
 		<Unit filename="../../../lib/base/UtilityFunctions.hpp" />
+		<Unit filename="../../../lib/base/lz4Compression.cpp" />
+		<Unit filename="../../../lib/base/lz4Compression.hpp" />
 		<Unit filename="../../../lib/mw/HelperIO.cpp" />
 		<Unit filename="../../../lib/mw/HelperIO.hpp" />
 		<Unit filename="../../../lib/sr/FormIDFunctions.cpp" />
 		<Unit filename="../../../lib/sr/FormIDFunctions.hpp" />
 		<Unit filename="../../../lib/sr/StringTable.cpp" />
 		<Unit filename="../../../lib/sr/StringTable.hpp" />
+		<Unit filename="../../../lib/sr/bsa/BSA.cpp" />
+		<Unit filename="../../../lib/sr/bsa/BSA.hpp" />
+		<Unit filename="../../../lib/sr/bsa/BSADirectoryBlock.cpp" />
+		<Unit filename="../../../lib/sr/bsa/BSADirectoryBlock.hpp" />
+		<Unit filename="../../../lib/sr/bsa/BSADirectoryRecord.cpp" />
+		<Unit filename="../../../lib/sr/bsa/BSADirectoryRecord.hpp" />
+		<Unit filename="../../../lib/sr/bsa/BSAFileRecord.cpp" />
+		<Unit filename="../../../lib/sr/bsa/BSAFileRecord.hpp" />
+		<Unit filename="../../../lib/sr/bsa/BSAHeader.cpp" />
+		<Unit filename="../../../lib/sr/bsa/BSAHeader.hpp" />
 		<Unit filename="../../../lib/sr/records/BasicRecord.cpp" />
 		<Unit filename="../../../lib/sr/records/BasicRecord.hpp" />
 		<Unit filename="../../../lib/sr/records/BinarySubRecord.cpp" />
@@ -54,6 +77,7 @@
 		<Unit filename="../../../lib/sr/records/LocalizedString.cpp" />
 		<Unit filename="../../../lib/sr/records/LocalizedString.hpp" />
 		<Unit filename="../../locate_catch.hpp" />
+		<Unit filename="bsafs/bsafs.cpp" />
 		<Unit filename="formID_finder/AuxFunctions.cpp" />
 		<Unit filename="main.cpp" />
 		<Extensions />

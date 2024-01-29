@@ -42,6 +42,7 @@ despite its name the project also contains tools for Skyrim.
   - **sr**: contains code for Skyrim-related programs
 - **ci**: scripts and other files that are used as part of Continuous
   Integration (automated builds and tests, etc.)
+- **dev**: utilities / helper applications used during development
 - **lib**: This directory contains the source code for stuff that is used in
   more than one branch of morrowtools.
 - **tests**: contains code for test cases

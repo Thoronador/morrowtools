@@ -13,11 +13,11 @@ jobs:
         sudo apt-get install -y cargo rustc
     - name: Build application
       run: |
-        cd "$GITHUB_WORKSPACE/tests/hex2sv"
+        cd "$GITHUB_WORKSPACE/dev/hex2sv"
         cargo build
     - name: Run tests
       run: |
-        cd "$GITHUB_WORKSPACE/tests/hex2sv"
+        cd "$GITHUB_WORKSPACE/dev/hex2sv"
         cargo test
 
   clippy:
@@ -40,5 +40,5 @@ jobs:
         cargo --version
     - name: Lint with clippy
       run: |
-        cd "$GITHUB_WORKSPACE/tests/hex2sv"
+        cd "$GITHUB_WORKSPACE/dev/hex2sv"
         cargo clippy -- -D warnings

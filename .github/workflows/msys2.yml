@@ -105,6 +105,7 @@ jobs:
           cp apps/sr/formID_finder/readme.md formID_finder/
           cp apps/sr/formID_finder/ChangeLog.de.md formID_finder/
           cp apps/sr/formID_finder/ChangeLog.en.md formID_finder/
+          cp apps/sr/formID_finder/third-party.md formID_finder/
           cp LICENSE formID_finder/
       - name: Create Form ID finder artifact
         uses: actions/upload-artifact@v4

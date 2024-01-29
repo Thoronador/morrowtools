@@ -60,6 +60,11 @@ options:
 
 A changelog is provided as [separate file](./ChangeLog.en.md).
 
+## Third-party libraries
+
+Used third-party libraries and their copyright notices are listed in
+[third-party.md](./third-party.md)
+
 ## Copyright and Licensing
 
 Copyright 2011-2021  Dirk Stolle

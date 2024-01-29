@@ -47,10 +47,10 @@ void set_time_values(const std::filesystem::path& bsa_path);
 /** \brief Gets version of the FUSE library.
  *
  * \return Returns a string containing FUSE's version.
- * \remark The string will only contain the major and the minor version number,
- *         because that is the only information provided by FUSE. A patch
- *         version number will not be included, i. e. even if version 3.4.2 of
- *         the library is installed, it will only show version 3.4.
+ * \remark The string may only contain the major and the minor version number,
+ *         because in some cases that is the only information provided by FUSE.
+ *         A patch version number will not be included, i. e. even if version
+ *         3.4.2 of the library is installed, it may only show version 3.4.
  */
 std::string fuseVersion();
 

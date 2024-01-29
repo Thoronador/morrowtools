@@ -21,8 +21,8 @@
 #ifndef SRTP_BSAFS_BSAFS_HPP
 #define SRTP_BSAFS_BSAFS_HPP
 
-#define FUSE_USE_VERSION 26
-#include <fuse.h>
+#define FUSE_USE_VERSION 39
+#include <fuse3/fuse.h>
 #include <sys/stat.h>
 #include "../../../lib/sr/bsa/BSA.hpp"
 
@@ -54,10 +54,10 @@ void set_time_values(const std::filesystem::path& bsa_path);
  */
 std::string fuseVersion();
 
-int bsa_getattr(const char* pathname, struct stat * attr);
+int bsa_getattr(const char* pathname, struct stat * attr, struct fuse_file_info *fi);
 
 int bsa_readdir(const char* path, void* buffer, fuse_fill_dir_t filler,
-                off_t offset, struct fuse_file_info* info);
+                off_t offset, struct fuse_file_info* info, enum fuse_readdir_flags flags);
 
 int bsa_read(const char* path, char* buffer, size_t count, off_t offset,
 		     struct fuse_file_info* info);
@@ -71,11 +71,11 @@ int bsa_mkdir(const char* path, mode_t mode);
 int bsa_unlink(const char* path);
 int bsa_rmdir(const char* path);
 int bsa_symlink(const char* target, const char* linkpath);
-int bsa_rename(const char* old_path, const char* new_path);
+int bsa_rename(const char* old_path, const char* new_path, unsigned int flags);
 int bsa_link(const char* old_path, const char* new_path);
-int bsa_chmod(const char* path, mode_t mode);
-int bsa_chown(const char* path, uid_t owner, gid_t group);
-int bsa_truncate(const char* path, off_t length);
+int bsa_chmod(const char* path, mode_t mode, struct fuse_file_info *fi);
+int bsa_chown(const char* path, uid_t owner, gid_t group, struct fuse_file_info *fi);
+int bsa_truncate(const char* path, off_t length, struct fuse_file_info *fi);
 
 fuse_operations get_operations();
 

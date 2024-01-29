@@ -21,7 +21,6 @@ set(bsafs_sources
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     add_definitions (-Wall -Wextra -Wpedantic -pedantic-errors -Wshadow -fexceptions)
-    add_definitions (-D_FILE_OFFSET_BITS=64)
     if (CODE_COVERAGE)
         add_definitions (-O0)
     else ()
@@ -70,12 +69,12 @@ endif ()
 
 # find FUSE library
 find_package(PkgConfig)
-pkg_search_module(FUSE REQUIRED fuse)
+pkg_search_module(FUSE REQUIRED fuse3)
 if (FUSE_FOUND)
   include_directories(${FUSE_INCLUDE_DIRS})
   target_link_libraries (bsafs ${FUSE_LIBRARIES})
 else ()
-  message ( FATAL_ERROR "libfuse was not found!")
+  message ( FATAL_ERROR "libfuse3 was not found!")
 endif ()
 
 # GNU GCC before 9.1.0 needs to link to libstdc++fs explicitly.

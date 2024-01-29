@@ -52,7 +52,7 @@ coverage:
   stage: test
   before_script:
     - apt-get update && apt-get -y upgrade
-    - apt-get install -y catch cmake g++-12 lcov libfuse-dev liblz4-dev pkg-config zlib1g-dev
+    - apt-get install -y catch cmake g++-12 lcov libfuse3-dev liblz4-dev pkg-config zlib1g-dev
   script:
     # build
     - export CXX=g++-12

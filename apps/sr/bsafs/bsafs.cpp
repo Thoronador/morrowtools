@@ -60,6 +60,12 @@ void set_time_values(const std::filesystem::path& bsa_path)
 
 std::string fuseVersion()
 {
+  const char* version = fuse_pkgversion();
+  if ((version != nullptr) && version[0] != '\0')
+  {
+    return std::string(version);
+  }
+  // Should not be required anymore, but let's keep it as fallback.
   const int ver = fuse_version();
   const int major = ver / 10;
   const int minor = ver % 10;
@@ -91,7 +97,7 @@ void set_file_attributes(struct stat& attr)
   attr.st_mode = S_IFREG | 0644;
 }
 
-int bsa_getattr(const char * pathname, struct stat * attr)
+int bsa_getattr(const char * pathname, struct stat * attr, [[maybe_unused]] struct fuse_file_info *fi)
 {
   #ifdef BSAFS_DEBUG
   std::clog << "DEBUG: getattr(" << pathname << ", ...)\n";
@@ -151,7 +157,7 @@ int bsa_mknod([[maybe_unused]] const char* path, [[maybe_unused]] mode_t mode, [
 }
 
 int bsa_readdir(const char* path, void* buffer, fuse_fill_dir_t filler,
-                [[maybe_unused]] off_t offset, [[maybe_unused]] struct fuse_file_info* info)
+                [[maybe_unused]] off_t offset, [[maybe_unused]] struct fuse_file_info* info, [[maybe_unused]] enum fuse_readdir_flags flags)
 {
   #ifdef BSAFS_DEBUG
   std::clog << "DEBUG: readdir(" << path << ", ..., ..., offset=" << offset << ", ...)\n";
@@ -159,8 +165,9 @@ int bsa_readdir(const char* path, void* buffer, fuse_fill_dir_t filler,
   struct stat attr;
   std::memset(&attr, 0, sizeof(attr));
   set_directory_attributes(attr);
-  filler(buffer, ".", &attr, 0);
-  filler(buffer, "..", std::string(path) == "/" ? nullptr : &attr, 0);
+  const enum fuse_fill_dir_flags zero_flag = static_cast<enum fuse_fill_dir_flags>(0);
+  filler(buffer, ".", &attr, 0, zero_flag);
+  filler(buffer, "..", std::string(path) == "/" ? nullptr : &attr, 0, zero_flag);
 
   const std::string real_path = MWTP::flipForwardSlashes(path).substr(1);
 
@@ -168,7 +175,7 @@ int bsa_readdir(const char* path, void* buffer, fuse_fill_dir_t filler,
   const auto directories = archive.getVirtualSubDirectories(real_path);
   for (const auto& entry: directories)
   {
-    filler(buffer, entry.c_str(), &attr, 0);
+    filler(buffer, entry.c_str(), &attr, 0, zero_flag);
   }
 
   // List all files in a directory.
@@ -188,7 +195,7 @@ int bsa_readdir(const char* path, void* buffer, fuse_fill_dir_t filler,
       {
         return -EIO;
       }
-      filler(buffer, block.files[idx].fileName.c_str(), &attr, 0);
+      filler(buffer, block.files[idx].fileName.c_str(), &attr, 0, zero_flag);
     }
   }
 
@@ -219,7 +226,7 @@ int bsa_symlink([[maybe_unused]] const char* target, [[maybe_unused]] const char
   return -EROFS;
 }
 
-int bsa_rename([[maybe_unused]] const char* old_path, [[maybe_unused]] const char* new_path)
+int bsa_rename([[maybe_unused]] const char* old_path, [[maybe_unused]] const char* new_path, [[maybe_unused]] unsigned int flags)
 {
   // This is a read-only file system.
   return -EROFS;
@@ -231,19 +238,19 @@ int bsa_link([[maybe_unused]] const char* old_path, [[maybe_unused]] const char*
   return -EROFS;
 }
 
-int bsa_chmod([[maybe_unused]] const char* path, [[maybe_unused]] mode_t mode)
+int bsa_chmod([[maybe_unused]] const char* path, [[maybe_unused]] mode_t mode, [[maybe_unused]] struct fuse_file_info *fi)
 {
   // This is a read-only file system.
   return -EROFS;
 }
 
-int bsa_chown([[maybe_unused]] const char* path, [[maybe_unused]] uid_t owner, [[maybe_unused]] gid_t group)
+int bsa_chown([[maybe_unused]] const char* path, [[maybe_unused]] uid_t owner, [[maybe_unused]] gid_t group, [[maybe_unused]] struct fuse_file_info *fi)
 {
   // This is a read-only file system.
   return -EROFS;
 }
 
-int bsa_truncate([[maybe_unused]] const char* path, [[maybe_unused]] off_t length)
+int bsa_truncate([[maybe_unused]] const char* path, [[maybe_unused]] off_t length, [[maybe_unused]] struct fuse_file_info *fi)
 {
   // This is a read-only file system.
   return -EROFS;

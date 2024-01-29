@@ -37,12 +37,11 @@
 			<Add option="-Wall" />
 			<Add option="-std=c++17" />
 			<Add option="-fexceptions" />
-			<Add option="-D_FILE_OFFSET_BITS=64" />
 		</Compiler>
 		<Linker>
 			<Add library="z" />
 			<Add library="lz4" />
-			<Add library="fuse" />
+			<Add library="fuse3" />
 		</Linker>
 		<Unit filename="../../../lib/base/CompressionFunctions.cpp" />
 		<Unit filename="../../../lib/base/CompressionFunctions.hpp" />

@@ -21,8 +21,8 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#define FUSE_USE_VERSION 26
-#include <fuse.h>
+#define FUSE_USE_VERSION 39
+#include <fuse3/fuse.h>
 #include "../../../lib/base/lz4Compression.hpp"
 #include "../../../lib/base/CompressionFunctions.hpp"
 #include "../../../lib/sr/ReturnCodes.hpp"
@@ -30,7 +30,7 @@
 
 void showVersion()
 {
-  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.2.0, 2024-01-23\n"
+  std::cout << "bsafs - FUSE file system for Skyrim BSA archives, version 0.3.0-pre, 2024-01-29\n"
             << "\nLibrary versions:\n"
             << " * fuse: " << SRTP::bsafs::fuseVersion() << "\n"
             << " * lz4:  " << MWTP::lz4Version() << "\n"

@@ -77,7 +77,7 @@ All of that can usually be installed be typing
 
 ```
 # Debian or Ubuntu
-apt-get install catch cmake g++ git libfuse-dev liblz4-dev pkg-config zlib1g-dev
+apt-get install catch cmake g++ git libfuse3-dev liblz4-dev pkg-config zlib1g-dev
 ```
 
 or
@@ -85,14 +85,14 @@ or
 ```
 # AlmaLinux 8 or Rocky Linux 8
 yum install epel-release # required for catch
-yum install catch-devel cmake fuse-devel gcc-c++ git lz4-devel pkgconfig zlib-devel
+yum install catch-devel cmake fuse3-devel gcc-c++ git lz4-devel pkgconfig zlib-devel
 ```
 
 or
 
 ```
 # Alpine
-apk add catch2 cmake fuse-dev g++ git lz4-dev make pkgconf zlib-dev
+apk add catch2 cmake fuse3-dev g++ git lz4-dev make pkgconf zlib-dev
 ```
 
 into a root terminal.

@@ -12,8 +12,8 @@ jobs:
       - name: Install packages
         run: |
           apk update
-          apk add catch2 cmake fuse-dev g++ git lz4-dev make pkgconf zlib-dev
-          apk add fuse-static lz4-static zlib-static
+          apk add catch2 cmake fuse3-dev g++ git lz4-dev make pkgconf zlib-dev
+          apk add fuse3-static lz4-static zlib-static
       - name: Build statically linked binaries
         run: |
           cd "$GITHUB_WORKSPACE"

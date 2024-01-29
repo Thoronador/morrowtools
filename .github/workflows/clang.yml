@@ -15,7 +15,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake clang-${{ matrix.version }} libfuse-dev liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch2 cmake clang-${{ matrix.version }} libfuse3-dev liblz4-dev pkg-config zlib1g-dev
       - name: Install LLVM C++ Standard Library
         run: |
           sudo apt-get install -y libc++-${{ matrix.version }}-dev
@@ -63,7 +63,7 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake clang-14 libfuse-dev liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch2 cmake clang-14 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
       - name: Build with Clang 14
         run: |
           export CXX=clang++-14

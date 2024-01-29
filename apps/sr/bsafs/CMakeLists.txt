@@ -69,8 +69,8 @@ else ()
 endif ()
 
 # find FUSE library
-set(FUSE_DIR "../../../cmake/" )
-find_package(FUSE)
+find_package(PkgConfig)
+pkg_search_module(FUSE REQUIRED fuse)
 if (FUSE_FOUND)
   include_directories(${FUSE_INCLUDE_DIRS})
   target_link_libraries (bsafs ${FUSE_LIBRARIES})

@@ -99,7 +99,6 @@ set(lib_sr_tests_sources
      ../../../apps/sr/bsa_cli/commands/Info.cpp
      ../../../apps/sr/bsa_cli/commands/List.cpp
      ../../../apps/sr/bsa_cli/commands/Operations.cpp
-     ../../../apps/sr/formID_finder/AuxFunctions.cpp
     DependencyElement.cpp
     ESMFileContents.cpp
     ESMReader.cpp
@@ -198,7 +197,6 @@ set(lib_sr_tests_sources
     bsa_cli/commands/Info.cpp
     bsa_cli/commands/List.cpp
     bsa_cli/commands/Operations.cpp
-    formID_finder/AuxFunctions.cpp
     main.cpp)
 
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")

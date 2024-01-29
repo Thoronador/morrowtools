@@ -7,6 +7,9 @@ else ()
   set(HAS_CATCH_V3 OFF)
 endif ()
 
+# tests of application-specific code
+add_subdirectory (apps)
+
 # component and function tests
 add_subdirectory (lib)
 
@@ -15,7 +18,6 @@ add_subdirectory (mw)
 
 # Skyrim-related executable tests
 add_subdirectory (sr)
-
 
 # add script completion benchmark, but not on MinGW builds
 if (NOT MINGW)

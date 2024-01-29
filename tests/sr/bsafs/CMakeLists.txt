@@ -27,3 +27,7 @@ add_test(NAME bsafs_version
 # scripted test for invalid parameter use
 add_test(NAME bsafs_parameter_misuse
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.sh $<TARGET_FILE:bsafs>)
+
+# scripted test for mounting a BSA file
+add_test(NAME bsafs_file_mount
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/mount-test.sh $<TARGET_FILE:bsafs> ${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa)

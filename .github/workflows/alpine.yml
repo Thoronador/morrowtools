@@ -7,8 +7,16 @@ jobs:
     runs-on: ubuntu-22.04
     container: alpine:latest
     steps:
+      # Git is required so that actions/checkout does a proper Git checkout.
+      - name: Install Git in container
+        run: |
+          apk update
+          apk add git
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Install packages
         run: |
           apk update
@@ -61,12 +69,15 @@ jobs:
           cp apps/sr/bsa_cli/changelog.md bsa-cli/
           cp apps/sr/bsa_cli/third-party.md bsa-cli/
           cp LICENSE bsa-cli/
+          VERSION=$(git describe --always --match=bsa_cli_*)
+          mv bsa-cli bsa-cli_$VERSION
+          tar czf bsa-cli_${VERSION}_linux-amd64-generic.tar.gz bsa-cli_$VERSION
       - name: Create bsa-cli artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bsa-cli-static-alpine
+          name: bsa-cli_linux-amd64-generic
           path: |
-            bsa-cli/*
+            bsa-cli_*_linux-amd64-generic.tar.gz
       - name: Collect files for bsafs
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/bsafs

@@ -21,6 +21,7 @@
 #include "../../../locate_catch.hpp"
 #include <fstream>
 #include <unistd.h>
+#include <utime.h>
 #include "../../../../apps/sr/bsafs/bsafs.hpp"
 #include "../../../../lib/base/FileGuard.hpp"
 #include "../../../../lib/base/RandomFunctions.hpp"
@@ -199,6 +200,16 @@ TEST_CASE("SRTP::bsafs")
         std::ofstream stream{path, std::ios_base::out | std::ios_base::trunc};
         stream.close();
       }
+
+      // Set access and modification time to something else.
+      {
+        struct utimbuf t;
+        t.actime = time(nullptr) - 42;
+        t.modtime = time(nullptr) - 123;
+        REQUIRE( utime(path.string().c_str(), &t) == 0 );
+      }
+
+      set_time_values(path);
 
       struct stat buf;
       REQUIRE( stat(path.string().c_str(), &buf) == 0 );

@@ -18,7 +18,7 @@
  -------------------------------------------------------------------------------
 */
 
-#include "../../../locate_catch.hpp"
+#include "../../../lib/locate_catch.hpp"
 #include <fstream>
 #include <unistd.h>
 #include <utime.h>

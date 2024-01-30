@@ -76,7 +76,7 @@
 		<Unit filename="../../../lib/sr/records/CellRecord.hpp" />
 		<Unit filename="../../../lib/sr/records/LocalizedString.cpp" />
 		<Unit filename="../../../lib/sr/records/LocalizedString.hpp" />
-		<Unit filename="../../locate_catch.hpp" />
+		<Unit filename="../../lib/locate_catch.hpp" />
 		<Unit filename="bsafs/bsafs.cpp" />
 		<Unit filename="formID_finder/AuxFunctions.cpp" />
 		<Unit filename="main.cpp" />

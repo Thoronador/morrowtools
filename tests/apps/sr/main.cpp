@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind / Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,4 +19,4 @@
 */
 
 #define CATCH_CONFIG_MAIN
-#include "../../locate_catch.hpp"
+#include "../../lib/locate_catch.hpp"

@@ -1,6 +1,6 @@
 # Version history of bsafs
 
-## Version 0.3.0-pre (2024-01-29)
+## Version 0.3.0 (2024-01-31)
 
 bsafs does now use version 3 instead of version 2 of the FUSE library.
 

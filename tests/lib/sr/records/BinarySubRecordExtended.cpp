@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -105,6 +105,28 @@ TEST_CASE("BinarySubRecordExtended")
       REQUIRE( record.saveToStream(streamOut, cEDID) );
       // Check written data.
       REQUIRE( streamOut.str() == "EDID\x13\0ActionShieldChange\0"sv );
+    }
+
+    SECTION("special: load record of size zero with header")
+    {
+      const std::string_view data = "DATA\0\0"sv;
+      std::istringstream streamIn;
+      streamIn.str(std::string(data));
+
+      // Reading should succeed.
+      BinarySubRecordExtended record;
+      REQUIRE( record.loadFromStream(streamIn, cDATA, true) );
+      // Check data.
+      REQUIRE( record.isPresent() );
+      REQUIRE( record.size() == 0 );
+      REQUIRE( record.data() == nullptr );
+
+      // Saving should succeed.
+      std::ostringstream streamOut;
+      // Writing should succeed.
+      REQUIRE( record.saveToStream(streamOut, cDATA) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
     }
 
     SECTION("corrupt data: wrong header")

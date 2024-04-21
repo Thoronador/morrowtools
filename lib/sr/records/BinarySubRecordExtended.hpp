@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2021  Thoronador
+    Copyright (C) 2012, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,11 +27,11 @@
 namespace SRTP
 {
 
-/** Holds data of a subrecord as BLOB. As a difference to the BinarySubRecord
- *  the BinarySubRecordExtended can read subrecords that are larger than
- *  65535 bytes. Since the Skyrim ESM format only allows subrecords up to
+/** Holds data of a sub record as BLOB. As a difference to the BinarySubRecord
+ *  the BinarySubRecordExtended can read sub records that are larger than
+ *  65535 bytes. Since the Skyrim ESM format only allows sub records up to
  *  65535 bytes, it uses a hack: The size is set to zero, but it adds an
- *  additional subrecord with XXXX header that contains the real size as an
+ *  additional sub record with XXXX header that contains the real size as a
  *  32 bit integer.
  */
 struct BinarySubRecordExtended
@@ -93,7 +93,7 @@ struct BinarySubRecordExtended
      */
     bool isPresent() const;
 
-    /** \brief Sets the subrecord's presence flag.
+    /** \brief Sets the sub record's presence flag.
      *
      * \param presence_flag  new value of the flag (true == present, false == absent)
      */
@@ -106,7 +106,7 @@ struct BinarySubRecordExtended
      * \param subHeader    the sub record's header
      * \return Returns true on success.
      *         Returns false, if an error occurred.
-     * \remarks If the subrecord's presence flag is false, this method does not
+     * \remarks If the sub record's presence flag is false, this method does not
      *          write any data to the stream.
      */
     bool saveToStream(std::ostream& output, const uint32_t subHeader) const;
@@ -114,7 +114,7 @@ struct BinarySubRecordExtended
 
     /** \brief Loads the sub record from the given input stream.
      *
-     * \param in_File       the input stream
+     * \param input         the input stream
      * \param subHeader     the sub record's header
      * \param withHeader    whether the sub record's header has to be read, too;
      *                      If set to true, the method will read the header,
@@ -123,24 +123,24 @@ struct BinarySubRecordExtended
      * \return Returns true on success (sub record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    bool loadFromStream(std::istream& in_File, const uint32_t subHeader, const bool withHeader);
+    bool loadFromStream(std::istream& input, const uint32_t subHeader, const bool withHeader);
 
     /** \brief Loads an extended sub record (>64 KiB) from the given input stream.
      *
-     * \param in_File       the input stream
+     * \param input         the input stream
      * \param subHeader     the sub record's header
      * \param withHeader    whether the sub record's header has to be read, too;
      *                      If set to true, the method will read the header,
      *                      too. If set to false, it will begin with the length
      *                      bytes of the sub record.
-     * \param realSize      the subrecord's real size, as read from the previous
-     *                      XXXX subrecord
+     * \param realSize      the sub record's real size, as read from the previous
+     *                      XXXX sub record
      */
-    bool loadFromStreamExtended(std::istream& in_File, const uint32_t subHeader, const bool withHeader, const uint32_t realSize);
+    bool loadFromStreamExtended(std::istream& input, const uint32_t subHeader, const bool withHeader, const uint32_t realSize);
   protected:
     uint8_t* m_Data; /**< pointer to internal BLOB, may be nullptr */
     uint32_t m_Size; /**< size of the internal data, may be zero if there's no data */
-    bool m_Present;  /**< flag to indicate whether subrecord has a value */
+    bool m_Present;  /**< flag to indicate whether sub record has a value */
 }; // struct
 
 } // namespace

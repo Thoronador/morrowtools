@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -110,7 +110,7 @@ void BinarySubRecordExtended::setPresence(const bool presence_flag)
 #ifndef SR_UNSAVEABLE_RECORDS
 bool BinarySubRecordExtended::saveToStream(std::ostream& output, const uint32_t subHeader) const
 {
-  // don't write if there is no subrecord
+  // don't write if there is no sub record
   if (!m_Present)
     return output.good();
 
@@ -126,9 +126,9 @@ bool BinarySubRecordExtended::saveToStream(std::ostream& output, const uint32_t 
     output.write(reinterpret_cast<const char*>(&m_Size), 4);
   } // large version
 
-  // write subrecord's header
+  // write sub record's header
   output.write(reinterpret_cast<const char*>(&subHeader), 4);
-  // subrecord's length
+  // sub record's length
   if (m_Size < 65536)
   {
     subLength = m_Size;
@@ -145,60 +145,64 @@ bool BinarySubRecordExtended::saveToStream(std::ostream& output, const uint32_t 
 }
 #endif
 
-bool BinarySubRecordExtended::loadFromStream(std::istream& in_File, const uint32_t subHeader, const bool withHeader)
+bool BinarySubRecordExtended::loadFromStream(std::istream& input, const uint32_t subHeader, const bool withHeader)
 {
   if (withHeader)
   {
     uint32_t subRecName = 0;
     // read sub header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
   }
-  // subrecord's length
+  // sub record's length
   uint16_t subLength = 0;
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
-  // read subrecord's data
+  input.read(reinterpret_cast<char*>(&subLength), 2);
+  // re-allocate data, if necessary
   if (subLength != m_Size)
   {
     delete[] m_Data;
     m_Data = new uint8_t[subLength];
     m_Size = subLength;
   }
-  memset(m_Data, 0, subLength);
-  in_File.read(reinterpret_cast<char*>(m_Data), subLength);
-  if (!in_File.good())
+  // read sub record's data
+  if (subLength != 0)
   {
-    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
-              << "!\n";
-    return false;
+    memset(m_Data, 0, subLength);
+    input.read(reinterpret_cast<char*>(m_Data), subLength);
+    if (!input.good())
+    {
+      std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
+                << "!\n";
+      return false;
+    }
   }
   m_Present = true;
   return true;
 }
 
-bool BinarySubRecordExtended::loadFromStreamExtended(std::istream& in_File, const uint32_t subHeader, const bool withHeader, const uint32_t realSize)
+bool BinarySubRecordExtended::loadFromStreamExtended(std::istream& input, const uint32_t subHeader, const bool withHeader, const uint32_t realSize)
 {
   if (withHeader)
   {
     uint32_t subRecName = 0;
     // read sub header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
   }
-  // subrecord's length
+  // sub record's length
   uint16_t subLength = 0;
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   if (subLength != 0)
   {
-    std::cerr << "Error while reading extended subrecord "
+    std::cerr << "Error while reading extended sub record "
               << IntTo4Char(subHeader) << ": sub length is not zero!\n";
     return false;
   }
@@ -210,11 +214,11 @@ bool BinarySubRecordExtended::loadFromStreamExtended(std::istream& in_File, cons
     m_Size = realSize;
   }
   memset(m_Data, 0, realSize);
-  // read subrecord's data
-  in_File.read(reinterpret_cast<char*>(m_Data), realSize);
-  if (!in_File.good())
+  // read sub record's data
+  input.read(reinterpret_cast<char*>(m_Data), realSize);
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+    std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
               << "!\n";
     return false;
   }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,13 +69,13 @@ struct WorldSpaceRecord: public BasicRecord
 
     /** \brief Loads the record from the given input stream.
      *
-     * \param in_File    the input stream
+     * \param input      the input stream
      * \param localized  whether the file to read from is localized or not
      * \param table      the associated string table for localized files
      * \return Returns true on success (record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
     /** \brief Gets the record's type, usually its header.
      *
@@ -86,34 +86,34 @@ struct WorldSpaceRecord: public BasicRecord
     std::string editorID; /**< ID of the record in the editor */
     std::vector<BinarySubRecord> unknownRNAMs;
     BinarySubRecord unknownMHDT;
-    LocalizedString name; // subrecord FULL
-    // subrecord WCTR
+    LocalizedString name; // sub record FULL
+    // sub record WCTR
     bool hasWCTR;
     int16_t centerCellX;
     int16_t centerCellY;
-    // end of subrecord WCTR
-    uint32_t interiorLightingFormID; // subrecord LTMP
-    uint32_t encounterZoneFormID; // subrecord XEZN
-    uint32_t climateFormID; // subrecord CNAM
-    uint32_t locationFormID; // subrecord XLCN
-    uint32_t parentWorldSpaceFormID; // subrecord WNAM
+    // end of sub record WCTR
+    uint32_t interiorLightingFormID; // sub record LTMP
+    uint32_t encounterZoneFormID; // sub record XEZN
+    uint32_t climateFormID; // sub record CNAM
+    uint32_t locationFormID; // sub record XLCN
+    uint32_t parentWorldSpaceFormID; // sub record WNAM
     std::optional<uint16_t> unknownPNAM;
-    uint32_t waterFormID; // subrecord NAM2
-    uint32_t LODWaterTypeFormID; // subrecord NAM3
-    std::optional<float> LODWaterHeight; // subrecord NAM4
+    uint32_t waterFormID; // sub record NAM2
+    uint32_t LODWaterTypeFormID; // sub record NAM3
+    std::optional<float> LODWaterHeight; // sub record NAM4
     std::optional<uint64_t> unknownDNAM;
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMNAM;
     BinarySubRecord unknownONAM;
-    float distantLODMultiplier; // subrecord NAMA
+    float distantLODMultiplier; // sub record NAMA
     std::optional<uint8_t> unknownDATA;
     std::optional<uint64_t> unknownNAM0;
     std::optional<uint64_t> unknownNAM9;
-    uint32_t musicFormID; // subrecord ZNAM
-    std::string HD_LOD_DiffuseTexture; // subrecord TNAN
-    std::string HD_LOD_NormalTexture; // subrecord UNAM
-    std::string unknownXWEM; // subrecord XWEM
+    uint32_t musicFormID; // sub record ZNAM
+    std::string HD_LOD_DiffuseTexture; // sub record TNAN
+    std::string HD_LOD_NormalTexture; // sub record UNAM
+    std::string unknownXWEM; // sub record XWEM
     BinarySubRecordExtended unknownOFST;
 }; // struct
 

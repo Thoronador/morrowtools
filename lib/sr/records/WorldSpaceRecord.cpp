@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -243,7 +243,7 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
     {
       if (!rnam.saveToStream(output, cRNAM))
       {
-        std::cerr << "Error while writing subrecord RNAM of WRLD!\n";
+        std::cerr << "Error while writing sub record RNAM of WRLD!\n";
         return false;
       }
     }
@@ -253,7 +253,7 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMHDT.saveToStream(output, cMHDT))
     {
-      std::cerr << "Error while writing subrecord MHDT of WRLD!\n";
+      std::cerr << "Error while writing sub record MHDT of WRLD!\n";
       return false;
     }
   }
@@ -377,7 +377,7 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cerr << "Error while writing subrecord MODT of WRLD!\n";
+      std::cerr << "Error while writing sub record MODT of WRLD!\n";
       return false;
     }
   }
@@ -386,7 +386,7 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMNAM.saveToStream(output, cMNAM))
     {
-      std::cerr << "Error while writing subrecord MNAM of WRLD!\n";
+      std::cerr << "Error while writing sub record MNAM of WRLD!\n";
       return false;
     }
   }
@@ -395,7 +395,7 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownONAM.saveToStream(output, cONAM))
     {
-      std::cerr << "Error while writing subrecord ONAM of WRLD!\n";
+      std::cerr << "Error while writing sub record ONAM of WRLD!\n";
       return false;
     }
   }
@@ -473,7 +473,7 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownOFST.saveToStream(output, cOFST))
     {
-      std::cerr << "Error while writing subrecord OFST of WRLD!\n";
+      std::cerr << "Error while writing sub record OFST of WRLD!\n";
       return false;
     }
   }
@@ -482,10 +482,10 @@ bool WorldSpaceRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool WorldSpaceRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   if (isDeleted())
     return true;
@@ -495,7 +495,7 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
 
   // read editor ID (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   unknownRNAMs.clear();
@@ -529,15 +529,15 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
   unknownOFST.setPresence(false);
   while (bytesRead < readSize)
   {
-    // read next subrecord
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    // read next sub record
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cRNAM:
-           if (!tempBin.loadFromStream(in_File, cRNAM, false))
+           if (!tempBin.loadFromStream(input, cRNAM, false))
            {
-             std::cerr << "Error while reading subrecord RNAM of WRLD!\n";
+             std::cerr << "Error while reading sub record RNAM of WRLD!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + tempBin.size();
@@ -546,12 +546,12 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMHDT:
            if (unknownMHDT.isPresent())
            {
-             std::cerr << "Error: WRLD seems to have more than one MHDT subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one MHDT sub record.\n";
              return false;
            }
-           if (!unknownMHDT.loadFromStream(in_File, cMHDT, false))
+           if (!unknownMHDT.loadFromStream(input, cMHDT, false))
            {
-             std::cerr << "Error while reading subrecord MHDT of WRLD!\n";
+             std::cerr << "Error while reading sub record MHDT of WRLD!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMHDT.size();
@@ -559,20 +559,20 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: WRLD seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one FULL sub record.\n";
              return false;
            }
-           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cWCTR:
            if (hasWCTR)
            {
-             std::cerr << "Error: WRLD seems to have more than one WCTR subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one WCTR sub record.\n";
              return false;
            }
            // WCTR's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 4)
            {
@@ -581,11 +581,11 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            // read WCTR
-           in_File.read(reinterpret_cast<char*>(&centerCellX), 2);
-           in_File.read(reinterpret_cast<char*>(&centerCellY), 2);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&centerCellX), 2);
+           input.read(reinterpret_cast<char*>(&centerCellY), 2);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord WCTR of WRLD!\n";
+             std::cerr << "Error while reading sub record WCTR of WRLD!\n";
              return false;
            }
            bytesRead += 4;
@@ -594,86 +594,86 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cLTMP:
            if (interiorLightingFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one LTMP subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one LTMP sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cLTMP, interiorLightingFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cLTMP, interiorLightingFormID, false))
              return false;
            bytesRead += 6;
            if (interiorLightingFormID == 0)
            {
-             std::cerr << "Error: Subrecord LTMP of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record LTMP of WRLD has value zero!\n";
              return false;
            }
            break;
       case cXEZN:
            if (encounterZoneFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one XEZN subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one XEZN sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cXEZN, encounterZoneFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cXEZN, encounterZoneFormID, false))
              return false;
            bytesRead += 6;
            if (encounterZoneFormID == 0)
            {
-             std::cerr << "Error: Subrecord XEZN of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record XEZN of WRLD has value zero!\n";
              return false;
            }
            break;
       case cCNAM:
            if (climateFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one CNAM sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, climateFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cCNAM, climateFormID, false))
              return false;
            bytesRead += 6;
            if (climateFormID == 0)
            {
-             std::cerr << "Error: Subrecord CNAM of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record CNAM of WRLD has value zero!\n";
              return false;
            }
            break;
       case cNAM2:
            if (waterFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one NAM2 subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one NAM2 sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cNAM2, waterFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cNAM2, waterFormID, false))
              return false;
            bytesRead += 6;
            if (waterFormID == 0)
            {
-             std::cerr << "Error: Subrecord NAM2 of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record NAM2 of WRLD has value zero!\n";
              return false;
            }
            break;
       case cNAM3:
            if (LODWaterTypeFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one NAM3 subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one NAM3 sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cNAM3, LODWaterTypeFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cNAM3, LODWaterTypeFormID, false))
              return false;
            bytesRead += 6;
            if (LODWaterTypeFormID == 0)
            {
-             std::cerr << "Error: Subrecord NAM3 of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record NAM3 of WRLD has value zero!\n";
              return false;
            }
            break;
       case cNAM4:
            if (LODWaterHeight.has_value())
            {
-             std::cerr << "Error: WRLD seems to have more than one NAM4 subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one NAM4 sub record.\n";
              return false;
            }
            // read NAM4's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 4)
            {
@@ -683,10 +683,10 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            // read NAM4's stuff
            LODWaterHeight = 0.0f;
-           in_File.read(reinterpret_cast<char*>(&LODWaterHeight.value()), 4);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&LODWaterHeight.value()), 4);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord NAM4 of WRLD!\n";
+             std::cerr << "Error while reading sub record NAM4 of WRLD!\n";
              return false;
            }
            bytesRead += 4;
@@ -694,11 +694,11 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDNAM:
            if (unknownDNAM.has_value())
            {
-             std::cerr << "Error: WRLD seems to have more than one DNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one DNAM sub record.\n";
              return false;
            }
            // read DNAM's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 8)
            {
@@ -708,10 +708,10 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            // read DNAM's stuff
            unknownDNAM = 0;
-           in_File.read(reinterpret_cast<char*>(&unknownDNAM.value()), 8);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&unknownDNAM.value()), 8);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DNAM of WRLD!\n";
+             std::cerr << "Error while reading sub record DNAM of WRLD!\n";
              return false;
            }
            bytesRead += 8;
@@ -719,26 +719,26 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cerr << "Error: WRLD seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one MODL sub record.\n";
              return false;
            }
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            if (modelPath.empty())
            {
-             std::cerr << "Error: Subrecord MODL of WRLD is empty!\n";
+             std::cerr << "Error: Sub record MODL of WRLD is empty!\n";
              return false;
            }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cerr << "Error: WRLD seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one MODT sub record.\n";
              return false;
            }
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
-             std::cerr << "Error while reading subrecord MODT of WRLD!\n";
+             std::cerr << "Error while reading sub record MODT of WRLD!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMODT.size();
@@ -746,12 +746,12 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cMNAM:
            if (unknownMNAM.isPresent())
            {
-             std::cerr << "Error: WRLD seems to have more than one MNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one MNAM sub record.\n";
              return false;
            }
-           if (!unknownMNAM.loadFromStream(in_File, cMNAM, false))
+           if (!unknownMNAM.loadFromStream(input, cMNAM, false))
            {
-             std::cerr << "Error while reading subrecord MNAM of WRLD!\n";
+             std::cerr << "Error while reading sub record MNAM of WRLD!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMNAM.size();
@@ -759,41 +759,41 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cXLCN:
            if (locationFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one XLCN subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one XLCN sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cXLCN, locationFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cXLCN, locationFormID, false))
              return false;
            bytesRead += 6;
            if (locationFormID == 0)
            {
-             std::cerr << "Error: Subrecord XLCN of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record XLCN of WRLD has value zero!\n";
              return false;
            }
            break;
       case cWNAM:
            if (parentWorldSpaceFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one WNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one WNAM sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cWNAM, parentWorldSpaceFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cWNAM, parentWorldSpaceFormID, false))
              return false;
            bytesRead += 6;
            if (parentWorldSpaceFormID == 0)
            {
-             std::cerr << "Error: Subrecord WNAM of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record WNAM of WRLD has value zero!\n";
              return false;
            }
            break;
       case cPNAM:
            if (unknownPNAM.has_value())
            {
-             std::cerr << "Error: WRLD seems to have more than one PNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one PNAM sub record.\n";
              return false;
            }
            // read PNAM's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 2)
            {
@@ -803,10 +803,10 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            // read PNAM's stuff
            unknownPNAM = 0;
-           in_File.read(reinterpret_cast<char*>(&unknownPNAM.value()), 2);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&unknownPNAM.value()), 2);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord PNAM of WRLD!\n";
+             std::cerr << "Error while reading sub record PNAM of WRLD!\n";
              return false;
            }
            bytesRead += 2;
@@ -814,12 +814,12 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cONAM:
            if (unknownONAM.isPresent())
            {
-             std::cerr << "Error: WRLD seems to have more than one ONAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one ONAM sub record.\n";
              return false;
            }
-           if (!unknownONAM.loadFromStream(in_File, cONAM, false))
+           if (!unknownONAM.loadFromStream(input, cONAM, false))
            {
-             std::cerr << "Error while reading subrecord ONAM of WRLD!\n";
+             std::cerr << "Error while reading sub record ONAM of WRLD!\n";
              return false;
            }
            // ONAM's length
@@ -834,11 +834,11 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cNAMA:
            if (hasReadNAMA)
            {
-             std::cerr << "Error: WRLD seems to have more than one NAMA subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one NAMA sub record.\n";
              return false;
            }
            // read NAMA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 4)
            {
@@ -847,10 +847,10 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            }
            // read NAMA's stuff
-           in_File.read(reinterpret_cast<char*>(&distantLODMultiplier), 4);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&distantLODMultiplier), 4);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord NAMA of WRLD!\n";
+             std::cerr << "Error while reading sub record NAMA of WRLD!\n";
              return false;
            }
            bytesRead += 4;
@@ -859,11 +859,11 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDATA:
            if (unknownDATA.has_value())
            {
-             std::cerr << "Error: WRLD seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one DATA sub record.\n";
              return false;
            }
            // read DATA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 1)
            {
@@ -873,10 +873,10 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            // read DATA's stuff
            unknownDATA = 0x00;
-           in_File.read(reinterpret_cast<char*>(&unknownDATA.value()), 1);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&unknownDATA.value()), 1);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DATA of WRLD!\n";
+             std::cerr << "Error while reading sub record DATA of WRLD!\n";
              return false;
            }
            bytesRead += 1;
@@ -884,11 +884,11 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cNAM0:
            if (unknownNAM0.has_value())
            {
-             std::cerr << "Error: WRLD seems to have more than one NAM0 subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one NAM0 sub record.\n";
              return false;
            }
            // read NAM0's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 8)
            {
@@ -898,10 +898,10 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            // read NAM0's stuff
            unknownNAM0 = 0;
-           in_File.read(reinterpret_cast<char*>(&unknownNAM0.value()), 8);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&unknownNAM0.value()), 8);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord NAM0 of WRLD!\n";
+             std::cerr << "Error while reading sub record NAM0 of WRLD!\n";
              return false;
            }
            bytesRead += 8;
@@ -909,11 +909,11 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cNAM9:
            if (unknownNAM9.has_value())
            {
-             std::cerr << "Error: WRLD seems to have more than one NAM9 subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one NAM9 sub record.\n";
              return false;
            }
            // read NAM9's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 8)
            {
@@ -923,10 +923,10 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
            }
            // read NAM9's stuff
            unknownNAM9 = 0;
-           in_File.read(reinterpret_cast<char*>(&unknownNAM9.value()), 8);
-           if (!in_File.good())
+           input.read(reinterpret_cast<char*>(&unknownNAM9.value()), 8);
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord NAM9 of WRLD!\n";
+             std::cerr << "Error while reading sub record NAM9 of WRLD!\n";
              return false;
            }
            bytesRead += 8;
@@ -934,100 +934,100 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
       case cZNAM:
            if (musicFormID != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one ZNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one ZNAM sub record.\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, musicFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cZNAM, musicFormID, false))
              return false;
            bytesRead += 6;
            if (musicFormID == 0)
            {
-             std::cerr << "Error: Subrecord ZNAM of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record ZNAM of WRLD has value zero!\n";
              return false;
            }
            break;
       case cTNAM:
            if (!HD_LOD_DiffuseTexture.empty())
            {
-             std::cerr << "Error: WRLD seems to have more than one TNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one TNAM sub record.\n";
              return false;
            }
-           if (!loadString512FromStream(in_File, HD_LOD_DiffuseTexture, buffer, cTNAM, false, bytesRead))
+           if (!loadString512FromStream(input, HD_LOD_DiffuseTexture, buffer, cTNAM, false, bytesRead))
              return false;
            // check content
            if (HD_LOD_DiffuseTexture.empty())
            {
-             std::cerr << "Error: Subrecord TNAM of WRLD is empty!\n";
+             std::cerr << "Error: Sub record TNAM of WRLD is empty!\n";
              return false;
            }
            break;
       case cUNAM:
            if (!HD_LOD_NormalTexture.empty())
            {
-             std::cerr << "Error: WRLD seems to have more than one UNAM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one UNAM sub record.\n";
              return false;
            }
-           if (!loadString512FromStream(in_File, HD_LOD_NormalTexture, buffer, cUNAM, false, bytesRead))
+           if (!loadString512FromStream(input, HD_LOD_NormalTexture, buffer, cUNAM, false, bytesRead))
              return false;
            // check content
            if (HD_LOD_NormalTexture.empty())
            {
-             std::cerr << "Error: Subrecord UNAM of WRLD is empty!\n";
+             std::cerr << "Error: Sub record UNAM of WRLD is empty!\n";
              return false;
            }
            break;
       case cXWEM:
            if (!unknownXWEM.empty())
            {
-             std::cerr << "Error: WRLD seems to have more than one XWEM subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one XWEM sub record.\n";
              return false;
            }
-           if (!loadString512FromStream(in_File, unknownXWEM, buffer, cXWEM, false, bytesRead))
+           if (!loadString512FromStream(input, unknownXWEM, buffer, cXWEM, false, bytesRead))
              return false;
            // check content
            if (unknownXWEM.empty())
            {
-             std::cerr << "Error: Subrecord XWEM of WRLD is empty!\n";
+             std::cerr << "Error: Sub record XWEM of WRLD is empty!\n";
              return false;
            }
            break;
       case cXXXX:
            if (sizeXXXX != 0)
            {
-             std::cerr << "Error: WRLD seems to have more than one XXXX subrecord in a row.\n";
+             std::cerr << "Error: WRLD seems to have more than one XXXX sub record in a row.\n";
              return false;
            }
            // read XXXX
-           if (!loadUint32SubRecordFromStream(in_File, cXXXX, sizeXXXX, false))
+           if (!loadUint32SubRecordFromStream(input, cXXXX, sizeXXXX, false))
              return false;
            bytesRead += 6;
            if (0 == sizeXXXX)
            {
-             std::cerr << "Error: Subrecord XXXX of WRLD has value zero!\n";
+             std::cerr << "Error: Sub record XXXX of WRLD has value zero!\n";
              return false;
            }
            break;
       case cOFST:
            if (unknownOFST.isPresent())
            {
-             std::cerr << "Error: WRLD seems to have more than one OFST subrecord.\n";
+             std::cerr << "Error: WRLD seems to have more than one OFST sub record.\n";
              return false;
            }
            // read OFST
            if (0 == sizeXXXX)
            {
-             if (!unknownOFST.loadFromStream(in_File, cOFST, false))
+             if (!unknownOFST.loadFromStream(input, cOFST, false))
              {
-               std::cerr << "Error while reading subrecord OFST of WRLD!\n";
+               std::cerr << "Error while reading sub record OFST of WRLD!\n";
                return false;
              }
            }
            else
            {
-             // load extended version of subrecord
-             if (!unknownOFST.loadFromStreamExtended(in_File, cOFST, false, sizeXXXX))
+             // load extended version of sub record
+             if (!unknownOFST.loadFromStreamExtended(input, cOFST, false, sizeXXXX))
              {
-               std::cerr << "Error while reading subrecord OFST of WRLD!\n";
+               std::cerr << "Error while reading sub record OFST of WRLD!\n";
                return false;
              }
              sizeXXXX = 0;
@@ -1049,12 +1049,12 @@ bool WorldSpaceRecord::loadFromStream(std::istream& in_File, const bool localize
   // presence checks
   if (!hasReadNAMA || !unknownOFST.isPresent())
   {
-    std::cerr << "Error while reading WRLD record: At least one required subrecord is missing!\n";
+    std::cerr << "Error while reading WRLD record: At least one required sub record is missing!\n";
     std::cerr << "NAMA: " << hasReadNAMA << "    OFST: " << unknownOFST.isPresent() << "\n";
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t WorldSpaceRecord::getRecordType() const

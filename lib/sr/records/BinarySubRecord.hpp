@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,7 +27,7 @@
 namespace SRTP
 {
 
-/** Holds data of a subrecord as BLOB. */
+/** Holds data of a sub record as BLOB. */
 struct BinarySubRecord
 {
   public:
@@ -87,7 +87,7 @@ struct BinarySubRecord
      */
     bool isPresent() const;
 
-    /** \brief Sets the subrecord's presence flag.
+    /** \brief Sets the sub record's presence flag.
      *
      * \param presence_flag  new value of the flag (true == present, false == absent)
      */
@@ -100,7 +100,7 @@ struct BinarySubRecord
      * \param subHeader    the sub record's header
      * \return Returns true on success.
      *         Returns false, if an error occurred.
-     * \remarks If the subrecord's presence flag is false, this method does not
+     * \remarks If the sub record's presence flag is false, this method does not
      *          write any data to the stream.
      */
     bool saveToStream(std::ostream& output, const uint32_t subHeader) const;
@@ -108,7 +108,7 @@ struct BinarySubRecord
 
     /** \brief Loads the sub record from the given input stream.
      *
-     * \param in_File       the input stream
+     * \param input         the input stream
      * \param subHeader     the sub record's header
      * \param withHeader    whether the sub record's header has to be read, too;
      *                      If set to true, the method will read the header,
@@ -117,11 +117,11 @@ struct BinarySubRecord
      * \return Returns true on success (sub record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    bool loadFromStream(std::istream& in_File, const uint32_t subHeader, const bool withHeader);
+    bool loadFromStream(std::istream& input, const uint32_t subHeader, const bool withHeader);
   private:
     uint8_t* m_Data; /**< pointer to internal BLOB, may be nullptr */
     uint16_t m_Size; /**< size of the internal data, may be zero if there's no data */
-    bool m_Present;  /**< flag to indicate whether subrecord has a value */
+    bool m_Present;  /**< flag to indicate whether sub record has a value */
 }; // struct
 
 } // namespace

@@ -44,7 +44,9 @@ BinarySubRecord::BinarySubRecord(const BinarySubRecord& op)
 BinarySubRecord& BinarySubRecord::operator=(const BinarySubRecord& other)
 {
   if (this == &other)
+  {
     return *this;
+  }
   m_Size = other.size();
   delete[] m_Data;
   if (m_Size > 0)
@@ -123,22 +125,22 @@ bool BinarySubRecord::saveToStream(std::ostream& output, const uint32_t subHeade
 }
 #endif
 
-bool BinarySubRecord::loadFromStream(std::istream& in_File, const uint32_t subHeader, const bool withHeader)
+bool BinarySubRecord::loadFromStream(std::istream& input, const uint32_t subHeader, const bool withHeader)
 {
   if (withHeader)
   {
     uint32_t subRecName = 0;
     // read sub header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     if (subRecName != subHeader)
     {
       UnexpectedRecord(subHeader, subRecName);
       return false;
     }
   }
-  // subrecord's length
+  // sub record's length
   uint16_t subLength = 0;
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   // re-allocate data, if necessary
   if (subLength != m_Size)
   {
@@ -150,10 +152,10 @@ bool BinarySubRecord::loadFromStream(std::istream& in_File, const uint32_t subHe
   if (subLength != 0)
   {
     memset(m_Data, 0, subLength);
-    in_File.read(reinterpret_cast<char*>(m_Data), subLength);
-    if (!in_File.good())
+    input.read(reinterpret_cast<char*>(m_Data), subLength);
+    if (!input.good())
     {
-      std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+      std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
                 << "!\n";
       return false;
     }

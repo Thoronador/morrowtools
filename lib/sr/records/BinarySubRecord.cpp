@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -139,20 +139,24 @@ bool BinarySubRecord::loadFromStream(std::istream& in_File, const uint32_t subHe
   // subrecord's length
   uint16_t subLength = 0;
   in_File.read(reinterpret_cast<char*>(&subLength), 2);
-  // read subrecord's data
+  // re-allocate data, if necessary
   if (subLength != m_Size)
   {
     delete[] m_Data;
     m_Data = new uint8_t[subLength];
     m_Size = subLength;
   }
-  memset(m_Data, 0, subLength);
-  in_File.read(reinterpret_cast<char*>(m_Data), subLength);
-  if (!in_File.good())
+  // read sub record's data - but only if there is something to read
+  if (subLength != 0)
   {
-    std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
-              << "!\n";
-    return false;
+    memset(m_Data, 0, subLength);
+    in_File.read(reinterpret_cast<char*>(m_Data), subLength);
+    if (!in_File.good())
+    {
+      std::cerr << "Error while reading subrecord " << IntTo4Char(subHeader)
+                << "!\n";
+      return false;
+    }
   }
   m_Present = true;
   return true;

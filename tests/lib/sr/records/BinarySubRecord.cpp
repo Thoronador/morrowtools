@@ -107,6 +107,30 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( streamOut.str() == "EDID\x13\0ActionShieldChange\0"sv );
     }
 
+    SECTION("special: load record of size zero with header")
+    {
+      // Records of size zero do not have much value, except as some kind of
+      // flag, but technically they are not forbidden.
+      const std::string_view data = "DATA\0\0"sv;
+      std::istringstream streamIn;
+      streamIn.str(std::string(data));
+
+      // Reading should succeed.
+      BinarySubRecord record;
+      REQUIRE( record.loadFromStream(streamIn, cDATA, true) );
+      // Check data.
+      REQUIRE( record.isPresent() );
+      REQUIRE( record.size() == 0 );
+      REQUIRE( record.data() == nullptr );
+
+      // Saving should succeed.
+      std::ostringstream streamOut;
+      // Writing should succeed.
+      REQUIRE( record.saveToStream(streamOut, cDATA) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("corrupt data: wrong header")
     {
       const std::string_view data = "FAIL\x13\0ActionShieldChange\0"sv;

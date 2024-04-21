@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -235,6 +235,27 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( a.data()[3] == b.data()[3] );
     }
 
+    SECTION("identical record")
+    {
+      // Reading data from a stream is currently the only way to get a record
+      // with data, so we do that here.
+      const std::string_view data = "SNAM\x04\0\x08\x5D\x0C\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+      BinarySubRecord a;
+      REQUIRE( a.loadFromStream(stream, cSNAM, true) );
+
+      // Copy from a to a.
+      a = a;
+      REQUIRE( a == a );
+      REQUIRE_FALSE( a != a );
+
+      REQUIRE( a.data()[0] == '\x08' );
+      REQUIRE( a.data()[1] == '\x5D' );
+      REQUIRE( a.data()[2] == '\x0C' );
+      REQUIRE( a.data()[3] == '\0' );
+    }
+
     SECTION("non-empty records with different content")
     {
       // Reading data from a stream is currently the only way to get a record
@@ -262,6 +283,37 @@ TEST_CASE("BinarySubRecord")
       REQUIRE( a.data()[1] == b.data()[1] );
       REQUIRE( a.data()[2] == b.data()[2] );
       REQUIRE( a.data()[3] != b.data()[3] );
+    }
+
+    SECTION("non-empty records of different size")
+    {
+      // Reading data from a stream is currently the only way to get a record
+      // with data, so we do that here.
+      const std::string_view data = "DATA\x04\0\x08\x5D\x0C\0DATA\x05\0\x08\x5D\x0C\0\x01"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+      BinarySubRecord a;
+      REQUIRE( a.loadFromStream(stream, cDATA, true) );
+
+      BinarySubRecord b;
+      REQUIRE( b.loadFromStream(stream, cDATA, true) );
+      REQUIRE_FALSE( a == b );
+      REQUIRE_FALSE( b == a );
+      REQUIRE( a != b );
+      REQUIRE( b != a );
+
+      // Size and pointers should not be equal.
+      REQUIRE( a.size() != b.size() );
+      REQUIRE( a.data() != nullptr );
+      REQUIRE( b.data() != nullptr );
+      REQUIRE( a.data() != b.data() );
+      // However, the pointed to content should partially be equal.
+      REQUIRE( a.data()[0] == b.data()[0] );
+      REQUIRE( a.data()[1] == b.data()[1] );
+      REQUIRE( a.data()[2] == b.data()[2] );
+      REQUIRE( a.data()[3] == b.data()[3] );
+      // No fifth byte in record a, so no comparison.
+      REQUIRE( b.data()[4] == '\x01' );
     }
 
     SECTION("non-empty record and empty record")

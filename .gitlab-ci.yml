@@ -53,13 +53,14 @@ coverage:
   before_script:
     - apt-get update && apt-get -y upgrade
     - apt-get install -y catch cmake g++-12 lcov libfuse3-dev liblz4-dev pkg-config zlib1g-dev
+    - apt-get install -y libasan8 libubsan1
   script:
     # build
     - export CXX=g++-12
     - export CC=gcc-12
     - mkdir build-coverage
     - cd build-coverage
-    - cmake -DCODE_COVERAGE=ON ../
+    - cmake -DCODE_COVERAGE=ON -DENABLE_SANITIZER=ON ../
     - make -j2
     # tests
     - ctest -V

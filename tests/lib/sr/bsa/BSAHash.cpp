@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -138,6 +138,13 @@ TEST_CASE("BSAHash")
         REQUIRE( calculateDirectoryHash("textures\\actors\\character\\eyes") == 0x70ca23b5741e6573 );
         REQUIRE( calculateDirectoryHash("textures\\actors\\dlc01\\spriggan") == 0x7b3a1922741e616e );
       }
+    }
+
+    SECTION("dot only as directory")
+    {
+      // Technically, "." is not a valid directory name within a BSA file,
+      // but it tests the case where the directory name is only one character.
+      REQUIRE( calculateDirectoryHash(".") == 0x000000002e01002e );
     }
   }
 }

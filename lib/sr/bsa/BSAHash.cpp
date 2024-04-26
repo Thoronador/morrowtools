@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -66,7 +66,8 @@ BSAHash calculateHash(const std::filesystem::path& path)
     first_hash |= static_cast<std::uint32_t>(0x80000000UL);
 
   std::uint32_t second_hash = 0;
-  for (unsigned int i = 1; i < ord_size - 2; ++i)
+  decltype(ord_size) limit = ord_size >= 2 ? ord_size - 2 : 0;
+  for (unsigned int i = 1; i < limit; ++i)
   {
     second_hash = (second_hash * 0x1003f) + ordinal_values[i];
   }

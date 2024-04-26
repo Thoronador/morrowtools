@@ -1,5 +1,10 @@
 # Version history of bsa-cli
 
+## Version 0.??.? (2024-04-??)
+
+__[bugfix]__
+Fix a possible integer underflow in the hash calculation for BSA files.
+
 ## Version 0.11.0 (2023-02-01)
 
 __[breaking change]__ + __[feature]__

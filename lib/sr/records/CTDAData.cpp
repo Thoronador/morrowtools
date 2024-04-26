@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,11 +30,11 @@ CTDAData::CTDAData()
 {
 }
 
-bool CTDAData::loadFromStream(std::istream& in_Stream, uint32_t& bytesRead)
+bool CTDAData::loadFromStream(std::istream& input, uint32_t& bytesRead)
 {
   // CTDA's length
   uint16_t subLength = 0;
-  in_Stream.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 32)
   {
@@ -43,11 +43,11 @@ bool CTDAData::loadFromStream(std::istream& in_Stream, uint32_t& bytesRead)
     return false;
   }
   // read CTDA data
-  in_Stream.read(reinterpret_cast<char*>(content.data()), 32);
+  input.read(reinterpret_cast<char*>(content.data()), 32);
   bytesRead += 32;
-  if (!in_Stream.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord CTDA!\n";
+    std::cerr << "Error while reading sub record CTDA!\n";
     return false;
   }
   return true;

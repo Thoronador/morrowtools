@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,15 +36,15 @@ struct CTDAData
   /** Constructor, creates a record with all content set to zero. */
   CTDAData();
 
-  std::array<uint8_t, 32> content; /**< the subrecord's content */
+  std::array<uint8_t, 32> content; /**< the sub record's content */
 
   /** \brief Loads the CTDA data from the given input stream.
    *
-   * \param in_Stream  the input stream
+   * \param input      the input stream to read from
    * \param bytesRead  reference to the variable that counts the number of read bytes
    * \return Returns true on success, or false on failure.
    */
-  bool loadFromStream(std::istream& in_Stream, uint32_t& bytesRead);
+  bool loadFromStream(std::istream& input, uint32_t& bytesRead);
 
   #ifndef SR_UNSAVEABLE_RECORDS
   /** \brief Writes the CTDA data to the given output stream.
@@ -80,8 +80,8 @@ struct CTDA_CISx_compound
 
   /** Alternative constructor to create compound with preset data.
    *
-   * \param ctda  value for CTDA subrecord
-   * \param cisx  value for CISx subrecord
+   * \param ctda  value for CTDA sub record
+   * \param cisx  value for CISx sub record
    */
   CTDA_CISx_compound(const CTDAData& ctda, const std::string& cisx);
 
@@ -167,10 +167,10 @@ uint32_t CTDA_CISx_compound<cisRecName>::getWriteSize() const
 }
 #endif
 
-/** alias for compound with CIS1 subrecord for string */
+/** alias for compound with CIS1 sub record for string */
 using CTDA_CIS1_compound = CTDA_CISx_compound<cCIS1>;
 
-/** alias for compound with CIS2 subrecord for string */
+/** alias for compound with CIS2 sub record for string */
 using CTDA_CIS2_compound = CTDA_CISx_compound<cCIS2>;
 
 } // namespace

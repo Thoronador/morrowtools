@@ -67,7 +67,7 @@ BSAHash calculateHash(const std::filesystem::path& path)
 
   std::uint32_t second_hash = 0;
   decltype(ord_size) limit = ord_size >= 2 ? ord_size - 2 : 0;
-  for (unsigned int i = 1; i < limit; ++i)
+  for (decltype(ordinal_values)::size_type i = 1; i < limit; ++i)
   {
     second_hash = (second_hash * 0x1003f) + ordinal_values[i];
   }
@@ -79,7 +79,7 @@ BSAHash calculateHash(const std::filesystem::path& path)
                    return c;
                  });
   std::uint32_t third_hash = 0;
-  for (unsigned int i = 0; i < ordinal_values.size(); ++i)
+  for (decltype(ordinal_values)::size_type i = 0; i < ordinal_values.size(); ++i)
   {
     third_hash = (third_hash * 0x1003f) + ordinal_values[i];
   }

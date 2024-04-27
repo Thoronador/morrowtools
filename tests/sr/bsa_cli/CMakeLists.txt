@@ -48,6 +48,22 @@ add_test(NAME bsa_cli_help_info
 add_test(NAME bsa_cli_help_list
          COMMAND $<TARGET_FILE:bsa-cli> help list)
 
+# tests for running commands that do not extract files or directories
+add_test(NAME bsa_cli_run_check_hashes
+         COMMAND $<TARGET_FILE:bsa-cli> check-hashes "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
+add_test(NAME bsa_cli_run_commands
+         COMMAND $<TARGET_FILE:bsa-cli> commands)
+add_test(NAME bsa_cli_run_directories
+         COMMAND $<TARGET_FILE:bsa-cli> directories "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
+add_test(NAME bsa_cli_run_directory_metadata
+         COMMAND $<TARGET_FILE:bsa-cli> directory-metadata "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
+add_test(NAME bsa_cli_run_file_metadata
+         COMMAND $<TARGET_FILE:bsa-cli> file-metadata "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
+add_test(NAME bsa_cli_run_info
+         COMMAND $<TARGET_FILE:bsa-cli> info "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
+add_test(NAME bsa_cli_run_list
+         COMMAND $<TARGET_FILE:bsa-cli> list "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
+
 # scripted test for invalid parameter use
 if (NOT WIN32)
   set(EXT "sh")

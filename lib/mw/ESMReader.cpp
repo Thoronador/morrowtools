@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2021  Dirk Stolle
+    Copyright (C) 2010, 2011, 2012, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -45,7 +45,7 @@ int ESMReader::skipRecord(std::istream& input)
 int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
 {
   std::ifstream input;
-  input.open(FileName.c_str(), std::ios::in | std::ios::binary);
+  input.open(FileName, std::ios::in | std::ios::binary);
   if (!input)
   {
     std::cerr << "Error: Could not open file \"" << FileName << "\".\n";
@@ -54,7 +54,7 @@ int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
 
   // set file pointer to end
   input.seekg(0, std::ios::end);
-  const int32_t FileSize = input.tellg();
+  const auto FileSize = input.tellg();
   // reset file pointer to start of file
   input.seekg(0, std::ios::beg);
 
@@ -88,7 +88,7 @@ int ESMReader::readESM(const std::string& FileName, TES3Record& theHead)
   // Now we will read the real data records that follow after the header.
   int relevantRecords = 0;
   int lastResult = 0;
-  int32_t lastGoodPosition = input.tellg();
+  auto lastGoodPosition = input.tellg();
   // now read all the records
   while ((input.tellg() < FileSize) && (lastResult != -1))
   {

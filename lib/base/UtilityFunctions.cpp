@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2015, 2021  Thoronador
+    Copyright (C) 2011, 2015, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -52,12 +52,12 @@ bool stringToShort(const std::string& str, int16_t& value)
          the type range, then the result is not useful anyway, so quit here. */
       if (value > cTenthLimit)
         return false;
-      value = value * 10;
+      value = static_cast<int16_t>(value * 10);
       /* If the result of the addition in the next line would go out of the
          type's range, then the result is not useful anyway, so quit here. */
       if (value > cRealLimit - (str[i] - '0'))
         return false;
-      value = value + (str.at(i)-'0');
+      value = static_cast<int16_t>(value + (str[i]-'0'));
     }
     else
     {
@@ -65,18 +65,23 @@ bool stringToShort(const std::string& str, int16_t& value)
       return false;
     }
   }
-  if (negative) value = -value;
+  if (negative)
+  {
+    value = static_cast<int16_t>(-value);
+  }
   return true;
 }
 
 bool stringToLong(const std::string& str, int32_t& value)
 {
-  if (str.length() == 0)
+  if (str.empty())
+  {
     return false;
+  }
   value = 0;
   unsigned int i;
   bool negative;
-  if (str.at(0)=='-')
+  if (str.at(0) == '-')
   {
     if (str.length() == 1)
       return false;
@@ -111,7 +116,10 @@ bool stringToLong(const std::string& str, int32_t& value)
       return false;
     }
   }
-  if (negative) value = -value;
+  if (negative)
+  {
+    value = -value;
+  }
   return true;
 }
 
@@ -128,7 +136,7 @@ bool stringToFloat(const std::string& str, float& value)
   if (str.length() == 0)
     return false;
   value = 0.0f;
-  unsigned int i, next_look;
+  std::string::size_type i, next_look;
   bool negative;
   if (str.at(0) == '-')
   {
@@ -208,8 +216,8 @@ void trimLeft(std::string& str1)
     return;
 
   // trim stuff at begin
-  int32_t len = str1.length();
-  int32_t pos = 0;
+  const auto len = str1.length();
+  std::string::size_type pos = 0;
   bool go_on = true;
   while (go_on)
   {
@@ -349,14 +357,14 @@ bool stripEnclosingQuotes(std::string& str1)
 
 int lowerCaseCompare(const std::string& left, const std::string& right)
 {
-  const std::string::size_type l_size = left.size();
-  const std::string::size_type r_size = right.size();
+  const auto l_size = left.size();
+  const auto r_size = right.size();
   const std::string::size_type len = std::min(l_size, r_size);
 
   for (std::string::size_type i = 0; i < len; ++i)
   {
-    const char l = tolower(left[i]);
-    const char r = tolower(right[i]);
+    const char l = static_cast<char>(tolower(static_cast<unsigned char>(left[i])));
+    const char r = static_cast<char>(tolower(static_cast<unsigned char>(right[i])));
     if (l < r)
     {
       return -1;
@@ -367,5 +375,5 @@ int lowerCaseCompare(const std::string& left, const std::string& right)
     }
   }
   // if they are equal so far, the length decides
-  return l_size - r_size;
+  return static_cast<int>(l_size - r_size);
 }

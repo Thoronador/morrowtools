@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -106,19 +106,19 @@ std::string getSizeString(const int64_t fileSize)
   // giga
   if (fileSize > 1024 * 1024 * 1024)
   {
-    return floatToString(std::round((fileSize * 100.0f) / (1024.0f * 1024 * 1024)) / 100.0f) + " GB";
+    return floatToString(std::round((static_cast<float>(fileSize) * 100.0f) / (1024.0f * 1024 * 1024)) / 100.0f) + " GB";
   }
   // mega
   if (fileSize > 1024 * 1024)
   {
-    return floatToString(std::round((fileSize * 100.0f) / (1024.0f * 1024)) / 100.0f) + " MB";
+    return floatToString(std::round((static_cast<float>(fileSize) * 100.0f) / (1024.0f * 1024)) / 100.0f) + " MB";
   }
   // kilo
   if (fileSize > 1024)
   {
-    return floatToString(std::round((fileSize * 100.0f) / 1024.0f) / 100.0f) + " KB";
+    return floatToString(std::round((static_cast<float>(fileSize) * 100.0f) / 1024.0f) / 100.0f) + " KB";
   }
-  return floatToString(fileSize) + " byte";
+  return std::to_string(fileSize) + " byte";
 }
 
 bool FileExists(const std::string& FileName)

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,7 +29,7 @@ std::string randomAlphaNumericSequence(const unsigned int length)
   static const std::string characters = "abcdefghijklmnopqrstuvwxyz0123456789";
   std::random_device randDev;
   std::mt19937 generator(randDev());
-  std::uniform_int_distribution<unsigned int> distribution(0, characters.size());
+  std::uniform_int_distribution<std::string::size_type> distribution(0, characters.size());
   std::string result(length, 'a');
   for (unsigned int i = 0; i < length; ++i)
   {

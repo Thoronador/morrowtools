@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2021, 2022  Dirk Stolle
+    Copyright (C) 2021, 2022, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -72,8 +72,8 @@ bool lz4Decompress(uint8_t * compressedData, const uint32_t compressedSize, uint
     return false;
   }
 
-  uint32_t alreadyConsumed = 0;
-  uint32_t alreadyDecompressed = 0;
+  size_t alreadyConsumed = 0;
+  size_t alreadyDecompressed = 0;
   size_t expectedBytes = 0;
   size_t outputSize = 0;
   size_t inputSize = 0;
@@ -143,11 +143,21 @@ bool lz4Compress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffer
   {
     // re-allocate buffer
     delete[] compBuffer;
-    compBuffer = new uint8_t[bound];
-    compSize = bound;
+    compBuffer = nullptr;
+    compSize = 0;
+    try
+    {
+      compBuffer = new uint8_t[bound];
+    }
+    catch(...)
+    {
+      compBuffer = nullptr;
+      return false;
+    }
+    compSize = static_cast<uint32_t>(bound);
   }
 
-  auto bytesWritten = LZ4F_compressFrame(compBuffer, compSize, rawData, rawSize, nullptr);
+  const auto bytesWritten = LZ4F_compressFrame(compBuffer, compSize, rawData, rawSize, nullptr);
   if (LZ4F_isError(bytesWritten))
   {
     std::cerr << "lz4Compress: Error: Failed to compress data into frame!\n"
@@ -155,7 +165,7 @@ bool lz4Compress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffer
     return false;
   }
 
-  usedSize = bytesWritten;
+  usedSize = static_cast<uint32_t>(bytesWritten);
   return true;
 }
 

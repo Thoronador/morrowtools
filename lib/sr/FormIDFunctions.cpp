@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ const char hexDigits[16] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
 
 uint8_t extractModIndex(const uint32_t fID)
 {
-  return fID >> 24;
+  return static_cast<uint8_t>(fID >> 24);
 }
 
 uint32_t extractObjectIndex(const uint32_t fID)

@@ -645,7 +645,7 @@ int main(int argc, char **argv)
             if (listFactionRanks)
             {
               basic_out << "        ranks: ";
-              const unsigned int rankCount = faction_iter->second.ranks.size();
+              const auto rankCount = faction_iter->second.ranks.size();
               if (rankCount == 0)
               {
                 // no ranks found
@@ -753,11 +753,11 @@ int main(int argc, char **argv)
                       << "\"\n        form ID " << SRTP::getFormIDAsStringWithFile(quest_iter->second.headerFormID, loadOrder, showFiles)
                       << "\n        editor ID \"" << quest_iter->second.editorID << "\"\n";
             // indices
-            const unsigned int idx_count = quest_iter->second.indices.size();
+            const auto idx_count = quest_iter->second.indices.size();
             if (!allQuestInfo)
             {
               basic_out << "        indices: ";
-              for (unsigned int i = 0; i < idx_count; ++i)
+              for (std::vector<SRTP::IndexEntry>::size_type i = 0; i < idx_count; ++i)
               {
                 if (i != 0)
                   basic_out << ", ";

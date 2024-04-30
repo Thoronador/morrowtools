@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -72,7 +72,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head, cons
 
   // set file pointer to end
   input.seekg(0, std::ios::end);
-  const uint32_t FileSize = input.tellg();
+  const auto FileSize = input.tellg();
   // reset file pointer to start of file
   input.seekg(0, std::ios::beg);
 
@@ -114,7 +114,7 @@ int ESMReader::readESM(const std::string& FileName, Tes4HeaderRecord& head, cons
   // read the groups/ records
   uint32_t processedGroups = 0;
   int lastResult = 0;
-  uint32_t lastGoodPosition = input.tellg();
+  auto lastGoodPosition = input.tellg();
   while ((input.tellg() < FileSize) && (lastResult >= 0))
   {
     // try to read or skip a group - possibly that won't always work

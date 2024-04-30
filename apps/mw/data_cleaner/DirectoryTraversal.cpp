@@ -170,7 +170,7 @@ void getDeletableIcons(const std::string& dir, const std::set<std::string, ci_le
       if (positives.find(dir + entry.FileName) == positives.end())
       {
         // It's not in the list, so add it to the list of deletable files.
-        const unsigned int nameLen = entry.FileName.length();
+        const auto nameLen = entry.FileName.length();
         if (nameLen > 4)
         {
           const auto ext = lowerCase(entry.FileName.substr(nameLen - 4, 4));

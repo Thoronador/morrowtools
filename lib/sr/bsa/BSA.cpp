@@ -233,7 +233,7 @@ bool BSA::grabFileNames()
   {
     // set names until no more data is left
     nextName = &namesPointer[charOffset];
-    charOffset = charOffset + nextName.length() + 1;
+    charOffset = charOffset + static_cast<uint32_t>(nextName.length()) + 1;
     if (dirIndex >= m_DirectoryBlocks.size())
     {
       std::cerr << "BSA::grabFileNames: Error: Not enough file blocks!\n"

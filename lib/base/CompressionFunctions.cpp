@@ -139,7 +139,7 @@ bool zlibCompress(uint8_t * rawData, const uint32_t rawSize, uint8_t*& compBuffe
     // re-allocate buffer
     delete[] compBuffer;
     compBuffer = new uint8_t[bound];
-    compSize = bound;
+    compSize = static_cast<uint32_t>(bound);
   }
 
   streamZlib.avail_in = rawSize;

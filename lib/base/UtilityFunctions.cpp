@@ -165,9 +165,9 @@ bool stringToFloat(const std::string& str, float& value)
       value = value * 10.0f;
       /* If the result of the addition in the next line would go out of the
          type's range, then the result is not useful anyway, so quit here. */
-      if (value > cRealLimit - (str[i] - '0'))
+      if (value > cRealLimit - static_cast<float>(str[i] - '0'))
         return false;
-      value = value + (str.at(i) - '0');
+      value = value + static_cast<float>(str.at(i) - '0');
       ++next_look;
     }
     else if (str.at(i) == '.')
@@ -188,7 +188,7 @@ bool stringToFloat(const std::string& str, float& value)
   {
     if ((str.at(i) >= '0') && (str.at(i) <= '9'))
     {
-      second = second + (str.at(i) - '0');
+      second = second + static_cast<float>(str.at(i) - '0');
       second = second / 10.0f;
     }
     else
@@ -213,7 +213,9 @@ std::string floatToString(const float f)
 void trimLeft(std::string& str1)
 {
   if (str1.empty())
+  {
     return;
+  }
 
   // trim stuff at begin
   const auto len = str1.length();
@@ -247,11 +249,14 @@ void trimLeft(std::string& str1)
 void trimRight(std::string& str1)
 {
   if (str1.empty())
+  {
     return;
+  }
 
   // trim stuff at end
-  int32_t len = str1.length();
-  int32_t pos = len - 1;
+  using signed_size_type = std::make_signed_t<std::string::size_type>;
+  const signed_size_type len = str1.length();
+  signed_size_type pos = len - 1;
   bool go_on = true;
   while (go_on)
   {
@@ -295,7 +300,7 @@ std::string lowerCase(const std::string& str1)
   {
     if ((result[i] <= 'Z') && (result[i] >= 'A'))
     {
-      result[i] = result[i] + lowerDiff;
+      result[i] = static_cast<char>(result[i] + lowerDiff);
     }
   }
   return result;

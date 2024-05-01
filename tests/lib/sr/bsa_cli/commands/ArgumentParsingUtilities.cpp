@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include "../../../locate_catch.hpp"
 #include <array>
 #include <fstream>
-#include "../../../../../lib/base/FileFunctions.hpp"
+#include "../../../../../lib/base/FileGuard.hpp"
 #include "../../../../../apps/sr/bsa_cli/commands/ArgumentParsingUtilities.hpp"
 
 TEST_CASE("bsa_cli::ArgumentParsingUtilities")
@@ -56,9 +56,14 @@ TEST_CASE("bsa_cli::ArgumentParsingUtilities")
       REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) != 0 );
       REQUIRE( fileName.empty() );
 
+      const std::filesystem::path path{"foo.bsa"};
+      MWTP::FileGuard guard{path};
+
       // create temp. "BSA" file
-      std::ofstream bsa("foo.bsa", std::ios::trunc | std::ios::out);
-      bsa.close();
+      {
+        std::ofstream bsa(path, std::ios::trunc | std::ios::out);
+        bsa.close();
+      }
 
       REQUIRE( parseArgumentsBsaFileNameOnly(3, argv, fileName) == 0 );
       REQUIRE( fileName == "foo.bsa" );
@@ -66,9 +71,6 @@ TEST_CASE("bsa_cli::ArgumentParsingUtilities")
       fileName.clear();
       REQUIRE( parseArgumentsBsaFileNameOnly(4, argv, fileName) != 0 );
       REQUIRE( fileName == "foo.bsa" );
-
-      // cleanup: delete file
-      REQUIRE( deleteFile("foo.bsa") );
     }
 
     SECTION("null in argument pointers")

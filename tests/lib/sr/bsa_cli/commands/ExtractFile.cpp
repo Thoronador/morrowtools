@@ -21,7 +21,7 @@
 #include "../../../locate_catch.hpp"
 #include <array>
 #include <fstream>
-#include "../../../../../lib/base/FileFunctions.hpp"
+#include "../../../../../lib/base/FileGuard.hpp"
 #include "../../../../../apps/sr/bsa_cli/commands/ExtractFile.hpp"
 
 TEST_CASE("bsa_cli::ExtractFile")
@@ -38,7 +38,7 @@ TEST_CASE("bsa_cli::ExtractFile")
 
   SECTION("parseArguments")
   {
-    const auto arguments = std::string("a.out\0extract-file\0foo_list.bsa\0dir\\file.dat\0foo.dat"sv);
+    const auto arguments = std::string("a.out\0extract-file\0foo_exf1.bsa\0dir\\file.dat\0foo.dat"sv);
     std::array<char*, 5> argArr = {
         const_cast<char*>(&arguments.c_str()[0]),
         const_cast<char*>(&arguments.c_str()[6]),
@@ -50,7 +50,7 @@ TEST_CASE("bsa_cli::ExtractFile")
 
     REQUIRE( argv[0] == "a.out"s );
     REQUIRE( argv[1] == "extract-file"s );
-    REQUIRE( argv[2] == "foo_list.bsa"s );
+    REQUIRE( argv[2] == "foo_exf1.bsa"s );
     REQUIRE( argv[3] == "dir\\file.dat"s );
     REQUIRE( argv[4] == "foo.dat"s );
 
@@ -62,14 +62,16 @@ TEST_CASE("bsa_cli::ExtractFile")
     REQUIRE( command.parseArguments(4, argv) != 0 );
     REQUIRE( command.parseArguments(5, argv) != 0 );
 
+    const std::filesystem::path path{"foo_exf1.bsa"};
+    const MWTP::FileGuard guard{path};
+
     // create "BSA" file
-    std::ofstream bsa("foo_list.bsa", std::ios::trunc | std::ios::out);
-    bsa.close();
+    {
+      std::ofstream bsa(path, std::ios::trunc | std::ios::out);
+      bsa.close();
+    }
 
     REQUIRE( command.parseArguments(5, argv) == 0 );
-
-    // cleanup: delete file
-    REQUIRE( deleteFile("foo_list.bsa") );
   }
 
   SECTION("run: fail with empty file")
@@ -92,15 +94,18 @@ TEST_CASE("bsa_cli::ExtractFile")
 
     ExtractFile command;
 
+    const std::filesystem::path path{"foo_extf.bsa"};
+    const MWTP::FileGuard guard{path};
+
     // create "BSA" file
-    std::ofstream bsa("foo_extf.bsa", std::ios::trunc | std::ios::out);
-    bsa.close();
+    {
+      std::ofstream bsa(path, std::ios::trunc | std::ios::out);
+      bsa.close();
+    }
     // parse arguments to get file name of BSA
     REQUIRE( command.parseArguments(5, argv) == 0 );
     // Run should fail.
     REQUIRE( command.run() != 0 );
-    // cleanup: delete file
-    REQUIRE( deleteFile("foo_extf.bsa") );
   }
 
   SECTION("helpShort returns non-empty string")

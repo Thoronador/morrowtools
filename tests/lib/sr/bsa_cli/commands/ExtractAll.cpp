@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2022  Dirk Stolle
+    Copyright (C) 2021, 2022, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 #include "../../../locate_catch.hpp"
 #include <array>
 #include <fstream>
-#include "../../../../../lib/base/FileFunctions.hpp"
+#include "../../../../../lib/base/FileGuard.hpp"
 #include "../../../../../apps/sr/bsa_cli/commands/ExtractAll.hpp"
 
 TEST_CASE("bsa_cli::ExtractAll")
@@ -62,14 +62,16 @@ TEST_CASE("bsa_cli::ExtractAll")
     REQUIRE( command.parseArguments(4, argv) != 0 );
     REQUIRE( command.parseArguments(5, argv) != 0 );
 
+    const std::filesystem::path path{"foo_extract_all.bsa"};
+    const MWTP::FileGuard guard{path};
+
     // create "BSA" file
-    std::ofstream bsa("foo_extract_all.bsa", std::ios::trunc | std::ios::out);
-    bsa.close();
+    {
+      std::ofstream bsa(path, std::ios::trunc | std::ios::out);
+      bsa.close();
+    }
 
     REQUIRE( command.parseArguments(4, argv) == 0 );
-
-    // cleanup: delete file
-    REQUIRE( deleteFile("foo_extract_all.bsa") );
   }
 
   SECTION("run: fail with empty file")
@@ -90,15 +92,18 @@ TEST_CASE("bsa_cli::ExtractAll")
 
     ExtractAll command;
 
+    const std::filesystem::path path{"foo_extract_all.bsa"};
+    const MWTP::FileGuard guard{path};
+
     // create "BSA" file
-    std::ofstream bsa("foo_extract_all.bsa", std::ios::trunc | std::ios::out);
-    bsa.close();
+    {
+      std::ofstream bsa(path, std::ios::trunc | std::ios::out);
+      bsa.close();
+    }
     // parse arguments to get file name of BSA
     REQUIRE( command.parseArguments(4, argv) == 0 );
     // Run should fail.
     REQUIRE( command.run() != 0 );
-    // cleanup: delete file
-    REQUIRE( deleteFile("foo_extract_all.bsa") );
   }
 
   SECTION("helpShort returns non-empty string")

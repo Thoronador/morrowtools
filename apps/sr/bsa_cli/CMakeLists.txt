@@ -56,6 +56,7 @@ if (MINGW AND CMAKE_HOST_UNIX)
   # a cross-compiling attempt. To get the library paths more easily, we just set
   # them directly, because CMake has troubles finding them.
   message(STATUS "Cross-compiling from Linux for Windows ...")
+  add_definitions (-DTHIS_IS_CROSS_COMPILING)
   try_compile(BUILDS_FOR_WIN64
               ${CMAKE_CURRENT_SOURCE_DIR}/win64-test
               ${CMAKE_CURRENT_SOURCE_DIR}/../../../win64-compile-test

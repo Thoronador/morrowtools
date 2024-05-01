@@ -21,6 +21,9 @@
 #include <iostream>
 #include <memory>
 #include <string>
+#if defined(_WIN32) && !defined(THIS_IS_CROSS_COMPILING)
+#include <boost/nowide/args.hpp>
+#endif // _WIN32
 #include "commands/Operations.hpp"
 #include "commands/CommandFactory.hpp"
 #include "commands/Info.hpp"
@@ -76,6 +79,10 @@ void showHelp()
 
 int main(int argc, char **argv)
 {
+  #if defined(_WIN32) && !defined(THIS_IS_CROSS_COMPILING)
+  boost::nowide::args _(argc, argv);
+  #endif
+
   using namespace SRTP::bsa_cli;
   std::optional<SRTP::Operation> operation;
 

@@ -34,7 +34,7 @@
 
 void showVersion()
 {
-  std::cout << "BSA Command Line Tool for Skyrim, version 0.11.0, 2023-02-01\n"
+  std::cout << "BSA Command Line Tool for Skyrim, version 0.11.1, 2024-05-05\n"
             << "\n"
             << "Copyright (C) 2021 - 2024  Dirk Stolle\n"
             << "License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\n"

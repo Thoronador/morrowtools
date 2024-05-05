@@ -28,7 +28,7 @@ or
 or
 
     # Alpine
-    apk add cmake g++ pkgconf lz4-dev
+    apk add cmake g++ make pkgconf lz4-dev
 
 into a root terminal.
 
@@ -40,13 +40,13 @@ Starting in the root directory of the source, you can do the following steps:
     mkdir build
     cd build
     cmake ../
-    make -j4
+    cmake --build . -j4
 
 That's it.
 
 ## Using the application
 
-TODO
+This is not intended for production use.
 
 ## Copyright and Licensing
 

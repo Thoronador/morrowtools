@@ -11,6 +11,8 @@ jobs:
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: msys2/setup-msys2@v2
         with:
           msystem: mingw64
@@ -91,12 +93,16 @@ jobs:
           cp apps/sr/bsa_cli/changelog.md bsa-cli/
           cp apps/sr/bsa_cli/third-party.md bsa-cli/
           cp LICENSE bsa-cli/
+          VERSION=$(git describe --always --match=bsa_cli_* | cut -d'_' -f3-)
+          mv bsa-cli bsa-cli_$VERSION
+          '/c/Program Files/7-Zip/7z.exe' a -r bsa-cli_${VERSION}_win64.zip bsa-cli_${VERSION}
       - name: Create bsa-cli artifact
         uses: actions/upload-artifact@v4
         with:
-          name: bsa-cli-static-msys2
+          name: bsa-cli-win64
+          if-no-files-found: error
           path: |
-            bsa-cli/*
+            bsa-cli_*_win64.zip
       - name: Collect files for Form ID finder
         run: |
           export MSYSTEM=MINGW64
@@ -108,9 +114,13 @@ jobs:
           cp apps/sr/formID_finder/ChangeLog.en.md formID_finder/
           cp apps/sr/formID_finder/third-party.md formID_finder/
           cp LICENSE formID_finder/
+          VERSION=$(git describe --always --match=formID_finder_* | cut -d'_' -f3-)
+          mv formID_finder formID_finder_$VERSION
+          '/c/Program Files/7-Zip/7z.exe' a -r formID_finder_${VERSION}_win64.zip formID_finder_$VERSION
       - name: Create Form ID finder artifact
         uses: actions/upload-artifact@v4
         with:
-          name: formID-finder-static-msys2
+          name: formID-finder-win64
+          if-no-files-found: error
           path: |
-            formID_finder/*
+            formID_finder_*_win64.zip

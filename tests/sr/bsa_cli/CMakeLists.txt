@@ -64,12 +64,17 @@ add_test(NAME bsa_cli_run_info
 add_test(NAME bsa_cli_run_list
          COMMAND $<TARGET_FILE:bsa-cli> list "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
 
-# scripted test for invalid parameter use
 if (NOT WIN32)
   set(EXT "sh")
 else ()
   set(EXT "cmd")
 endif()
 
+# scripted test for invalid parameter use
 add_test(NAME bsa_cli_parameter_misuse
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.${EXT} $<TARGET_FILE:bsa-cli>)
+
+if (WIN32)
+  add_test(NAME bsa_cli_parameter_umlauts
+           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/umlauts.cmd $<TARGET_FILE:bsa-cli> "${CMAKE_CURRENT_SOURCE_DIR}/Möwe.bsa")
+endif()

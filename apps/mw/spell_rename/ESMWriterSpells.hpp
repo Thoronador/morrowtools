@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2021  Dirk Stolle
+    Copyright (C) 2011, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,10 +35,10 @@ class ESMWriterSpells: public ESMWriter
 
     /** \brief Tries to write all data records to the stream.
      *
-     * \param output  the output file stream that's used to write the records
+     * \param output  the output stream that's used to write the records
      * \return Returns true on success. Returns false, if an error occurred.
      */
-    virtual bool writeRecords(std::ofstream& output) const override;
+    virtual bool writeRecords(std::ostream& output) const override;
 }; // class
 
 } // namespace

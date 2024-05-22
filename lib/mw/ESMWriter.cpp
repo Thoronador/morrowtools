@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,8 +46,8 @@ bool ESMWriter::writeESM(const std::string& FileName, const bool IsMasterFile, T
   output.open(FileName.c_str(), std::ios::out | std::ios::binary | std::ios::trunc);
   if (!output)
   {
-    std::cout << "Error: could not open/create file \""<<FileName
-              <<"\" for writing.\n";
+    std::cerr << "Error: could not open/create file \"" << FileName
+              << "\" for writing.\n";
     return false;
   }
   //adjust header data slightly

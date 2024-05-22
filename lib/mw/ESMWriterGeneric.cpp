@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013, 2014  Dirk Stolle
+    Copyright (C) 2011, 2013, 2014, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,9 +29,9 @@ ESMWriterGeneric::ESMWriterGeneric(VectorType* vec)
 : ESMWriter(),
   m_VectorPointer(vec)
 {
-  if (NULL==vec)
+  if (nullptr == vec)
   {
-    std::cout << "ESMWriterGeneric: Error: supplied pointer is NULL!\n";
+    std::cerr << "ESMWriterGeneric: Error: supplied pointer is NULL!\n";
     throw std::runtime_error("ESMWriterGeneric: Error: supplied pointer is NULL!");
   }
 }
@@ -41,20 +41,20 @@ int32_t ESMWriterGeneric::getTotalRecords() const
   return m_VectorPointer->size();
 }
 
-bool ESMWriterGeneric::writeRecords(std::ofstream& output) const
+bool ESMWriterGeneric::writeRecords(std::ostream& output) const
 {
   const VectorType::const_iterator end_iter = m_VectorPointer->end();
   VectorType::const_iterator iter = m_VectorPointer->begin();
-  while (iter!=end_iter)
+  while (iter != end_iter)
   {
-    if (*iter!=NULL)
+    if (*iter != nullptr)
     {
       if (!((*iter)->saveToStream(output)))
         return false;
-    }//if not NULL
+    }
     ++iter;
-  }//while
+  }
   return true;
 }
 
-} //namespace
+} // namespace

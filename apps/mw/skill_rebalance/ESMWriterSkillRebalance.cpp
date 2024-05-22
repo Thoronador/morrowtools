@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2012, 2021  Dirk Stolle
+    Copyright (C) 2012, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,7 +32,7 @@ int32_t ESMWriterSkillRebalance::getTotalRecords() const
        + Skills::get().getNumberOfSkills();
 }
 
-bool ESMWriterSkillRebalance::writeRecords(std::ofstream& output) const
+bool ESMWriterSkillRebalance::writeRecords(std::ostream& output) const
 {
   if (!GameSettings::get().saveAllToStream(output))
     return false;

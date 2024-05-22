@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011  Dirk Stolle
+    Copyright (C) 2011, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,18 +29,17 @@ namespace MWTP
 class ESMWriterAll: public ESMWriter
 {
   public:
-    /* constructor */
     ESMWriterAll();
   protected:
     /* returns the number of records that will be written to the stream */
-    virtual int32_t getTotalRecords() const;
+    virtual int32_t getTotalRecords() const override;
 
     /* tries to write all data records and returns true on success
 
        parameters:
-           output - the output file stream that's used to write the records
+           output - the output stream that's used to write the records
     */
-    virtual bool writeRecords(std::ofstream& output) const;
+    virtual bool writeRecords(std::ostream& output) const override;
 }; //class
 
 } //namespace

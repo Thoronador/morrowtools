@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -22,7 +22,10 @@
 #define MW_BASICRECORD_HPP
 
 #include <cstdint>
-#include <fstream>
+#include <istream>
+#ifndef MW_UNSAVEABLE_RECORDS
+#include <ostream>
+#endif
 
 namespace MWTP
 {
@@ -54,22 +57,22 @@ struct BasicRecord
     virtual bool loadFromStream(std::istream& input) = 0;
 
     /** \brief Gets the first header part of this record. */
-    int32_t getHeaderOne() const;
+    uint32_t getHeaderOne() const;
 
     /** \brief Gets the header flags of this record. */
-    int32_t getHeaderFlags() const;
+    uint32_t getHeaderFlags() const;
 
     /** \brief Sets the first header part of the record.
      *
      * \param newValue  the new value for this header part
      */
-    void setHeaderOne(const int32_t newValue);
+    void setHeaderOne(const uint32_t newValue);
 
     /** \brief Sets the header flags of the record.
      *
      * \param newValue  the new flag value
      */
-    void setHeaderFlags(const int32_t newValue);
+    void setHeaderFlags(const uint32_t newValue);
 
     /** \brief Checks whether the blocked flag is set.
      *
@@ -83,15 +86,15 @@ struct BasicRecord
      */
     bool isPersistent() const;
   protected:
-    int32_t HeaderOne;
-    int32_t HeaderFlags;
+    uint32_t HeaderOne;
+    uint32_t HeaderFlags;
 
     /** \brief Tries to load a NUL-terminated string from the stream, without header.
      *
      * \param input       the input stream
      * \param target      the string that will be used to store the read data
      * \param buffer      a pre-allocated array of char that can hold at least 256 bytes
-     * \param subHeader   the expected header of that subrecord
+     * \param subHeader   the expected header of that sub record
      * \param bytesRead   the variable that holds the number of bytes read so far
      * \return Returns true on success (data was loaded successfully).
      *         Returns false, if an error occurred.
@@ -103,7 +106,7 @@ struct BasicRecord
      * \param input       the input stream
      * \param target      the string that will be used to store the read data
      * \param buffer      a pre-allocated array of char that can hold at least 256 bytes
-     * \param subHeader   the expected header of that subrecord
+     * \param subHeader   the expected header of that sub record
      * \param bytesRead   the variable that holds the number of bytes read so far
      * \return Returns true on success (data was loaded successfully).
      *         Returns false, if an error occurred.

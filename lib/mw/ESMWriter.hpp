@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012 Thoronador
+    Copyright (C) 2011, 2012, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef MW_ESMWRITER_HPP
 #define MW_ESMWRITER_HPP
 
+#include <ostream>
 #include <string>
 #include "DepFiles.hpp"
 #include "records/TES3Record.hpp"
@@ -46,10 +47,8 @@ namespace MWTP
 class ESMWriter
 {
   public:
-    /* constructor */
     ESMWriter();
 
-    /* destructor */
     virtual ~ESMWriter();
 
     /* tries to write an .esm/.esp file and returns true on success, false on
@@ -84,9 +83,9 @@ class ESMWriter
     /* tries to write all data records and returns true on success
 
        parameters:
-           output - the output file stream that's used to write the records
+           output - the output stream that's used to write the records
     */
-    virtual bool writeRecords(std::ofstream& output) const = 0;
+    virtual bool writeRecords(std::ostream& output) const = 0;
 };//class
 
 } //namespace

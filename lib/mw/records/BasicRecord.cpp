@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,8 +26,8 @@
 namespace MWTP
 {
 
-const int32_t FlagPersists = 1024;
-const int32_t FlagBlocked = 8192;
+const uint32_t FlagPersists = 1024;
+const uint32_t FlagBlocked = 8192;
 
 BasicRecord::BasicRecord()
 : HeaderOne(0),
@@ -39,22 +39,22 @@ BasicRecord::~BasicRecord()
 {
 }
 
-int32_t BasicRecord::getHeaderOne() const
+uint32_t BasicRecord::getHeaderOne() const
 {
   return HeaderOne;
 }
 
-int32_t BasicRecord::getHeaderFlags() const
+uint32_t BasicRecord::getHeaderFlags() const
 {
   return HeaderFlags;
 }
 
-void BasicRecord::setHeaderOne(const int32_t newValue)
+void BasicRecord::setHeaderOne(const uint32_t newValue)
 {
   HeaderOne = newValue;
 }
 
-void BasicRecord::setHeaderFlags(const int32_t newValue)
+void BasicRecord::setHeaderFlags(const uint32_t newValue)
 {
   HeaderFlags = newValue;
 }
@@ -71,7 +71,7 @@ bool BasicRecord::isPersistent() const
 
 bool BasicRecord::loadString256(std::istream& input, std::string& target, char * buffer, const uint32_t subHeader, uint32_t& bytesRead) const
 {
-  // subrecord's length
+  // sub record's length
   uint32_t subLength = 0;
   input.read(reinterpret_cast<char*>(&subLength), 4);
   bytesRead += 4;

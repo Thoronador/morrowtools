@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,7 +30,7 @@ int32_t ESMWriterSpells::getTotalRecords() const
   return Spells::get().getNumberOfRecords();
 }
 
-bool ESMWriterSpells::writeRecords(std::ofstream& output) const
+bool ESMWriterSpells::writeRecords(std::ostream& output) const
 {
   return Spells::get().saveAllToStream(output);
 }

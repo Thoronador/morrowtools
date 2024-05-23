@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2021 Thoronador
+    Copyright (C) 2011, 2012, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,13 +33,11 @@ namespace SRTP
 class Group
 {
   public:
-    /* constructor */
     Group();
 
-    /* destructor */
     ~Group();
 
-    //the group's header data
+    // the group's header data
     GroupData headerData;
 
     /* adds another record at the end of the internal list
@@ -188,9 +186,9 @@ class Group
     /* writes the group to the given output stream and returns true on success
 
       parameters:
-          output - the output file stream
+          output - the output stream
     */
-    bool saveToStream(std::ofstream& output) const;
+    bool saveToStream(std::ostream& output) const;
 
     /* sets the group's size value in the group header to match the actual size
        of the group and its records */
@@ -214,8 +212,8 @@ class Group
     // internal record list
     std::vector<std::shared_ptr<BasicRecord> > m_Records;
 
-    //index - key is form ID, value is index of entry in m_Records
-    std::map<uint32_t, uint32_t> m_Index;
+    // index - key is form ID, value is index of entry in m_Records
+    std::map<uint32_t, decltype(m_Records)::size_type> m_Index;
 }; //class
 
 } //namespace

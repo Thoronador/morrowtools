@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -58,21 +58,21 @@ bool GroupData::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool GroupData::loadFromStream(std::istream& in_File)
+bool GroupData::loadFromStream(std::istream& input)
 {
   // read size
-  in_File.read(reinterpret_cast<char*>(&m_Size), 4);
+  input.read(reinterpret_cast<char*>(&m_Size), 4);
   // read label
-  in_File.read(reinterpret_cast<char*>(&m_Label), 4);
+  input.read(reinterpret_cast<char*>(&m_Label), 4);
   // read type
-  in_File.read(reinterpret_cast<char*>(&m_Type), 4);
+  input.read(reinterpret_cast<char*>(&m_Type), 4);
   // read unknown data
   for (int32_t& data : UnknownDataTwo)
   {
-    in_File.read(reinterpret_cast<char*>(&data), 4);
+    input.read(reinterpret_cast<char*>(&data), 4);
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t GroupData::label() const

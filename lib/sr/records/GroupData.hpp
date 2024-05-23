@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,11 +47,11 @@ struct GroupData
 
     /** \brief Loads the group data from the given input stream.
      *
-     * \param in_File    the input stream
+     * \param input    the input stream
      * \return Returns true on success (data was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    bool loadFromStream(std::istream& in_File);
+    bool loadFromStream(std::istream& input);
 
     /** \brief Gets the group "name". Meaning depends on type.
      *

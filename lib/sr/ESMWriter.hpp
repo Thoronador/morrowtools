@@ -39,9 +39,6 @@ namespace SRTP
 class ESMWriter
 {
   public:
-    /* constructor */
-    ESMWriter();
-
     /* destructor */
     virtual ~ESMWriter();
 

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2024  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@ Group::Group()
 : headerData(GroupData()),
   m_SubGroups(std::vector<Group>()),
   m_Records(std::vector<std::shared_ptr<BasicRecord> >()),
-  m_Index(std::map<uint32_t, uint32_t>())
+  m_Index(std::map<uint32_t, decltype(m_Records)::size_type>())
 {
 }
 
@@ -39,7 +39,7 @@ Group::~Group()
 
 void Group::addRecord(BasicRecord* rec)
 {
-  if (rec!=NULL)
+  if (rec != nullptr)
   {
     m_Index[rec->headerFormID] = m_Records.size();
     std::shared_ptr<BasicRecord> s_ptr(rec);
@@ -49,12 +49,15 @@ void Group::addRecord(BasicRecord* rec)
 
 bool Group::hasRecord(const uint32_t formID, const bool useIndex) const
 {
-  if (useIndex) return (m_Index.find(formID)!=m_Index.end());
-  unsigned int i;
-  for (i=0; i<m_Records.size(); ++i)
+  if (useIndex)
   {
-    if (m_Records[i]->headerFormID==formID) return true;
-  }//for
+    return (m_Index.find(formID) != m_Index.end());
+  }
+  for (decltype(m_Records)::size_type i = 0; i < m_Records.size(); ++i)
+  {
+    if (m_Records[i]->headerFormID == formID)
+      return true;
+  }
   return false;
 }
 
@@ -62,21 +65,23 @@ const BasicRecord& Group::getRecord(const uint32_t formID, const bool useIndex) 
 {
   if (useIndex)
   {
-    const std::map<uint32_t, uint32_t>::const_iterator iter = m_Index.find(formID);
-    if (iter!=m_Index.end())
+    const std::map<uint32_t, decltype(m_Records)::size_type>::const_iterator iter = m_Index.find(formID);
+    if (iter != m_Index.end())
     {
-      if (iter->second<m_Records.size()) return *m_Records[iter->second];
+      if (iter->second < m_Records.size())
+        return *m_Records[iter->second];
     }
-  }//if index
+  }
   else
   {
-    unsigned int i;
-    for (i=0; i<m_Records.size(); ++i)
+    for (decltype(m_Records)::size_type i = 0; i < m_Records.size(); ++i)
     {
-      if (m_Records[i]->headerFormID==formID) return *m_Records[i];
-    }//for
-  }//else
-  //record was not found
+      if (m_Records[i]->headerFormID == formID)
+        return *m_Records[i];
+    }
+  }
+
+  // record was not found
   throw "Record with requested form ID not found!\n";
 }
 
@@ -89,11 +94,11 @@ unsigned int Group::getNumberOfRecordsIncludingSubGroups() const
 {
   unsigned int result = m_Records.size();
   SubIterator iterSub = m_SubGroups.begin();
-  while (iterSub!=m_SubGroups.end())
+  while (iterSub != m_SubGroups.end())
   {
     result += iterSub->getNumberOfRecordsIncludingSubGroups();
     ++iterSub;
-  }//while
+  }
   return result;
 }
 
@@ -109,11 +114,10 @@ void Group::removeRecords()
 void Group::rebuildIndex()
 {
   m_Index.clear();
-  uint32_t i;
-  for (i=0; i<m_Records.size(); ++i)
+  for (decltype(m_Records)::size_type i = 0; i < m_Records.size(); ++i)
   {
     m_Index[m_Records[i]->headerFormID] = i;
-  }//for
+  }
 }
 
 Group::ConstRecIterator Group::getRecBegin() const
@@ -158,17 +162,20 @@ bool Group::hasSubGroup(const GroupData& g_data) const
 const Group& Group::getSubGroup(const GroupData& g_data) const
 {
   std::vector<Group>::const_iterator iter = m_SubGroups.begin();
-  while (iter!=m_SubGroups.end())
+  while (iter != m_SubGroups.end())
   {
-    if (iter->headerData == g_data) return *iter;
+    if (iter->headerData == g_data)
+    {
+      return *iter;
+    }
     ++iter;
-  }//while
+  }
   throw "Group::getSubGroup: Error: Group not found!\n";
 }
 
 const Group& Group::getSubGroupAtIndex(const unsigned int idx) const
 {
-  if (idx<m_SubGroups.size())
+  if (idx < m_SubGroups.size())
   {
     return m_SubGroups[idx];
   }
@@ -177,7 +184,7 @@ const Group& Group::getSubGroupAtIndex(const unsigned int idx) const
 
 Group* Group::getSubGroupAtIndexNC(const unsigned int idx)
 {
-  if (idx<m_SubGroups.size())
+  if (idx < m_SubGroups.size())
   {
     return &(m_SubGroups[idx]);
   }
@@ -193,11 +200,11 @@ unsigned int Group::getNumberOfGroupsIncludingSubGroups() const
 {
   unsigned int result = m_SubGroups.size();
   SubIterator iter = m_SubGroups.begin();
-  while (iter!=m_SubGroups.end())
+  while (iter != m_SubGroups.end())
   {
     result += iter->getNumberOfGroupsIncludingSubGroups();
     ++iter;
-  }//while
+  }
   return result;
 }
 
@@ -214,7 +221,7 @@ Group::SubIterator Group::getSubEnd() const
 bool Group::deleteSubGroup(const GroupData& g_data)
 {
   std::vector<Group>::iterator iter = m_SubGroups.begin();
-  while (iter!=m_SubGroups.end())
+  while (iter != m_SubGroups.end())
   {
     if (iter->headerData == g_data)
     {
@@ -222,7 +229,7 @@ bool Group::deleteSubGroup(const GroupData& g_data)
       return true;
     }
     ++iter;
-  }//while
+  }
   return false;
 }
 
@@ -241,13 +248,19 @@ void Group::removeContents()
 
 bool Group::isEmpty() const
 {
-  if (!m_Records.empty()) return false;
-  SubIterator iter = getSubBegin();
-  while (iter!=getSubEnd())
+  if (!m_Records.empty())
   {
-    if (!iter->isEmpty()) return false;
+    return false;
+  }
+  SubIterator iter = getSubBegin();
+  while (iter != getSubEnd())
+  {
+    if (!iter->isEmpty())
+    {
+      return false;
+    }
     ++iter;
-  }//while
+  }
   return true;
 }
 
@@ -255,7 +268,7 @@ unsigned int Group::purgeEmptySubGroups()
 {
   unsigned int purged = 0;
   std::vector<Group>::iterator iter = m_SubGroups.begin();
-  while (iter!=m_SubGroups.end())
+  while (iter != m_SubGroups.end())
   {
     purged += iter->purgeEmptySubGroups();
     if (iter->isEmpty())
@@ -267,7 +280,7 @@ unsigned int Group::purgeEmptySubGroups()
     {
       ++iter;
     }
-  }//while
+  }
   return purged;
 }
 
@@ -275,54 +288,50 @@ unsigned int Group::purgeEmptySubGroups()
 uint32_t Group::getContentSize() const
 {
   uint32_t total = 0;
-  unsigned int i;
-  //add record sizes
-  const unsigned int rec_count = m_Records.size();
-  for (i=0; i<rec_count; ++i)
+  // add record sizes
+  const auto rec_count = m_Records.size();
+  for (decltype(m_Records)::size_type i = 0; i < rec_count; ++i)
   {
     total += m_Records[i]->getTotalWrittenSize();
-  }//for
-  //add sub group sizes
+  }
+  // add sub group sizes
   const unsigned int sub_count = m_SubGroups.size();
-  for (i=0; i<sub_count; ++i)
+  for (decltype(m_Records)::size_type i = 0; i < sub_count; ++i)
   {
     total = total +24 /* size of group header */ + m_SubGroups.at(i).getContentSize();
-  }//for
+  }
   return total;
 }
 
-bool Group::saveToStream(std::ofstream& output) const
+bool Group::saveToStream(std::ostream& output) const
 {
   if (!output.good())
   {
-    std::cout << "Group::saveToStream: Error: bad stream!\n";
+    std::cerr << "Group::saveToStream: Error: Bad stream!\n";
     return false;
   }
   if (!headerData.saveToStream(output))
   {
-    std::cout << "Group::saveToStream: Error: could not write group header!\n";
+    std::cerr << "Group::saveToStream: Error: Could not write group header!\n";
     return false;
   }
 
-  unsigned int i;
-  //write sub groups
-  const unsigned int sub_count = m_SubGroups.size();
-  for (i=0; i<sub_count; ++i)
+  // write sub groups
+  for (const auto& group: m_SubGroups)
   {
-    if (!m_SubGroups.at(i).saveToStream(output))
+    if (!group.saveToStream(output))
     {
       return false;
     }
-  }//for
-  //write records
-  const unsigned int rec_count = m_Records.size();
-  for (i=0; i<rec_count; ++i)
+  }
+  // write records
+  for (const auto& record: m_Records)
   {
-    if (!(m_Records[i]->saveToStream(output)))
+    if (!(record->saveToStream(output)))
     {
       return false;
-    }//if
-  }//for
+    }
+  }
   return true;
 }
 
@@ -335,14 +344,19 @@ void Group::updateGroupSize()
 
 Group * Group::determineLatestGroup(const unsigned int level)
 {
-  //level zero means no group
-  if (level==0) return NULL;
-  //level one is the first valid level, meaning the current group
-  if (level==1) return this;
-  //level is larger than one, so we have to go into sub groups
-  //If there are no groups, we can't return anything useful.
-  if (getNumberOfSubGroups()==0) return NULL;
-  return m_SubGroups.back().determineLatestGroup(level-1);
+  // level zero means no group
+  if (level == 0)
+    return nullptr;
+  // level one is the first valid level, meaning the current group
+  if (level == 1)
+    return this;
+  // Level is larger than one, so we have to go into sub groups.
+  // If there are no groups, we can't return anything useful.
+  if (getNumberOfSubGroups() == 0)
+  {
+    return nullptr;
+  }
+  return m_SubGroups.back().determineLatestGroup(level - 1);
 }
 
 } //namespace

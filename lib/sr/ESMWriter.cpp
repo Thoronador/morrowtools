@@ -25,11 +25,6 @@
 namespace SRTP
 {
 
-ESMWriter::ESMWriter()
-{
-  //empty
-}
-
 ESMWriter::~ESMWriter()
 {
   //empty

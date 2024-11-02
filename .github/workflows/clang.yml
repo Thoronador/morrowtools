@@ -66,18 +66,18 @@ jobs:
         if: matrix.version == 12
 
   clang_lto_static:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v4
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake clang-14 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
-      - name: Build with Clang 14
+          sudo apt-get install -y catch2 cmake clang-18 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
+      - name: Build with Clang 18
         run: |
-          export CXX=clang++-14
-          export CC=clang-14
+          export CXX=clang++-18
+          export CC=clang-18
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build

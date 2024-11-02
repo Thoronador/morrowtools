@@ -1,8 +1,8 @@
 build_docker_image:
-  image: docker:20
+  image: docker:27
   stage: build
   services:
-    - docker:20-dind
+    - docker:27-dind
   script:
     - cd ci/
     - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:12.2-deb12 . -f Dockerfile_cross_win64

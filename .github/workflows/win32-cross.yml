@@ -4,14 +4,14 @@ on: push
 
 jobs:
   build_cross-win32_dynamic:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v4
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake libz-mingw-w64-dev pkg-config
+          sudo apt-get install -y catch2 cmake libz-mingw-w64-dev pkg-config
           sudo apt-get install -y binutils-mingw-w64-i686 g++-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev
       - name: Build with MinGW for Win32
         run: |
@@ -30,8 +30,8 @@ jobs:
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/build/artifacts
           cp /usr/i686-w64-mingw32/lib/zlib1.dll "$GITHUB_WORKSPACE"/build/artifacts/zlib1.dll
-          cp /usr/lib/gcc/i686-w64-mingw32/10-win32/libstdc++-6.dll "$GITHUB_WORKSPACE"/build/artifacts/libstdc++-6.dll
-          cp /usr/lib/gcc/i686-w64-mingw32/10-win32/libgcc_s_dw2-1.dll "$GITHUB_WORKSPACE"/build/artifacts/libgcc_s_dw2-1.dll
+          cp /usr/lib/gcc/i686-w64-mingw32/13-win32/libstdc++-6.dll "$GITHUB_WORKSPACE"/build/artifacts/libstdc++-6.dll
+          cp /usr/lib/gcc/i686-w64-mingw32/13-win32/libgcc_s_dw2-1.dll "$GITHUB_WORKSPACE"/build/artifacts/libgcc_s_dw2-1.dll
       - name: Collect build artifacts in one place
         run: |
           cd "$GITHUB_WORKSPACE"/build
@@ -52,14 +52,14 @@ jobs:
             build/artifacts/*.exe
             build/artifacts/*.dll
   build_cross-win32_static:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v4
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch cmake libz-mingw-w64-dev pkg-config
+          sudo apt-get install -y catch2 cmake libz-mingw-w64-dev pkg-config
           sudo apt-get install -y binutils-mingw-w64-i686 g++-mingw-w64-i686 gcc-mingw-w64-i686 mingw-w64-i686-dev
       - name: Build with MinGW for Win32
         run: |

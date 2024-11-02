@@ -12,11 +12,11 @@ jobs:
           - version: 9
             os: ubuntu-22.04
           - version: 10
-            os: ubuntu-22.04
+            os: ubuntu-24.04
           - version: 11
-            os: ubuntu-22.04
+            os: ubuntu-24.04
           - version: 12
-            os: ubuntu-22.04
+            os: ubuntu-24.04
           - version: 13
             os: ubuntu-24.04
           - version: 14
@@ -64,18 +64,18 @@ jobs:
         if: matrix.version == 9
 
   gcc_lto_static:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - uses: actions/checkout@v4
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake g++-12 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
-      - name: Build with GCC 12
+          sudo apt-get install -y catch2 cmake g++-13 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
+      - name: Build with GCC 13
         run: |
-          export CXX=g++-12
-          export CC=gcc-12
+          export CXX=g++-13
+          export CC=gcc-13
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build

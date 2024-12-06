@@ -209,7 +209,7 @@ begin
     if (wait_pid_result = -1) then Result := 0
     else begin
       if (wifexited(status)) then
-      Result: = wexitstatus(status)
+      Result := wexitstatus(status)
       else Result := 0;
       //dirty hack to get the "real" exit code (Unix truncates to least 8 bits?)
       // -- will only work as expected for future revision numbers up to 511

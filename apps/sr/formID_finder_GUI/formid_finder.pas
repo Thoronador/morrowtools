@@ -1,7 +1,7 @@
 {
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2024  Dirk Stolle
 
     This programme is free software: you can redistribute it and/or
     modify it under the terms of the GNU General Public License as published
@@ -593,7 +593,7 @@ begin
   m_HasData := false;
   m_StringData := '';
   {$IFDEF WINDOWS }
-  m_PrevWndProc := Windows.WNDPROC(SetWindowLong(Self.Handle, GWL_WNDPROC, PtrInt(@WndCallback)));
+  m_PrevWndProc := Windows.WNDPROC(SetWindowLongPtr(Self.Handle, GWL_WNDPROC, PtrInt(@WndCallback)));
   {$ENDIF}
   Application.Title:= self.Caption;
 end;

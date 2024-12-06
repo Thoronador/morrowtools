@@ -1,0 +1,81 @@
+name: FormID Finder GUI
+
+on: push
+
+jobs:
+  windows:
+    strategy:
+      matrix:
+        os:
+          - windows-2022
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v4
+      - name: Change directory
+        run: cd $GITHUB_WORKSPACE
+      - name: Download Lazarus IDE + Free Pascal Compiler
+        shell: bash
+        run: |
+          curl -L --output lazarus-3.6-fpc-3.2.2-win64.exe https://sourceforge.net/projects/lazarus/files/Lazarus%20Windows%2064%20bits/Lazarus%203.6/lazarus-3.6-fpc-3.2.2-win64.exe
+          CHECKSUM=$(sha256sum lazarus-3.6-fpc-3.2.2-win64.exe)
+          echo Checksum calculation: $CHECKSUM
+          CHECKSUM_BITS=$(echo $CHECKSUM | cut -f 1 -d' ')
+          if [[ "$CHECKSUM_BITS" != "568ec39f976d789ad4cfee75c999f1fe4fe0cbf54089a2b26d3b098b9190cc75" ]]
+          then
+            echo "Checksum of downloaded installer is wrong."
+            exit 1
+          fi
+      - name: Install Lazarus IDE + Free Pascal Compiler
+        shell: cmd
+        run: lazarus-3.6-fpc-3.2.2-win64.exe /VERYSILENT /NORESTART
+      - name: Build
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE
+          cd apps/sr/formID_finder_GUI
+          "/c/lazarus/lazbuild.exe" formID_gui.lpr
+      - name: Collect build artifacts
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE
+          mkdir artifacts
+          cp apps/sr/formID_finder_GUI/formID_gui.exe artifacts/
+          cp LICENSE artifacts/
+          cp apps/sr/formID_finder_GUI/readme.md artifacts/
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: formID-GUI-build-windows
+          path: |
+            artifacts/*
+
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v4
+      - name: Install Lazarus IDE + Free Pascal Compiler
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lazarus fp-compiler
+      - name: Build
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE
+          cd apps/sr/formID_finder_GUI
+          lazbuild formID_gui.lpr
+      - name: Collect build artifacts
+        shell: bash
+        run: |
+          cd $GITHUB_WORKSPACE
+          mkdir artifacts
+          cp apps/sr/formID_finder_GUI/formID_gui artifacts/
+          cp LICENSE artifacts/
+          cp apps/sr/formID_finder_GUI/readme.md artifacts/
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: formID-GUI-build-linux
+          path: |
+            artifacts/*

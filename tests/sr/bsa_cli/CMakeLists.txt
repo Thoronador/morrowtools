@@ -74,7 +74,5 @@ endif()
 add_test(NAME bsa_cli_parameter_misuse
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/parameter-misuse.${EXT} $<TARGET_FILE:bsa-cli>)
 
-if (WIN32)
-  add_test(NAME bsa_cli_parameter_umlauts
-           COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/umlauts.cmd $<TARGET_FILE:bsa-cli> "${CMAKE_CURRENT_SOURCE_DIR}/Möwe.bsa")
-endif()
+add_test(NAME bsa_cli_parameter_umlauts
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/umlauts.${EXT} $<TARGET_FILE:bsa-cli> "${CMAKE_CURRENT_SOURCE_DIR}/Möwe.bsa")

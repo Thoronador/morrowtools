@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="mw-esm-io" />
+		<Option pch_mode="2" />
+		<Option compiler="gcc" />
+		<Build>
+			<Target title="Release">
+				<Option output="bin/Release/mw-esm-io" prefix_auto="1" extension_auto="1" />
+				<Option object_output="obj/Release/" />
+				<Option type="1" />
+				<Option compiler="gcc" />
+				<Compiler>
+					<Add option="-O2" />
+				</Compiler>
+				<Linker>
+					<Add option="-s" />
+				</Linker>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-Wnon-virtual-dtor" />
+			<Add option="-Wshadow" />
+			<Add option="-Weffc++" />
+			<Add option="-Wzero-as-null-pointer-constant" />
+			<Add option="-Wmain" />
+			<Add option="-pedantic-errors" />
+			<Add option="-pedantic" />
+			<Add option="-Wextra" />
+			<Add option="-Wall" />
+			<Add option="-std=c++17" />
+			<Add option="-fexceptions" />
+		</Compiler>
+		<Unit filename="../../lib/base/ByteBuffer.cpp" />
+		<Unit filename="../../lib/base/ByteBuffer.hpp" />
+		<Unit filename="../../lib/base/UtilityFunctions.cpp" />
+		<Unit filename="../../lib/base/UtilityFunctions.hpp" />
+		<Unit filename="../../lib/mw/DepFiles.cpp" />
+		<Unit filename="../../lib/mw/DepFiles.hpp" />
+		<Unit filename="../../lib/mw/ESMReader.cpp" />
+		<Unit filename="../../lib/mw/ESMReader.hpp" />
+		<Unit filename="../../lib/mw/ESMReaderContents.cpp" />
+		<Unit filename="../../lib/mw/ESMReaderContents.hpp" />
+		<Unit filename="../../lib/mw/ESMWriter.cpp" />
+		<Unit filename="../../lib/mw/ESMWriter.hpp" />
+		<Unit filename="../../lib/mw/ESMWriterContents.cpp" />
+		<Unit filename="../../lib/mw/ESMWriterContents.hpp" />
+		<Unit filename="../../lib/mw/Enchantment.cpp" />
+		<Unit filename="../../lib/mw/Enchantment.hpp" />
+		<Unit filename="../../lib/mw/HelperIO.cpp" />
+		<Unit filename="../../lib/mw/HelperIO.hpp" />
+		<Unit filename="../../lib/mw/ReturnCodes.hpp" />
+		<Unit filename="../../lib/mw/records/AIData.cpp" />
+		<Unit filename="../../lib/mw/records/AIData.hpp" />
+		<Unit filename="../../lib/mw/records/AIPackages.cpp" />
+		<Unit filename="../../lib/mw/records/AIPackages.hpp" />
+		<Unit filename="../../lib/mw/records/ActivatorRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ActivatorRecord.hpp" />
+		<Unit filename="../../lib/mw/records/AlchemyPotionRecord.cpp" />
+		<Unit filename="../../lib/mw/records/AlchemyPotionRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ApparatusRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ApparatusRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ArmourRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ArmourRecord.hpp" />
+		<Unit filename="../../lib/mw/records/BasicRecord.cpp" />
+		<Unit filename="../../lib/mw/records/BasicRecord.hpp" />
+		<Unit filename="../../lib/mw/records/BirthSignRecord.cpp" />
+		<Unit filename="../../lib/mw/records/BirthSignRecord.hpp" />
+		<Unit filename="../../lib/mw/records/BodyPartAssociation.cpp" />
+		<Unit filename="../../lib/mw/records/BodyPartAssociation.hpp" />
+		<Unit filename="../../lib/mw/records/BodyPartRecord.cpp" />
+		<Unit filename="../../lib/mw/records/BodyPartRecord.hpp" />
+		<Unit filename="../../lib/mw/records/BookRecord.cpp" />
+		<Unit filename="../../lib/mw/records/BookRecord.hpp" />
+		<Unit filename="../../lib/mw/records/CellRecord.cpp" />
+		<Unit filename="../../lib/mw/records/CellRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ClassRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ClassRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ClothingRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ClothingRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ContainerRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ContainerRecord.hpp" />
+		<Unit filename="../../lib/mw/records/CreatureRecord.cpp" />
+		<Unit filename="../../lib/mw/records/CreatureRecord.hpp" />
+		<Unit filename="../../lib/mw/records/DialogueInfoRecord.cpp" />
+		<Unit filename="../../lib/mw/records/DialogueInfoRecord.hpp" />
+		<Unit filename="../../lib/mw/records/DialogueTopicRecord.cpp" />
+		<Unit filename="../../lib/mw/records/DialogueTopicRecord.hpp" />
+		<Unit filename="../../lib/mw/records/DoorRecord.cpp" />
+		<Unit filename="../../lib/mw/records/DoorRecord.hpp" />
+		<Unit filename="../../lib/mw/records/EnchantingRecord.cpp" />
+		<Unit filename="../../lib/mw/records/EnchantingRecord.hpp" />
+		<Unit filename="../../lib/mw/records/FactionRecord.cpp" />
+		<Unit filename="../../lib/mw/records/FactionRecord.hpp" />
+		<Unit filename="../../lib/mw/records/GameSettingRecord.cpp" />
+		<Unit filename="../../lib/mw/records/GameSettingRecord.hpp" />
+		<Unit filename="../../lib/mw/records/GlobalRecord.cpp" />
+		<Unit filename="../../lib/mw/records/GlobalRecord.hpp" />
+		<Unit filename="../../lib/mw/records/IngredientRecord.cpp" />
+		<Unit filename="../../lib/mw/records/IngredientRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ItemRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ItemRecord.hpp" />
+		<Unit filename="../../lib/mw/records/LandscapeRecord.cpp" />
+		<Unit filename="../../lib/mw/records/LandscapeRecord.hpp" />
+		<Unit filename="../../lib/mw/records/LandscapeTextureRecord.cpp" />
+		<Unit filename="../../lib/mw/records/LandscapeTextureRecord.hpp" />
+		<Unit filename="../../lib/mw/records/LeveledCreatureRecord.cpp" />
+		<Unit filename="../../lib/mw/records/LeveledCreatureRecord.hpp" />
+		<Unit filename="../../lib/mw/records/LeveledItemRecord.cpp" />
+		<Unit filename="../../lib/mw/records/LeveledItemRecord.hpp" />
+		<Unit filename="../../lib/mw/records/LightRecord.cpp" />
+		<Unit filename="../../lib/mw/records/LightRecord.hpp" />
+		<Unit filename="../../lib/mw/records/LockpickRecord.cpp" />
+		<Unit filename="../../lib/mw/records/LockpickRecord.hpp" />
+		<Unit filename="../../lib/mw/records/MagicEffectRecord.cpp" />
+		<Unit filename="../../lib/mw/records/MagicEffectRecord.hpp" />
+		<Unit filename="../../lib/mw/records/MiscItemRecord.cpp" />
+		<Unit filename="../../lib/mw/records/MiscItemRecord.hpp" />
+		<Unit filename="../../lib/mw/records/NPCRecord.cpp" />
+		<Unit filename="../../lib/mw/records/NPCRecord.hpp" />
+		<Unit filename="../../lib/mw/records/PathGridRecord.cpp" />
+		<Unit filename="../../lib/mw/records/PathGridRecord.hpp" />
+		<Unit filename="../../lib/mw/records/PreNPCRecord.cpp" />
+		<Unit filename="../../lib/mw/records/PreNPCRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ProbeRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ProbeRecord.hpp" />
+		<Unit filename="../../lib/mw/records/RaceRecord.cpp" />
+		<Unit filename="../../lib/mw/records/RaceRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ReferencedObject.cpp" />
+		<Unit filename="../../lib/mw/records/ReferencedObject.hpp" />
+		<Unit filename="../../lib/mw/records/RegionRecord.cpp" />
+		<Unit filename="../../lib/mw/records/RegionRecord.hpp" />
+		<Unit filename="../../lib/mw/records/RepairItemRecord.cpp" />
+		<Unit filename="../../lib/mw/records/RepairItemRecord.hpp" />
+		<Unit filename="../../lib/mw/records/ScriptRecord.cpp" />
+		<Unit filename="../../lib/mw/records/ScriptRecord.hpp" />
+		<Unit filename="../../lib/mw/records/SkillRecord.cpp" />
+		<Unit filename="../../lib/mw/records/SkillRecord.hpp" />
+		<Unit filename="../../lib/mw/records/SoundGeneratorRecord.cpp" />
+		<Unit filename="../../lib/mw/records/SoundGeneratorRecord.hpp" />
+		<Unit filename="../../lib/mw/records/SoundRecord.cpp" />
+		<Unit filename="../../lib/mw/records/SoundRecord.hpp" />
+		<Unit filename="../../lib/mw/records/SpellRecord.cpp" />
+		<Unit filename="../../lib/mw/records/SpellRecord.hpp" />
+		<Unit filename="../../lib/mw/records/StartScriptRecord.cpp" />
+		<Unit filename="../../lib/mw/records/StartScriptRecord.hpp" />
+		<Unit filename="../../lib/mw/records/StaticRecord.cpp" />
+		<Unit filename="../../lib/mw/records/StaticRecord.hpp" />
+		<Unit filename="../../lib/mw/records/TES3Record.cpp" />
+		<Unit filename="../../lib/mw/records/TES3Record.hpp" />
+		<Unit filename="../../lib/mw/records/TravelDestination.cpp" />
+		<Unit filename="../../lib/mw/records/TravelDestination.hpp" />
+		<Unit filename="../../lib/mw/records/WeaponRecord.cpp" />
+		<Unit filename="../../lib/mw/records/WeaponRecord.hpp" />
+		<Unit filename="main.cpp" />
+		<Extensions>
+			<lib_finder disable_auto="1" />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>

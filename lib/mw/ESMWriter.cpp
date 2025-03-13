@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2024  Dirk Stolle
+    Copyright (C) 2011, 2012, 2024, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -29,16 +29,6 @@ namespace MWTP
 
 const int32_t cMasterFileFlag = 1;
 const int32_t cPluginFileFlag = 0;
-
-ESMWriter::ESMWriter()
-{
-  //empty
-}
-
-ESMWriter::~ESMWriter()
-{
-  //empty
-}
 
 bool ESMWriter::writeESM(const std::string& FileName, const bool IsMasterFile, TES3Record& headerData)
 {

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,23 +28,24 @@
 bool directoryExists(const std::string& dirName)
 {
   struct stat buffer;
-  if (stat(dirName.c_str(), &buffer)==0)
+  if (stat(dirName.c_str(), &buffer) == 0)
   {
-    //stat() was successful
+    // stat() was successful.
     return ((buffer.st_mode & S_IFMT) == S_IFDIR);
-  }//if
-  //An error occurred, so return false.
+  }
+
+  // An error occurred, so return false.
   return false;
 }
 
 bool createDirectory(const std::string& dirName)
 {
   #if defined(_WIN32)
-    //WinAPI's CreateDirectory() returns nonzero on success
-    return (CreateDirectory(dirName.c_str(), NULL)!=0);
+    // WinAPI's CreateDirectory() returns nonzero on success.
+    return (CreateDirectory(dirName.c_str(), NULL) != 0);
   #elif defined(__linux__) || defined(linux)
-    //mkdir() returns zero on success
-    return (0==mkdir(dirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH));
+    // mkdir() returns zero on success.
+    return (0 == mkdir(dirName.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH));
   #else
     #error "Unknown operating system!"
   #endif
@@ -53,28 +54,34 @@ bool createDirectory(const std::string& dirName)
 bool createDirectoryRecursive(const std::string& dirName)
 {
   const std::string::size_type delimPos = dirName.rfind(MWTP::pathDelimiter);
-  if (delimPos==std::string::npos) return createDirectory(dirName);
+  if (delimPos == std::string::npos)
+  {
+    return createDirectory(dirName);
+  }
 
   if (directoryExists(dirName.substr(0, delimPos)))
   {
-    //parent directory already exists, just create the requested dir
+    // parent directory already exists, just create the requested directory
     return createDirectory(dirName);
   }
   // recursive creation necessary, parent directory does not exist
   if (createDirectoryRecursive(dirName.substr(0, delimPos)))
   {
-    //creation of parent directory completed, go on with the final directory
+    // creation of parent directory completed, go on with the final directory
     return createDirectory(dirName);
   }
-  //creation of parent directory failed
+  // creation of parent directory failed
   return false;
 }
 
 std::string slashify(const std::string& path)
 {
-  if (path.empty()) return path;
-  //Does it have a trailing (back)slash?
-  if (path[path.length()-1]!=MWTP::pathDelimiter)
+  if (path.empty())
+  {
+    return path;
+  }
+  // Does it have a trailing (back)slash?
+  if (path[path.length()-1] != MWTP::pathDelimiter)
   {
     return path + MWTP::pathDelimiter;
   }

@@ -52,7 +52,9 @@ ByteBuffer& ByteBuffer::operator=(const ByteBuffer& other)
 {
   // avoid self-assignment
   if (this == &other)
+  {
     return *this;
+  }
 
   copy_from(other.data(), other.size());
   return *this;
@@ -83,7 +85,9 @@ void ByteBuffer::copy_from(const uint8_t* buffer, const std::size_t buffer_size)
 {
   reset();
   if ((buffer == nullptr) || (buffer_size == 0))
+  {
     return;
+  }
 
   mData = new uint8_t[buffer_size];
   memcpy(mData, buffer, buffer_size);

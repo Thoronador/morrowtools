@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2024  Dirk Stolle
+    Copyright (C) 2011, 2012, 2024, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -47,9 +47,9 @@ namespace MWTP
 class ESMWriter
 {
   public:
-    ESMWriter();
+    ESMWriter() = default;
 
-    virtual ~ESMWriter();
+    virtual ~ESMWriter() = default;
 
     /* tries to write an .esm/.esp file and returns true on success, false on
        failure.

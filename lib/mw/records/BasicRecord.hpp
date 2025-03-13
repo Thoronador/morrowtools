@@ -36,7 +36,7 @@ struct BasicRecord
   public:
     BasicRecord();
 
-    virtual ~BasicRecord();
+    virtual ~BasicRecord() = default;
 
     #ifndef MW_UNSAVEABLE_RECORDS
     /** \brief Writes the record to the given output stream.

@@ -63,9 +63,9 @@ ESMReaderCleaner::~ESMReaderCleaner()
 int ESMReaderCleaner::processNextRecord(std::istream& in_File)
 {
   uint32_t RecordName = 0; // normally should be 4 char, but char is not eligible for switch
-  BasicRecord* baseRec = NULL;
+  BasicRecord* baseRec = nullptr;
 
-  //read record name
+  // read record name
   in_File.read((char*) &RecordName, 4);
   switch(RecordName)
   {

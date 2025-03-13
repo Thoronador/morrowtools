@@ -35,10 +35,6 @@ BasicRecord::BasicRecord()
 {
 }
 
-BasicRecord::~BasicRecord()
-{
-}
-
 uint32_t BasicRecord::getHeaderOne() const
 {
   return HeaderOne;

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,9 +34,7 @@ struct GlobalRecord: public BasicRecord
 {
   std::string recordID;
   GlobalType Type;
-  int16_t shortVal;
-  int32_t longVal;
-  float floatVal;
+  float floatValue;
 
   /** Creates an empty global with the given ID.
    *
@@ -69,6 +67,21 @@ struct GlobalRecord: public BasicRecord
    *         Returns false, if an error occurred.
    */
   bool loadFromStream(std::istream& input) override;
+
+  /** \brief Get the internally stored value as signed 16-bit integer.
+   *
+   * \return Returns the value as 16-bit signed integer.
+   * \throws Throws, if Type is not GlobalType::Short.
+   */
+  int16_t asShort() const;
+
+
+  /** \brief Get the internally stored value as signed 32-bit integer.
+   *
+   * \return Returns the value as 32-bit signed integer.
+   * \throws Throws, if Type is not GlobalType::Long.
+   */
+  int32_t asLong() const;
 }; // struct
 
 // comparison operator for GlobalRecords

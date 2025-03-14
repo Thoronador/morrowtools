@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021, 2023  Dirk Stolle
+    Copyright (C) 2021, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -34,9 +34,9 @@ TEST_CASE("MWTP::GlobalRecord")
 
     REQUIRE( record.recordID.empty() );
     REQUIRE( record.Type == GlobalType::Short );
-    REQUIRE( record.shortVal == 0 );
-    REQUIRE( record.longVal == 0 );
-    REQUIRE( record.floatVal == 0.0f );
+    REQUIRE( record.asShort() == 0 );
+    REQUIRE_THROWS( record.asLong() );
+    REQUIRE( record.floatValue == 0.0f );
   }
 
   SECTION("constructor with ID")
@@ -45,9 +45,9 @@ TEST_CASE("MWTP::GlobalRecord")
 
     REQUIRE( record.recordID == "bla" );
     REQUIRE( record.Type == GlobalType::Short );
-    REQUIRE( record.shortVal == 0 );
-    REQUIRE( record.longVal == 0 );
-    REQUIRE( record.floatVal == 0.0f );
+    REQUIRE( record.asShort() == 0 );
+    REQUIRE_THROWS( record.asLong() );
+    REQUIRE( record.floatValue == 0.0f );
   }
 
   SECTION("equals")
@@ -59,11 +59,13 @@ TEST_CASE("MWTP::GlobalRecord")
     {
       a.recordID = "VarOne";
       a.Type = GlobalType::Short;
-      a.shortVal = 5;
+      a.floatValue = 5;
+      REQUIRE( a.asShort() == 5 );
 
       b.recordID = "VarOne";
       b.Type = GlobalType::Short;
-      b.shortVal = 5;
+      b.floatValue = 5;
+      REQUIRE( b.asShort() == 5 );
 
       REQUIRE( a.equals(b) );
       REQUIRE( b.equals(a) );
@@ -101,79 +103,44 @@ TEST_CASE("MWTP::GlobalRecord")
         REQUIRE_FALSE( b.equals(a) );
       }
 
-      SECTION("shortVal mismatch")
+      SECTION("short value mismatch")
       {
         a.Type = GlobalType::Short;
-        a.shortVal = 15;
+        a.floatValue = 15;
+        REQUIRE( a.asShort() == 15 );
 
         b.Type = GlobalType::Short;
-        b.shortVal = 25;
+        b.floatValue = 25;
+        REQUIRE( b.asShort() == 25 );
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
-
-        // Long or float values don't care about shorts.
-        a.Type = GlobalType::Long;
-        b.Type = GlobalType::Long;
-
-        REQUIRE( a.equals(b) );
-        REQUIRE( b.equals(a) );
-
-        a.Type = GlobalType::Float;
-        b.Type = GlobalType::Float;
-
-        REQUIRE( a.equals(b) );
-        REQUIRE( b.equals(a) );
       }
 
-      SECTION("longVal mismatch")
+      SECTION("long value mismatch")
       {
         a.Type = GlobalType::Long;
-        a.longVal = 15;
+        a.floatValue = 15;
+        REQUIRE( a.asLong() == 15 );
 
         b.Type = GlobalType::Long;
-        b.longVal = 25;
+        b.floatValue = 25;
+        REQUIRE( b.asLong() == 25 );
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
-
-        // Short or float values don't care about longs.
-        a.Type = GlobalType::Short;
-        b.Type = GlobalType::Short;
-
-        REQUIRE( a.equals(b) );
-        REQUIRE( b.equals(a) );
-
-        a.Type = GlobalType::Float;
-        b.Type = GlobalType::Float;
-
-        REQUIRE( a.equals(b) );
-        REQUIRE( b.equals(a) );
       }
 
-      SECTION("floatVal mismatch")
+      SECTION("floatValue mismatch")
       {
         a.Type = GlobalType::Float;
-        a.floatVal = 1.5f;
+        a.floatValue = 1.5f;
 
         b.Type = GlobalType::Float;
-        b.floatVal = 2.5f;
+        b.floatValue = 2.5f;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
-
-        // Short or long values don't care about floats.
-        a.Type = GlobalType::Short;
-        b.Type = GlobalType::Short;
-
-        REQUIRE( a.equals(b) );
-        REQUIRE( b.equals(a) );
-
-        a.Type = GlobalType::Long;
-        b.Type = GlobalType::Long;
-
-        REQUIRE( a.equals(b) );
-        REQUIRE( b.equals(a) );
       }
     }
   }
@@ -247,6 +214,80 @@ TEST_CASE("MWTP::GlobalRecord")
     }
   }
 
+  SECTION("asShort")
+  {
+    GlobalRecord record;
+
+    SECTION("with short type")
+    {
+      record.Type = GlobalType::Short;
+      record.floatValue = 25.0f;
+
+      REQUIRE( record.asShort() == 25 );
+    }
+
+    SECTION("with short type, truncating non-integral value")
+    {
+      record.Type = GlobalType::Short;
+      record.floatValue = 3.4f;
+
+      REQUIRE( record.asShort() == 3 );
+    }
+
+    SECTION("throws when type is long")
+    {
+      record.Type = GlobalType::Long;
+      record.floatValue = 125.0f;
+
+      REQUIRE_THROWS( record.asShort() );
+    }
+
+    SECTION("throws when type is float")
+    {
+      record.Type = GlobalType::Float;
+      record.floatValue = 125.0f;
+
+      REQUIRE_THROWS( record.asShort() );
+    }
+  }
+
+  SECTION("asLong")
+  {
+    GlobalRecord record;
+
+    SECTION("with long type")
+    {
+      record.Type = GlobalType::Long;
+      record.floatValue = 12345.0f;
+
+      REQUIRE( record.asLong() == 12345 );
+    }
+
+    SECTION("with long type, truncating non-integral value")
+    {
+      record.Type = GlobalType::Long;
+      record.floatValue = 3.4f;
+
+      REQUIRE( record.asLong() == 3 );
+    }
+
+    SECTION("throws when type is short")
+    {
+      record.Type = GlobalType::Short;
+      record.floatValue = 125.0f;
+
+      REQUIRE_THROWS( record.asLong() );
+    }
+
+    SECTION("throws when type is float")
+    {
+      record.Type = GlobalType::Float;
+      record.floatValue = 125.0f;
+
+      REQUIRE_THROWS( record.asLong() );
+    }
+  }
+
   SECTION("loadFromStream")
   {
     SECTION("default: load record with 16 bit short")
@@ -269,7 +310,7 @@ TEST_CASE("MWTP::GlobalRecord")
       // -- record data
       REQUIRE( record.recordID == "NPCVoiceDistance" );
       REQUIRE( record.Type == GlobalType::Short );
-      REQUIRE( record.shortVal == 750 );
+      REQUIRE( record.asShort() == 750 );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -298,7 +339,7 @@ TEST_CASE("MWTP::GlobalRecord")
       // -- record data
       REQUIRE( record.recordID == "PCGold" );
       REQUIRE( record.Type == GlobalType::Long );
-      REQUIRE( record.longVal == 0 );
+      REQUIRE( record.asLong() == 0 );
 
       // Writing should succeed.
       std::ostringstream streamOut;
@@ -327,7 +368,36 @@ TEST_CASE("MWTP::GlobalRecord")
       // -- record data
       REQUIRE( record.recordID == "WerewolfClawMult" );
       REQUIRE( record.Type == GlobalType::Float );
-      REQUIRE( record.floatVal == 25.0f );
+      REQUIRE( record.floatValue == 25.0f );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with zero-valued 16 bit short stored as non-zero float")
+    {
+      const auto data = "GLOB\x2C\0\0\0\0\0\0\0\0\0\0\0NAME\x0F\0\0\0PCHasCrimeGold\0FNAM\x01\0\0\0sFLTV\x04\0\0\0\xA0\x37\xC3\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip GLOB, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      GlobalRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "PCHasCrimeGold" );
+      REQUIRE( record.Type == GlobalType::Short );
+      REQUIRE( record.asShort() == 0 );
 
       // Writing should succeed.
       std::ostringstream streamOut;

@@ -44,12 +44,12 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
     recordOne.Type = GlobalType::Short;
-    recordOne.shortVal = 5;
+    recordOne.floatValue = 5;
 
     GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
     recordOne.Type = GlobalType::Long;
-    recordOne.longVal = 9001;
+    recordOne.floatValue = 9001;
 
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     REQUIRE_FALSE( mgr.hasRecord("TestTwo") );
@@ -74,7 +74,7 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
     recordOne.Type = GlobalType::Short;
-    recordOne.shortVal = 5;
+    recordOne.floatValue = 5;
 
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     REQUIRE_FALSE( mgr.hasRecord("TESTONE") );
@@ -98,7 +98,7 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordEmptyID;
     recordEmptyID.recordID = "";
     recordEmptyID.Type = GlobalType::Short;
-    recordEmptyID.shortVal = 5;
+    recordEmptyID.floatValue = 5;
 
     REQUIRE( mgr.getNumberOfRecords() == 0 );
     mgr.addRecord(recordEmptyID);
@@ -123,7 +123,7 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
     recordOne.Type = GlobalType::Short;
-    recordOne.shortVal = 5;
+    recordOne.floatValue = 5;
 
     REQUIRE_FALSE( mgr.hasRecord("TestOne") );
     mgr.addRecord(recordOne);
@@ -144,17 +144,17 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
     recordOne.Type = GlobalType::Short;
-    recordOne.shortVal = 5;
+    recordOne.floatValue = 5;
 
     GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
     recordOne.Type = GlobalType::Long;
-    recordOne.longVal = 9001;
+    recordOne.floatValue = 9001;
 
     GlobalRecord recordThree;
     recordThree.recordID = "TestThree";
     recordThree.Type = GlobalType::Float;
-    recordThree.floatVal = 1.0f;
+    recordThree.floatValue = 1.0f;
 
     mgr.addRecord(recordOne);
     mgr.addRecord(recordTwo);
@@ -177,17 +177,17 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
     recordOne.Type = GlobalType::Short;
-    recordOne.shortVal = 5;
+    recordOne.floatValue = 5;
 
     GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
     recordOne.Type = GlobalType::Long;
-    recordOne.longVal = 9001;
+    recordOne.floatValue = 9001;
 
     GlobalRecord recordThree;
     recordThree.recordID = "TestThree";
     recordThree.Type = GlobalType::Float;
-    recordThree.floatVal = 1.0f;
+    recordThree.floatValue = 1.0f;
 
     REQUIRE( mgr.getNumberOfRecords() == 0 );
     mgr.addRecord(recordOne);
@@ -201,12 +201,12 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordFour;
     recordFour.recordID = "Test4";
     recordFour.Type = GlobalType::Short;
-    recordFour.shortVal = 4;
+    recordFour.floatValue = 4;
 
     GlobalRecord recordFive;
     recordFive.recordID = "TestFive";
     recordFive.Type = GlobalType::Short;
-    recordFive.shortVal = 4;
+    recordFive.floatValue = 4;
 
     mgr.addRecord(recordFour);
     mgr.addRecord(recordFive);
@@ -221,17 +221,17 @@ TEST_CASE("MWTP::SetBasedRecordManager")
     GlobalRecord recordOne;
     recordOne.recordID = "TestOne";
     recordOne.Type = GlobalType::Short;
-    recordOne.shortVal = 5;
+    recordOne.floatValue = 5;
 
     GlobalRecord recordTwo;
     recordTwo.recordID = "TestTwo";
     recordOne.Type = GlobalType::Long;
-    recordOne.longVal = 9001;
+    recordOne.floatValue = 9001;
 
     GlobalRecord recordThree;
     recordThree.recordID = "TestThree";
     recordThree.Type = GlobalType::Float;
-    recordThree.floatVal = 1.0f;
+    recordThree.floatValue = 1.0f;
 
     REQUIRE( mgr.begin() == mgr.end() );
 
@@ -272,7 +272,7 @@ TEST_CASE("MWTP::SetBasedRecordManager")
 
     REQUIRE( mgr.hasRecord("NPCVoiceDistance") );
     REQUIRE( mgr.getRecord("NPCVoiceDistance").Type == GlobalType::Short );
-    REQUIRE( mgr.getRecord("NPCVoiceDistance").shortVal == 750 );
+    REQUIRE( mgr.getRecord("NPCVoiceDistance").asShort() == 750 );
     REQUIRE( mgr.getNumberOfRecords() == 1 );
 
     // save it
@@ -306,7 +306,7 @@ TEST_CASE("MWTP::SetBasedRecordManager")
 
     REQUIRE( mgr.hasRecord("NPCVoiceDistance") );
     REQUIRE( mgr.getRecord("NPCVoiceDistance").Type == GlobalType::Short );
-    REQUIRE( mgr.getRecord("NPCVoiceDistance").shortVal == 750 );
+    REQUIRE( mgr.getRecord("NPCVoiceDistance").asShort() == 750 );
     REQUIRE( mgr.getNumberOfRecords() == 1 );
   }
 
@@ -328,7 +328,7 @@ TEST_CASE("MWTP::SetBasedRecordManager")
 
     REQUIRE( mgr.hasRecord("PCGold") );
     REQUIRE( mgr.getRecord("PCGold").Type == GlobalType::Long );
-    REQUIRE( mgr.getRecord("PCGold").longVal == 0 );
+    REQUIRE( mgr.getRecord("PCGold").asLong() == 0 );
     REQUIRE( mgr.getNumberOfRecords() == 1 );
 
     // Skip GLOB, because header is handled before loadFromStream.
@@ -339,7 +339,7 @@ TEST_CASE("MWTP::SetBasedRecordManager")
 
     REQUIRE( mgr.hasRecord("WerewolfClawMult") );
     REQUIRE( mgr.getRecord("WerewolfClawMult").Type == GlobalType::Float );
-    REQUIRE( mgr.getRecord("WerewolfClawMult").floatVal == 25.0f );
+    REQUIRE( mgr.getRecord("WerewolfClawMult").floatValue == 25.0f );
     REQUIRE( mgr.getNumberOfRecords() == 2 );
 
     // save it

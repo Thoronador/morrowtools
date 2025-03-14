@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2013, 2014, 2021  Dirk Stolle
+    Copyright (C) 2009, 2011, 2012, 2013, 2014, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,9 +32,7 @@ GlobalRecord::GlobalRecord(const std::string& ID)
 : BasicRecord(),
   recordID(ID),
   Type(GlobalType::Short),
-  shortVal(0),
-  longVal(0),
-  floatVal(0.0f)
+  floatValue(0.0f)
 {}
 
 bool GlobalRecord::equals(const GlobalRecord& other) const
@@ -46,17 +44,36 @@ bool GlobalRecord::equals(const GlobalRecord& other) const
   switch (Type)
   {
     case GlobalType::Short:
-         return shortVal == other.shortVal;
+         return asShort() == other.asShort();
          break;
     case GlobalType::Long:
-         return longVal == other.longVal;
+         return asLong() == other.asLong();
          break;
     case GlobalType::Float:
-         return floatVal == other.floatVal;
+         return floatValue == other.floatValue;
          break;
   }
   std::cout << "Unhandled case in GlobalRecord::equals!\n";
   throw std::logic_error("Unhandled case in GlobalRecord::equals!");
+}
+int16_t GlobalRecord::asShort() const
+{
+  if (Type != GlobalType::Short)
+  {
+    throw std::domain_error("Requested short value of non-short GlobalRecord!");
+  }
+
+  return static_cast<int16_t>(floatValue);
+}
+
+int32_t GlobalRecord::asLong() const
+{
+  if (Type != GlobalType::Long)
+  {
+    throw std::domain_error("Requested long value of non-long GlobalRecord!");
+  }
+
+  return static_cast<int32_t>(floatValue);
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS
@@ -109,20 +126,7 @@ bool GlobalRecord::saveToStream(std::ostream& output) const
   SubLength = 4;
   output.write(reinterpret_cast<const char*>(&SubLength), 4);
   // Value is always written as float, even if it is a short or a long.
-  float data = floatVal;
-  switch(Type)
-  {
-    case GlobalType::Float:
-         data = floatVal;
-         break;
-    case GlobalType::Long:
-         data = longVal;
-         break;
-    case GlobalType::Short:
-         data = shortVal;
-         break;
-  }
-  output.write(reinterpret_cast<const char*>(&data), 4);
+  output.write(reinterpret_cast<const char*>(&floatValue), 4);
   return output.good();
 }
 #endif
@@ -194,18 +198,16 @@ bool GlobalRecord::loadFromStream(std::istream& input)
     return false;
   }
   // read value - it's always stored as float in the file
-  input.read(reinterpret_cast<char*>(&floatVal), 4);
+  input.read(reinterpret_cast<char*>(&floatValue), 4);
   switch(TypeChar)
   {
     case 'f':
          Type = GlobalType::Float;
          break;
     case 'l':
-         longVal = static_cast<int32_t>(floatVal);
          Type = GlobalType::Long;
          break;
     case 's':
-         shortVal = static_cast<int16_t>(floatVal);;
          Type = GlobalType::Short;
          break;
   }

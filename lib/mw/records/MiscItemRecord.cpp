@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2013, 2021  Dirk Stolle
+    Copyright (C) 2009, 2011, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -115,12 +115,6 @@ bool MiscItemRecord::saveToStream(std::ostream& output) const
   output.write(reinterpret_cast<const char*>(&Value), 4);
   output.write(reinterpret_cast<const char*>(&OtherStuff), 4);
 
-  // write inventory icon (ITEX)
-  output.write(reinterpret_cast<const char*>(&cITEX), 4);
-  SubLength = InventoryIcon.length() + 1;
-  output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(InventoryIcon.c_str(), SubLength);
-
   if (!ScriptID.empty())
   {
     // write script ID (SCRI)
@@ -129,6 +123,12 @@ bool MiscItemRecord::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(ScriptID.c_str(), SubLength);
   }
+
+  // write inventory icon (ITEX)
+  output.write(reinterpret_cast<const char*>(&cITEX), 4);
+  SubLength = InventoryIcon.length() + 1;
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
+  output.write(InventoryIcon.c_str(), SubLength);
 
   return output.good();
 }
@@ -159,14 +159,14 @@ bool MiscItemRecord::loadFromStream(std::istream& input)
   char buffer[256];
   if (!loadString256WithHeader(input, recordID, buffer, cNAME, bytesRead))
   {
-    std::cerr << "Error while reading subrecord NAME of MISC!\n";
+    std::cerr << "Error while reading sub record NAME of MISC!\n";
     return false;
   }
 
   // read model path (MODL)
   if (!loadString256WithHeader(input, ModelPath, buffer, cMODL, bytesRead))
   {
-    std::cerr << "Error while reading subrecord MODL of MISC!\n";
+    std::cerr << "Error while reading sub record MODL of MISC!\n";
     return false;
   }
 
@@ -179,7 +179,7 @@ bool MiscItemRecord::loadFromStream(std::istream& input)
     // read item's name (FNAM)
     if (!loadString256(input, Name, buffer, cFNAM, bytesRead))
     {
-      std::cerr << "Error while reading subrecord FNAM of MISC!\n";
+      std::cerr << "Error while reading sub record FNAM of MISC!\n";
       return false;
     }
 
@@ -205,7 +205,7 @@ bool MiscItemRecord::loadFromStream(std::istream& input)
   bytesRead += 4;
   if (SubLength != 12)
   {
-    std::cerr << "Error: Subrecord MODL of MISC has invalid length ("
+    std::cerr << "Error: Sub record MODL of MISC has invalid length ("
               << SubLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
@@ -216,7 +216,7 @@ bool MiscItemRecord::loadFromStream(std::istream& input)
   bytesRead += 12;
   if (!input.good())
   {
-    std::cerr << "Error while reading subrecord MCDT of MISC!\n";
+    std::cerr << "Error while reading sub record MCDT of MISC!\n";
     return false;
   }
 
@@ -226,7 +226,7 @@ bool MiscItemRecord::loadFromStream(std::istream& input)
   bool hasSCRI = false;
   while (bytesRead < Size)
   {
-    // read next subrecord header
+    // read next sub record header
     input.read(reinterpret_cast<char*>(&SubRecName), 4);
     bytesRead += 4;
     switch (SubRecName)
@@ -234,13 +234,13 @@ bool MiscItemRecord::loadFromStream(std::istream& input)
       case cITEX:
            if (hasITEX)
            {
-             std::cerr << "Error: Record MISC seems to have two ITEX subrecords.\n";
+             std::cerr << "Error: Record MISC seems to have two ITEX sub records.\n";
              return false;
            }
            // read inventory icon (ITEX)
            if (!loadString256(input, InventoryIcon, buffer, cITEX, bytesRead))
            {
-             std::cerr << "Error while reading subrecord ITEX of MISC!\n";
+             std::cerr << "Error while reading sub record ITEX of MISC!\n";
              return false;
            }
            hasITEX = true;
@@ -248,13 +248,13 @@ bool MiscItemRecord::loadFromStream(std::istream& input)
       case cSCRI:
            if (hasSCRI)
            {
-             std::cerr << "Error: Record MISC seems to have two SCRI subrecords.\n";
+             std::cerr << "Error: Record MISC seems to have two SCRI sub records.\n";
              return false;
            }
            // read script ID (SCRI)
            if (!loadString256(input, ScriptID, buffer, cSCRI, bytesRead))
            {
-             std::cerr << "Error while reading subrecord SCRI of MISC!\n";
+             std::cerr << "Error while reading sub record SCRI of MISC!\n";
              return false;
            }
            hasSCRI = true;

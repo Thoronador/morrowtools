@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021, 2023  Dirk Stolle
+    Copyright (C) 2021, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -173,7 +173,7 @@ TEST_CASE("MWTP::MiscItemRecord")
 
     SECTION("default: load record with a script")
     {
-      const auto data = "MISC\x88\0\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0misc_skooma_vial\0MODL\x17\0\0\0n\\Potion_Skooma_01.nif\0FNAM\x0D\0\0\0Leere Phiole\0MCDT\x0C\0\0\0\0\0\x80?\x01\0\0\0\0\0\0\0ITEX\x13\0\0\0n\\Tx_skooma_01.tga\0SCRI\x04\0\0\0foo\0"sv;
+      const auto data = "MISC\xB3\0\0\0\0\0\0\0\0\0\0\0NAME\x16\0\0\0misc_vivec_ashmask_01\0MODL\x1C\0\0\0m\\Misc_vivec_ashmask_01.NIF\0FNAM\x16\0\0\0Aschenmaske des Vivec\0MCDT\x0C\0\0\0\0\0@@P\xC3\0\0\0\0\0\0SCRI\x15\0\0\0shrineGnisisRealMask\0ITEX\x1A\0\0\0m\\Tx_vivec_ashmask_01.tga\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -189,14 +189,14 @@ TEST_CASE("MWTP::MiscItemRecord")
       REQUIRE( record.getHeaderOne() == 0 );
       REQUIRE( record.getHeaderFlags() == 0 );
       // -- record data
-      REQUIRE( record.recordID == "misc_skooma_vial" );
-      REQUIRE( record.ModelPath == "n\\Potion_Skooma_01.nif" );
-      REQUIRE( record.Name == "Leere Phiole" );
-      REQUIRE( record.Weight == 1.0f );
-      REQUIRE( record.Value == 1 );
+      REQUIRE( record.recordID == "misc_vivec_ashmask_01" );
+      REQUIRE( record.ModelPath == "m\\Misc_vivec_ashmask_01.NIF" );
+      REQUIRE( record.Name == "Aschenmaske des Vivec" );
+      REQUIRE( record.Weight == 3.0f );
+      REQUIRE( record.Value == 50000 );
       REQUIRE( record.OtherStuff == 0 );
-      REQUIRE( record.InventoryIcon == "n\\Tx_skooma_01.tga" );
-      REQUIRE( record.ScriptID == "foo" );
+      REQUIRE( record.InventoryIcon == "m\\Tx_vivec_ashmask_01.tga" );
+      REQUIRE( record.ScriptID == "shrineGnisisRealMask" );
 
       // Writing should succeed.
       std::ostringstream streamOut;

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2013, 2014, 2021  Dirk Stolle
+    Copyright (C) 2010, 2011, 2013, 2014, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -75,7 +75,15 @@ bool GameSettingRecord::saveToStream(std::ostream& output) const
          Size = Size + 4 /* four bytes for integer/float value */;
          break;
     case GMSTType::String:
-         Size = Size + sVal.length();
+         if (sVal.empty())
+         {
+           // STRV and length are not written, reduce size accordingly.
+           Size -= 8;
+         }
+         else
+         {
+           Size = Size + sVal.length();
+         }
          break;
   }
   output.write(reinterpret_cast<const char*>(&Size), 4);
@@ -111,11 +119,14 @@ bool GameSettingRecord::saveToStream(std::ostream& output) const
          output.write(reinterpret_cast<const char*>(&fVal), 4);
          break;
     case GMSTType::String:
-         // write string value (STRV)
-         output.write(reinterpret_cast<const char*>(&cSTRV), 4);
-         SubLength = sVal.length();
-         output.write(reinterpret_cast<const char*>(&SubLength), 4);
-         output.write(sVal.c_str(), SubLength);
+         if (!sVal.empty())
+         {
+           // write string value (STRV)
+           output.write(reinterpret_cast<const char*>(&cSTRV), 4);
+           SubLength = sVal.length();
+           output.write(reinterpret_cast<const char*>(&SubLength), 4);
+           output.write(sVal.c_str(), SubLength);
+         }
          break;
   }
   return output.good();

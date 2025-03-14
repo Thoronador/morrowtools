@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2021, 2023  Dirk Stolle
+    Copyright (C) 2021, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -248,6 +248,35 @@ TEST_CASE("MWTP::GameSettingRecord")
       REQUIRE( record.recordID == "sAcrobat" );
       REQUIRE( record.Type == GMSTType::String );
       REQUIRE( record.sVal == "Acrobat" );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with empty string value and no STRV sub record")
+    {
+      const auto data = "GMST\x13\0\0\0\0\0\0\0\0\0\0\0\x4E\x41\x4D\x45\x0B\0\0\0sKeyName_00"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip GMST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      GameSettingRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "sKeyName_00" );
+      REQUIRE( record.Type == GMSTType::String );
+      REQUIRE( record.sVal == "" );
 
       // Writing should succeed.
       std::ostringstream streamOut;

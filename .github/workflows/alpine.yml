@@ -4,7 +4,7 @@ on: push
 
 jobs:
   alpine:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     container: 'alpine:3.21'
     steps:
       # Git is required so that actions/checkout does a proper Git checkout.

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -89,7 +89,6 @@ TEST_CASE("SimplifiedReferenceRecord")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
     StringTable dummy_table;
 
     SECTION("default: load record with NAME")
@@ -98,8 +97,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -122,8 +121,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -146,8 +145,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -170,8 +169,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -194,8 +193,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -209,8 +208,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -224,8 +223,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -239,8 +238,8 @@ TEST_CASE("SimplifiedReferenceRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read REFR, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip REFR, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -255,8 +254,8 @@ TEST_CASE("SimplifiedReferenceRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read REFR, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip REFR, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -269,8 +268,8 @@ TEST_CASE("SimplifiedReferenceRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read REFR, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip REFR, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.

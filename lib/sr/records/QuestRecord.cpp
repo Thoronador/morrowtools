@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2014, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -449,7 +449,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
            {
              std::cerr << "Error in subrecord sequence of QUST! QSDT should "
                        << "follow after INDX, but previous record was \""
-                       << IntTo4Char(lastReadRec) <<"\".\n";
+                       << IntTo4Char(lastReadRec) << "\".\n";
              return false;
            }
            if (hasUnpushedQSDTRecord)

@@ -94,12 +94,12 @@ int main(int argc, char **argv)
               ++i; //skip next parameter, because it's used as directory name already
               // Does it have a trailing (back)slash? If not, add it.
               dataDir = slashify(dataDir);
-              std::cout << "Data files directory was set to \""<<dataDir<<"\".\n";
+              std::cout << "Data files directory was set to \"" << dataDir << "\".\n";
             }
             else
             {
-              std::cerr << "Parameter \""<<std::string(argv[i+1])<<"\" is too"
-                        << " short to be a proper directory path.\n";
+              std::cerr << "Parameter \"" << std::string(argv[i+1])
+                        << "\" is too short to be a proper directory path.\n";
               return SRTP::rcInvalidParameter;
             }
           }
@@ -160,7 +160,7 @@ int main(int argc, char **argv)
     std::cout << "Reading " << esm << " ...\n";
     if (reader.readESM(dataDir + esm, tes4rec, std::nullopt) < 0)
     {
-      std::cerr << "Error while reading "<< dataDir + esm << "!\n";
+      std::cerr << "Error while reading " << dataDir + esm << "!\n";
       return SRTP::rcFileError;
     }
     std::cout << "Cell records: " << SRTP::Cells::get().getNumberOfRecords() << "\n";
@@ -178,9 +178,9 @@ int main(int argc, char **argv)
       if (iter->second.unknownXNAM.has_value())
       {
         // found matching cell record
-        std::cout << "        form ID "<< SRTP::getFormIDAsString(iter->second.headerFormID) << "\n";
+        std::cout << "        form ID " << SRTP::getFormIDAsString(iter->second.headerFormID) << "\n";
         if (!iter->second.editorID.empty())
-          std::cout << "        editor ID \"" << iter->second.editorID<<"\"\n";
+          std::cout << "        editor ID \"" << iter->second.editorID << "\"\n";
         std::cout << "\n";
         ++totalMatches;
       }

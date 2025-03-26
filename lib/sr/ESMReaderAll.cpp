@@ -477,7 +477,7 @@ int ESMReaderAll::readNextRecord(std::istream& input, const uint32_t recName, co
          if (encounters.find(recName) == encounters.end())
          {
            std::cout << "Warning: unknown record type \"" << IntTo4Char(recName)
-                     <<"\" encountered!\n    File position is "
+                     << "\" encountered!\n    File position is "
                      << (unsigned int) input.tellg() << ".\n";
            encounters.insert(recName);
          }

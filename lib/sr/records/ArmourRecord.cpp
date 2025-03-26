@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -779,7 +779,7 @@ bool ArmourRecord::loadFromStream(std::istream& in_File, const bool localized, c
            bytesRead += 6;
            if (templateArmorFormID == 0)
            {
-             std::cerr <<"Error: Subrecord TNAM of ARMO is zero!\n";
+             std::cerr << "Error: Sub record TNAM of ARMO is zero!\n";
              return false;
            }
            break;

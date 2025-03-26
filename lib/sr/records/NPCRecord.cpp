@@ -1086,9 +1086,9 @@ bool NPCRecord::loadFromStream(std::istream& in_File, const bool localized, cons
            // DEST's length
            actual_in->read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
-             std::cerr <<"Error: Sub record DEST of NPC_ has invalid length ("
+             std::cerr << "Error: Sub record DEST of NPC_ has invalid length ("
                        << subLength << " bytes). Should be eight bytes.\n";
              return false;
            }

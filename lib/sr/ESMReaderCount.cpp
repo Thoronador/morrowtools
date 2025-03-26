@@ -89,9 +89,9 @@ void ESMReaderCount::showStats(const bool withPercentage) const
     {
       sum += iter->second;
       ++iter;
-    }//while
-    if (sum==0) sum = 1;//avoid div. by zero
-  }//if
+    }
+    if (sum == 0) sum = 1; //avoid div. by zero
+  }
   std::cout << "Record statistics:\n";
   iter = RecordCounter.begin();
   while (iter!=RecordCounter.end())
@@ -99,12 +99,12 @@ void ESMReaderCount::showStats(const bool withPercentage) const
     std::cout << IntTo4Char(iter->first) << ": "<<iter->second;
     if (withPercentage)
     {
-      std::cout << " ("<<(iter->second*100.0f/static_cast<float>(sum))<<"%)";
+      std::cout << " (" << (iter->second*100.0f/static_cast<float>(sum)) << "%)";
     }
-    std::cout <<"\n";
+    std::cout << "\n";
     ++iter;
-  }//while
-  std::cout << "There are "<<RecordCounter.size()<<" distinct record types.\n\n";
+  }
+  std::cout << "There are " << RecordCounter.size() << " distinct record types.\n\n";
 
   // ---- groups
   if (withPercentage)
@@ -120,19 +120,19 @@ void ESMReaderCount::showStats(const bool withPercentage) const
   }//if
   std::cout << "Group statistics:\n";
   iter = GroupCounter.begin();
-  while (iter!=GroupCounter.end())
+  while (iter != GroupCounter.end())
   {
     std::cout << IntTo4Char(iter->first);
-    if (iter->first<256)  std::cout << " (int: "<<iter->first<<")";
-    std::cout << ": "<<iter->second;
+    if (iter->first<256)  std::cout << " (int: " << iter->first << ")";
+    std::cout << ": " << iter->second;
     if (withPercentage)
     {
-      std::cout << " ("<<(iter->second*100.0f/static_cast<float>(sum))<<"%)";
+      std::cout << " (" << (iter->second*100.0f/static_cast<float>(sum)) << "%)";
     }
-    std::cout <<"\n";
+    std::cout << "\n";
     ++iter;
-  }//while
-  std::cout << "There are "<<GroupCounter.size()<<" distinct group types.\n";
+  }
+  std::cout << "There are " << GroupCounter.size() << " distinct group types.\n";
 }
 
 } // namespace

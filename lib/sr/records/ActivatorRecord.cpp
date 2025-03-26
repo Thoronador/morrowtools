@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -573,7 +573,7 @@ bool ActivatorRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength != 20)
            {
-             std::cerr <<"Error: Sub record DSTD of ACTI has invalid length ("
+             std::cerr << "Error: Sub record DSTD of ACTI has invalid length ("
                        << subLength << " bytes). Should be 20 bytes.\n";
              return false;
            }

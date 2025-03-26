@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -310,14 +310,13 @@ bool ReferenceRecord::saveToStream(std::ostream& output) const
   }//if PDTO
 
   const unsigned int count = subBlocks.size();
-  unsigned int i;
-  for (i=0; i<count; ++i)
+  for (unsigned int i = 0; i < count; ++i)
   {
     if (subBlocks[i].subData.isPresent())
     {
       if (!subBlocks[i].subData.saveToStream(output, subBlocks[i].subType))
       {
-        std::cerr << "Error while writing subrecord "<<IntTo4Char(subBlocks[i].subType)<<" of REFR!\n";
+        std::cerr << "Error while writing subrecord " << IntTo4Char(subBlocks[i].subType) << " of REFR!\n";
         return false;
       }
     }
@@ -384,7 +383,7 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength>511)
            {
-             std::cerr <<"Error: sub record EDID of REFR is longer than 511 characters!\n";
+             std::cerr << "Error: Sub record EDID of REFR is longer than 511 characters!\n";
              return false;
            }
            //read EDID's stuff
@@ -474,8 +473,8 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if ((subLength!=8) and (subLength!=4))
            {
-             std::cerr <<"Error: sub record XLKR of REFR has invalid length ("<<subLength
-                       <<" bytes). Should be 8 or 4 bytes.\n";
+             std::cerr << "Error: Sub record XLKR of REFR has invalid length ("
+                       << subLength << " bytes). Should be 8 or 4 bytes.\n";
              return false;
            }
            //read XLKR
@@ -504,8 +503,8 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cerr <<"Error: sub record XESP of REFR has invalid length ("<<subLength
-                       <<" bytes). Should be 8 bytes.\n";
+             std::cerr << "Error: sub record XESP of REFR has invalid length ("
+                       << subLength << " bytes). Should be 8 bytes.\n";
              return false;
            }
            //read XESP
@@ -572,10 +571,10 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            //XSCL's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: sub record XSCL of REFR has invalid length ("<<subLength
-                       <<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: sub record XSCL of REFR has invalid length ("
+                       << subLength << " bytes). Should be four bytes.\n";
              return false;
            }
            //read XSCL
@@ -620,8 +619,8 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cerr <<"Error: sub record PDTO of REFR has invalid length ("<<subLength
-                       <<" bytes). Should be 8 bytes.\n";
+             std::cerr << "Error: sub record PDTO of REFR has invalid length ("
+                       << subLength << " bytes). Should be 8 bytes.\n";
              return false;
            }
            //read PDTO
@@ -645,8 +644,8 @@ bool ReferenceRecord::loadFromStream(std::istream& in_File, const bool localized
            bytesRead += 2;
            if (subLength!=24)
            {
-             std::cerr <<"Error: sub record DATA of REFR has invalid length ("<<subLength
-                       <<" bytes). Should be 24 bytes.\n";
+             std::cerr << "Error: sub record DATA of REFR has invalid length ("
+                       << subLength << " bytes). Should be 24 bytes.\n";
              return false;
            }
            //read DATA

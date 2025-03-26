@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -375,7 +375,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cerr <<"Error: sub record EDID of MGEF is longer than 511 characters!\n";
+    std::cerr << "Error: Sub record EDID of MGEF is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -457,10 +457,10 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            //KSIZ's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: sub record KSIZ of MGEF has invalid length("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cerr << "Error: Sub record KSIZ of MGEF has invalid length("
+                       << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
            //read KSIZ's stuff
@@ -484,10 +484,11 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            //KWDA's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4*k_Size)
+           if (subLength != 4 * k_Size)
            {
-             std::cerr <<"Error: sub record KWDA of MGEF has invalid length("
-                       <<subLength<<" bytes). Should be "<<4*k_Size<<" bytes!\n";
+             std::cerr << "Error: Sub record KWDA of MGEF has invalid length("
+                       << subLength << " bytes). Should be " << 4 * k_Size
+                       << " bytes!\n";
              return false;
            }
            //read KWDA's stuff
@@ -561,7 +562,7 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            //check length
            if (!in_File.good())
            {
-             std::cerr <<"Error while reading subrecord DATA of MGEF!\n";
+             std::cerr << "Error while reading subrecord DATA of MGEF!\n";
              return false;
            }
            hasReadDATA = true;
@@ -575,15 +576,15 @@ bool MagicEffectRecord::loadFromStream(std::istream& in_File, const bool localiz
            //SNDD's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (((subLength%8)!=0) or (subLength==0))
+           if (((subLength%8) != 0) || (subLength == 0))
            {
-             std::cerr <<"Error: sub record SNDD of MGEF has invalid length("
-                       <<subLength<<" bytes). Should be an integral multiple of eight bytes!\n";
+             std::cerr << "Error: Sub record SNDD of MGEF has invalid length("
+                       << subLength << " bytes). Should be an integral multiple of eight bytes!\n";
              return false;
            }
            //read SNDD's stuff
            k_Size = subLength / 8;
-           for (i=0; i<k_Size; ++i)
+           for (i = 0; i < k_Size; ++i)
            {
              in_File.read((char*) &helper, 4);
              in_File.read((char*) &tempUint32, 4);

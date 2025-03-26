@@ -70,7 +70,8 @@ bool ESMWriter::writeESM(const std::string& FileName, const bool IsMasterFile, T
   //write TES3 header data
   if (!headerData.saveToStream(output))
   {
-    std::cout << "Error while writing header information for file \""<<FileName<<"\".\n";
+    std::cout << "Error while writing header information for file \""
+              << FileName << "\".\n";
     output.close();
     return false;
   }
@@ -78,7 +79,8 @@ bool ESMWriter::writeESM(const std::string& FileName, const bool IsMasterFile, T
   //now write the data
   if (!writeRecords(output))
   {
-    std::cout << "Error while writing data records for file \""<<FileName<<"\".\n";
+    std::cout << "Error while writing data records for file \""
+              << FileName << "\".\n";
     output.close();
     return false;
   }

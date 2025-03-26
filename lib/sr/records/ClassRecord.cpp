@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -120,7 +120,7 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cerr <<"Error: sub record EDID of CLASS is longer than 511 characters!\n";
+    std::cerr << "Error: Sub record EDID of CLASS is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -155,8 +155,8 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   bytesRead += 2;
   if (subLength!=4)
   {
-    std::cerr <<"Error: subrecord DESC of CLAS has invalid length ("<<subLength
-              <<" bytes). Should be four bytes!\n";
+    std::cerr << "Error: subrecord DESC of CLAS has invalid length ("
+              << subLength << " bytes). Should be four bytes!\n";
     return false;
   }
   //read DESC's stuff
@@ -179,10 +179,10 @@ bool ClassRecord::loadFromStream(std::istream& in_File, const bool localized, co
   //DATA's length
   in_File.read((char*) &subLength, 2);
   bytesRead += 2;
-  if (subLength!=36)
+  if (subLength != 36)
   {
-    std::cerr <<"Error: subrecord DATA of CLAS has invalid length ("<<subLength
-              <<" bytes). Should be 36 bytes!\n";
+    std::cerr << "Error: subrecord DATA of CLAS has invalid length ("
+              << subLength << " bytes). Should be 36 bytes!\n";
     return false;
   }
   //read DATA's stuff

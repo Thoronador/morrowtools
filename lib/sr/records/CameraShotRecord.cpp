@@ -323,7 +323,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
            {
              std::cerr << "Error while reading sub record DATA of CAMS: min. "
                        << "time is not in range [0;120]! Its current value is "
-                       << minTime <<".\n";
+                       << minTime << ".\n";
              return false;
            }
            if ((targetPercentBetweenActors > 100.0f) || (targetPercentBetweenActors < 0.0f))

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -257,9 +257,9 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   //EDID's length
   in_File.read((char*) &subLength, 2);
   bytesRead += 2;
-  if (subLength>511)
+  if (subLength > 511)
   {
-    std::cerr <<"Error: sub record EDID of PROJ is longer than 511 characters!\n";
+    std::cerr << "Error: Sub record EDID of PROJ is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -285,10 +285,10 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   //OBND's length
   in_File.read((char*) &subLength, 2);
   bytesRead += 2;
-  if (subLength!=12)
+  if (subLength != 12)
   {
-    std::cerr <<"Error: sub record OBND of PROJ has invalid length("<<subLength
-              <<" bytes). Should be 12 bytes!\n";
+    std::cerr << "Error: Sub record OBND of PROJ has invalid length("
+              << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
   //read OBND's stuff
@@ -340,9 +340,9 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            //MODL's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength>511)
+           if (subLength > 511)
            {
-             std::cerr <<"Error: sub record MODL of PROJ is longer than 511 characters!\n";
+             std::cerr << "Error: Sub record MODL of PROJ is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -386,8 +386,8 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            bytesRead += 2;
            if (subLength!=8)
            {
-             std::cerr <<"Error: sub record DEST of PROJ has invalid length("
-                       <<subLength <<" bytes). Should be eight bytes!\n";
+             std::cerr << "Error: Sub record DEST of PROJ has invalid length("
+                       << subLength << " bytes). Should be eight bytes!\n";
              return false;
            }
            //read DEST's stuff
@@ -409,10 +409,10 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            //DSTD's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=20)
+           if (subLength != 20)
            {
-             std::cerr <<"Error: sub record DSTD of PROJ has invalid length("
-                       <<subLength <<" bytes). Should be 20 bytes!\n";
+             std::cerr << "Error: Sub record DSTD of PROJ has invalid length("
+                       << subLength << " bytes). Should be 20 bytes!\n";
              return false;
            }
            //read DSTD's stuff
@@ -435,10 +435,10 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            //DSTF's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=0)
+           if (subLength != 0)
            {
-             std::cerr <<"Error: sub record DSTF of PROJ has invalid length("
-                       <<subLength <<" bytes). Should be zero bytes!\n";
+             std::cerr << "Error: Sub record DSTF of PROJ has invalid length("
+                       << subLength << " bytes). Should be zero bytes!\n";
              return false;
            }
            unknownDSTD_DSTFs.push_back(tempDSTD_DSTF);
@@ -474,9 +474,9 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            //NAM1's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength>511)
+           if (subLength > 511)
            {
-             std::cerr <<"Error: sub record NAM1 of PROJ is longer than 511 characters!\n";
+             std::cerr << "Error: Sub record NAM1 of PROJ is longer than 511 characters!\n";
              return false;
            }
            //read NAM1's stuff
@@ -519,10 +519,10 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
            //VNAM's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=4)
+           if (subLength != 4)
            {
-             std::cerr <<"Error: sub record VNAM of PROJ has invalid length("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cerr << "Error: Sub record VNAM of PROJ has invalid length("
+                       << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
            //read VNAM's stuff

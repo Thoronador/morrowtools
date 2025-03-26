@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -179,9 +179,9 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
   //EDID's length
   in_File.read((char*) &subLength, 2);
   bytesRead += 2;
-  if (subLength>511)
+  if (subLength > 511)
   {
-    std::cerr <<"Error: sub record EDID of STAT is longer than 511 characters!\n";
+    std::cerr << "Error: Sub record EDID of STAT is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -209,8 +209,8 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cerr <<"Error: sub record OBND of STAT has invalid length ("<<subLength
-              <<" bytes)! Should be 12 bytes.\n";
+    std::cerr << "Error: Sub record OBND of STAT has invalid length ("
+              << subLength << " bytes)! Should be 12 bytes.\n";
     return false;
   }
   //read OBND's stuff
@@ -243,9 +243,9 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //MODL's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength>511)
+           if (subLength > 511)
            {
-             std::cerr <<"Error: sub record MODL of STAT is longer than 511 characters!\n";
+             std::cerr << "Error: Sub record MODL of STAT is longer than 511 characters!\n";
              return false;
            }
            //read MODL's stuff
@@ -296,10 +296,10 @@ bool StaticRecord::loadFromStream(std::istream& in_File, const bool localized, c
            //DNAM's length
            in_File.read((char*) &subLength, 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
-             std::cerr <<"Error: sub record DNAM of STAT has invalid length ("
-                       <<subLength<<" bytes)! Should be 8 bytes.\n";
+             std::cerr << "Error: Sub record DNAM of STAT has invalid length ("
+                       << subLength << " bytes)! Should be 8 bytes.\n";
              return false;
            }
            //read DNAM's stuff

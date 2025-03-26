@@ -257,7 +257,7 @@ int main(int argc, char **argv)
     std::cout << "Reading file " << file << "...\n";
     if (reader.readESM(dataDir + file, tes3Header) < 0)
     {
-      std::cout << "Error while reading file \"" << dataDir + file <<"\".\nAborting.\n";
+      std::cout << "Error while reading file \"" << dataDir + file << "\".\nAborting.\n";
       return MWTP::rcFileError;
     }
   }

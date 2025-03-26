@@ -211,7 +211,7 @@ int main(int argc, char **argv)
           else
           {
             std::cerr << "Error: You have to specify a directory name after \""
-                      << param <<"\".\n";
+                      << param << "\".\n";
             return SRTP::rcInvalidParameter;
           }
         } //data files directory
@@ -792,7 +792,7 @@ int main(int argc, char **argv)
                       prefix = true;
                       basic_out << "            ";
                     }
-                    basic_out << "\"" << qsdt.logEntry.getString()<<"\"";
+                    basic_out << "\"" << qsdt.logEntry.getString() << "\"";
                   }
                   if (prefix)
                     basic_out << "\n";

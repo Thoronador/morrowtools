@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength>511)
   {
-    std::cerr <<"Error: sub record EDID of ENCH is longer than 511 characters!\n";
+    std::cerr << "Error: Sub record EDID of ENCH is longer than 511 characters!\n";
     return false;
   }
   //read EDID's stuff
@@ -185,8 +185,8 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
   bytesRead += 2;
   if (subLength!=12)
   {
-    std::cerr <<"Error: subrecord OBND of ENCH has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes!\n";
+    std::cerr << "Error: subrecord OBND of ENCH has invalid length ("
+              << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
   //read OBND's stuff
@@ -258,8 +258,8 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=4)
            {
-             std::cerr <<"Error: subrecord EFID of ENCH has invalid length ("
-                       <<subLength<<" bytes). Should be four bytes!\n";
+             std::cerr << "Error: subrecord EFID of ENCH has invalid length ("
+                       << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
            //read EFID's stuff
@@ -284,8 +284,8 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=12)
            {
-             std::cerr <<"Error: subrecord EFIT of ENCH has invalid length ("
-                       <<subLength<<" bytes). Should be 12 bytes!\n";
+             std::cerr << "Error: subrecord EFIT of ENCH has invalid length ("
+                       << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
            //read EFIT's stuff
@@ -311,8 +311,8 @@ bool EnchantmentRecord::loadFromStream(std::istream& in_File, const bool localiz
            bytesRead += 2;
            if (subLength!=32)
            {
-             std::cerr <<"Error: subrecord CTDA of ENCH has invalid length ("
-                       <<subLength<<" bytes). Should be 32 bytes!\n";
+             std::cerr << "Error: subrecord CTDA of ENCH has invalid length ("
+                       << subLength << " bytes). Should be 32 bytes!\n";
              return false;
            }
            //read CTDA's stuff

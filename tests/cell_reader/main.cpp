@@ -85,7 +85,8 @@ int main(int argc, char **argv)
               ++i; // skip next parameter, because it's used as directory name already
               // Does it have a trailing (back)slash? If not, add one.
               dataDir = slashify(dataDir);
-              std::cout << "Data Files directory was set to \""<<dataDir<<"\".\n";
+              std::cout << "Data Files directory was set to \"" << dataDir
+                        << "\".\n";
             }
             else
             {
@@ -157,7 +158,7 @@ int main(int argc, char **argv)
         {
           std::cout << "        Name: '"<< iter->second.CellID << "'\n";
           if (!iter->second.isInterior())
-            std::cout << "        coordinates: [" << iter->second.GridX << "," << iter->second.GridY <<"]\n";
+            std::cout << "        coordinates: [" << iter->second.GridX << "," << iter->second.GridY << "]\n";
           std::cout << "        Size: "<< current_size << " bytes\n";
           std::cout << "\n";
           minSize = current_size;

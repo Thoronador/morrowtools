@@ -297,7 +297,7 @@ bool Tes4HeaderRecord::loadFromStream(std::istream& in_File,
            if (SubLength != 8)
            {
              std::cerr << "Error: Sub record DATA of TES4 has invalid length ("
-                       << SubLength <<" bytes). Should be 8 bytes.\n";
+                       << SubLength << " bytes). Should be 8 bytes.\n";
              return false;
            }
            // read DATA's stuff

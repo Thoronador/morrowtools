@@ -844,7 +844,7 @@ bool BSA::extractDirectory(const std::string& directoryName, const std::string& 
   if (!dirIdx.has_value())
   {
     std::cerr << "BSA::extractDirectory: Error: Archive has no directory named \""
-              << directoryName <<"\", thus it cannot be extracted!\n";
+              << directoryName << "\", thus it cannot be extracted!\n";
     return false;
   }
 

@@ -137,7 +137,7 @@ int main(int argc, char **argv)
           else
           {
             std::cerr << "Error: You have to specify a file name after \""
-                      << param<<"\".\n";
+                      << param << "\".\n";
             return MWTP::rcInvalidParameter;
           }
         }

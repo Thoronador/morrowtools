@@ -135,7 +135,7 @@ int main(int argc, char **argv)
       else
       {
         // unknown or wrong parameter
-        std::cout << "Invalid parameter given: \""<<param<<"\".\n"
+        std::cout << "Invalid parameter given: \"" << param << "\".\n"
                   << "Use --help to get a list of valid parameters.\n";
         return MWTP::rcInvalidParameter;
       }

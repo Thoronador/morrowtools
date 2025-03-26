@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -772,33 +772,6 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     }
   }
 
-  if (LockLevel.has_value())
-  {
-    // write lock level (FLTV)
-    output.write(reinterpret_cast<const char*>(&cFLTV), 4);
-    SubLength = 4;
-    output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(reinterpret_cast<const char*>(&LockLevel.value()), 4);
-
-    if (!KeyID.empty())
-    {
-      // write key ID (KNAM)
-      output.write(reinterpret_cast<const char*>(&cKNAM), 4);
-      SubLength = KeyID.length() + 1;
-      output.write(reinterpret_cast<const char*>(&SubLength), 4);
-      output.write(KeyID.c_str(), SubLength);
-    }
-  }
-
-  if (!TrapID.empty())
-  {
-    // write trap ID (TNAM)
-    output.write(reinterpret_cast<const char*>(&cTNAM), 4);
-    SubLength = TrapID.length() + 1;
-    output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    output.write(TrapID.c_str(), SubLength);
-  }
-
   if (!OwnerID.empty())
   {
     // write owner ID (ANAM)
@@ -865,6 +838,33 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     SubLength = 4;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(reinterpret_cast<const char*>(&UnknownNAM9.value()), 4);
+  }
+
+  if (LockLevel.has_value())
+  {
+    // write lock level (FLTV)
+    output.write(reinterpret_cast<const char*>(&cFLTV), 4);
+    SubLength = 4;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(reinterpret_cast<const char*>(&LockLevel.value()), 4);
+
+    if (!KeyID.empty())
+    {
+      // write key ID (KNAM)
+      output.write(reinterpret_cast<const char*>(&cKNAM), 4);
+      SubLength = KeyID.length() + 1;
+      output.write(reinterpret_cast<const char*>(&SubLength), 4);
+      output.write(KeyID.c_str(), SubLength);
+    }
+  }
+
+  if (!TrapID.empty())
+  {
+    // write trap ID (TNAM)
+    output.write(reinterpret_cast<const char*>(&cTNAM), 4);
+    SubLength = TrapID.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(TrapID.c_str(), SubLength);
   }
 
   if (ReferenceBlockedByte.has_value())

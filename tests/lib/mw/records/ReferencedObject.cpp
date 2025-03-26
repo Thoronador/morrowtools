@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022, 2023  Dirk Stolle
+    Copyright (C) 2022, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -804,6 +804,57 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( data.size() == object.getWrittenSize() );
     }
 
+    SECTION("default: load reference with ANAM, INTV, NAM9, and FLTV")
+    {
+      const auto data = "FRMR\x04\0\0\0\x99\xAC\x06\0NAME\x18\0\0\0chest_01_v_potion_al_02\0ANAM\x09\0\0\0arangaer\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0FLTV\x04\0\0\0K\0\0\0DATA\x18\0\0\0\xD6^\x0FHd\x17\x1AG\xB0K\x1F\x44\0\0\0\0\0\0\0\0O\xB9+@"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip FRMR, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x0006AC99 );
+      REQUIRE( object.ObjectID == "chest_01_v_potion_al_02" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == 146811.34375f );
+      REQUIRE( object.PosY == 39447.390625f );
+      REQUIRE( object.PosZ == 637.1826171875f );
+      REQUIRE( object.RotX == 0.0f );
+      REQUIRE( object.RotY == 0.0f );
+      REQUIRE( object.RotZ == 2.683185338974f );
+      REQUIRE_FALSE( object.DoorData.has_value() );
+      REQUIRE( object.LockLevel.has_value() );
+      REQUIRE( object.LockLevel.value() == 75 );
+      REQUIRE( object.KeyID.empty() );
+      REQUIRE( object.TrapID.empty() );
+      REQUIRE( object.OwnerID == "arangaer" );
+      REQUIRE( object.OwnerFactionID.empty() );
+      REQUIRE( object.FactionRank == -1 );
+      REQUIRE( object.GlobalVarID.empty() );
+      REQUIRE( object.SoulCreatureID.empty() );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE( object.NumberOfUses.has_value() );
+      REQUIRE( object.NumberOfUses.value() == 0 );
+      REQUIRE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.UnknownNAM9.value() == 0x00000001 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
+    }
+
     SECTION("default: load reference with key and trap")
     {
       const auto data = "FRMR\x04\0\0\0\x3D\xAC\x16\0NAME\x17\0\0\0com_chest_Daed_crusher\0FLTV\x04\0\0\0P\0\0\0KNAM\x15\0\0\0key_Forge of Rolamus\0TNAM\x10\0\0\0trap_paralyze00\0DATA\x18\0\0\0\x0D\x9E=E\x8C\x38\xBF\x45K\x88W\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?"sv;
@@ -955,7 +1006,7 @@ TEST_CASE("MWTP::ReferencedObject")
 
     SECTION("default: load reference with soul creature ID")
     {
-      const auto data = "FRMR\x04\0\0\0\x4D\x97\x16\0\x4E\x41\x4D\x45\x14\0\0\0Misc_SoulGem_Common\0XSOL\x06\0\0\0scamp\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xA7\xDC\x98\x45\x90\x1F\xE1\x45\xEA\xD6\x46\x46\x43v\xAF@\x0F\x43\xBC@\0\0\0\0"sv;
+      const auto data = "FRMR\x04\0\0\0\x4D\x97\x16\0NAME\x14\0\0\0Misc_SoulGem_Common\0XSOL\x06\0\0\0scamp\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DATA\x18\0\0\0\xA7\xDC\x98\x45\x90\x1F\xE1\x45\xEA\xD6\x46\x46\x43v\xAF@\x0F\x43\xBC@\0\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

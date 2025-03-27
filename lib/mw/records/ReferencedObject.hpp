@@ -78,7 +78,7 @@ struct ReferencedObject
    * \return Returns true on success (reference was loaded from stream).
    *         Returns false, if an error occurred.
    */
-  bool loadFromStream(std::istream& in_File, uint32_t& BytesRead, char* Buffer);
+  bool loadFromStream(std::istream& input, uint32_t& BytesRead, char* Buffer);
 
   #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Writes the object reference to the given output stream.

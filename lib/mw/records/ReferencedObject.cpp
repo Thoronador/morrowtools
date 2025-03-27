@@ -97,7 +97,7 @@ bool ReferencedObject::operator==(const ReferencedObject& other) const
       && (ReferenceBlockedByte == other.ReferenceBlockedByte);
 }
 
-bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead, char* Buffer)
+bool ReferencedObject::loadFromStream(std::istream& input, uint32_t& BytesRead, char* Buffer)
 {
   uint32_t SubRecName;
   uint32_t SubLength;
@@ -141,25 +141,25 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
   */
 
   // FRMR's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
   if (SubLength != 4)
   {
-    std::cerr << "Error: Subrecord FRMR of CELL has invalid length ("
+    std::cerr << "Error: Sub record FRMR of CELL has invalid length ("
               << SubLength << " bytes). Should be four bytes.\n";
     return false;
   }
   // read object index
-  in_File.read(reinterpret_cast<char*>(&ObjectIndex), 4);
+  input.read(reinterpret_cast<char*>(&ObjectIndex), 4);
   BytesRead += 4;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord FRMR of CELL!\n";
+    std::cerr << "Error while reading sub record FRMR of CELL!\n";
     return false;
   }
 
   // read NAME
-  in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+  input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
   if (SubRecName != cNAME)
   {
@@ -167,20 +167,20 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
     return false;
   }
   // NAME's length
-  in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+  input.read(reinterpret_cast<char*>(&SubLength), 4);
   BytesRead += 4;
   if (SubLength > 255)
   {
-    std::cerr << "Error: Subrecord NAME (FRMR) of CELL is longer than 255 characters.\n";
+    std::cerr << "Error: Sub record NAME (FRMR) of CELL is longer than 255 characters.\n";
     return false;
   }
   // read object ID
   memset(Buffer, '\0', 256);
-  in_File.read(Buffer, SubLength);
+  input.read(Buffer, SubLength);
   BytesRead += SubLength;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord NAME (FRMR) of CELL!\n";
+    std::cerr << "Error while reading sub record NAME (FRMR) of CELL!\n";
     return false;
   }
   ObjectID = std::string(Buffer);
@@ -205,86 +205,86 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
   while (SubRecName != cDATA)
   {
     // read next header
-    in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+    input.read(reinterpret_cast<char*>(&SubRecName), 4);
     BytesRead += 4;
     switch(SubRecName)
     {
       case cXSCL:
            if (Scale != 1.0f)
            {
-             std::cerr << "Error: Reference of record CELL seems to have two XSCL subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two XSCL sub records.\n";
              return false;
            }
            // XSCL's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
-             std::cerr <<"Error: Sub record XSCL of CELL has invalid length ("
-                       << SubLength <<" bytes). Should be four bytes.\n";
+             std::cerr << "Error: Sub record XSCL of CELL has invalid length ("
+                       << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            // read object scale
-           in_File.read(reinterpret_cast<char*>(&Scale), 4);
+           input.read(reinterpret_cast<char*>(&Scale), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord XSCL of CELL!\n";
+             std::cerr << "Error while reading sub record XSCL of CELL!\n";
              return false;
            }
            break;
       case cDATA:
            // DATA's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 24)
            {
-             std::cerr << "Error: Subrecord DATA of CELL has invalid length ("
+             std::cerr << "Error: Sub record DATA of CELL has invalid length ("
                        << SubLength << " bytes). Should be 24 bytes.\n";
              return false;
            }
            // read object position data
-           in_File.read(reinterpret_cast<char*>(&PosX), 4);
-           in_File.read(reinterpret_cast<char*>(&PosY), 4);
-           in_File.read(reinterpret_cast<char*>(&PosZ), 4);
-           in_File.read(reinterpret_cast<char*>(&RotX), 4);
-           in_File.read(reinterpret_cast<char*>(&RotY), 4);
-           in_File.read(reinterpret_cast<char*>(&RotZ), 4);
+           input.read(reinterpret_cast<char*>(&PosX), 4);
+           input.read(reinterpret_cast<char*>(&PosY), 4);
+           input.read(reinterpret_cast<char*>(&PosZ), 4);
+           input.read(reinterpret_cast<char*>(&RotX), 4);
+           input.read(reinterpret_cast<char*>(&RotY), 4);
+           input.read(reinterpret_cast<char*>(&RotZ), 4);
            BytesRead += 24;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DATA of CELL!\n";
+             std::cerr << "Error while reading sub record DATA of CELL!\n";
              return false;
            }
            break;
       case cDODT:
            if (DoorData.has_value())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two DODT subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two DODT sub records.\n";
              return false;
            }
            // DODT's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 24)
            {
-             std::cerr << "Error: Subrecord DODT of CELL has invalid length ("
+             std::cerr << "Error: Sub record DODT of CELL has invalid length ("
                        << SubLength << " bytes). Should be 24 bytes.\n";
              return false;
            }
            // read object position data
            DoorData = RefDoorData();
-           in_File.read(reinterpret_cast<char*>(&DoorData.value().PosX), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.value().PosY), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.value().PosZ), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.value().RotX), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.value().RotY), 4);
-           in_File.read(reinterpret_cast<char*>(&DoorData.value().RotZ), 4);
+           input.read(reinterpret_cast<char*>(&DoorData.value().PosX), 4);
+           input.read(reinterpret_cast<char*>(&DoorData.value().PosY), 4);
+           input.read(reinterpret_cast<char*>(&DoorData.value().PosZ), 4);
+           input.read(reinterpret_cast<char*>(&DoorData.value().RotX), 4);
+           input.read(reinterpret_cast<char*>(&DoorData.value().RotY), 4);
+           input.read(reinterpret_cast<char*>(&DoorData.value().RotZ), 4);
            BytesRead += 24;
            DoorData.value().ExitName.clear();
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DODT of CELL!\n";
+             std::cerr << "Error while reading sub record DODT of CELL!\n";
              return false;
            }
            break;
@@ -292,29 +292,29 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            if (!DoorData.has_value())
            {
              std::cerr << "Error while reading CELL: There can't be a DNAM "
-                       << "without a previous DODT subrecord.\n";
+                       << "without a previous DODT sub record.\n";
              return false;
            }
            if (!DoorData.value().ExitName.empty())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two DNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two DNAM sub records.\n";
              return false;
            }
            // DNAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 255)
            {
-             std::cerr << "Error: Subrecord DNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record DNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
            // read exit name
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record DNAM (FRMR) of CELL!\n";
              return false;
            }
            DoorData.value().ExitName = std::string(Buffer);
@@ -322,50 +322,50 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cFLTV:
            if (LockLevel.has_value())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two FLTV subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two FLTV sub records.\n";
              return false;
            }
            // FLTV's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
-             std::cerr << "Error: Subrecord FLTV (FRMR) of CELL has invalid length ("
+             std::cerr << "Error: Sub record FLTV (FRMR) of CELL has invalid length ("
                        << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            // read lock level
            LockLevel = 0;
-           in_File.read(reinterpret_cast<char*>(&LockLevel.value()), 4);
+           input.read(reinterpret_cast<char*>(&LockLevel.value()), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord FLTV (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record FLTV (FRMR) of CELL!\n";
              return false;
            }
            break;
       case cINTV:
            if (NumberOfUses.has_value())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two INTV subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two INTV sub records.\n";
              return false;
            }
            // INTV's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
-             std::cerr << "Error: Subrecord INTV (FRMR) of CELL has invalid length ("
+             std::cerr << "Error: Sub record INTV (FRMR) of CELL has invalid length ("
                        << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            // read number of uses
            NumberOfUses = 0;
-           in_File.read(reinterpret_cast<char*>(&NumberOfUses.value()), 4);
+           input.read(reinterpret_cast<char*>(&NumberOfUses.value()), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord INTV (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record INTV (FRMR) of CELL!\n";
              return false;
            }
            break;
@@ -373,29 +373,29 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            if (!LockLevel.has_value())
            {
              std::cerr << "Error while reading CELL: There can't be a KNAM "
-                       << "without a previous FLTV subrecord.\n";
+                       << "without a previous FLTV sub record.\n";
              return false;
            }
            if (!KeyID.empty())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two KNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two KNAM sub records.\n";
              return false;
            }
            // KNAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 255)
            {
-             std::cerr << "Error: Subrecord KNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record KNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
            // read key ID
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord KNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record KNAM (FRMR) of CELL!\n";
              return false;
            }
            KeyID = std::string(Buffer);
@@ -403,24 +403,24 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cTNAM:
            if (!TrapID.empty())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two TNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two TNAM sub records.\n";
              return false;
            }
            // TNAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 255)
            {
-             std::cerr << "Error: Subrecord TNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record TNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
            // read trap ID
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord TNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record TNAM (FRMR) of CELL!\n";
              return false;
            }
            TrapID = std::string(Buffer);
@@ -428,31 +428,31 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cANAM:
            if (!OwnerID.empty())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two ANAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two ANAM sub records.\n";
              return false;
            }
            if (!OwnerFactionID.empty())
            {
              std::cerr << "Error: Reference of record CELL seems to have both "
-                       << "ANAM and CNAM subrecords, but it should have only "
+                       << "ANAM and CNAM sub records, but it should have only "
                        << "one of them.\n";
              return false;
            }
            // ANAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 255)
            {
-             std::cerr << "Error: Subrecord ANAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record ANAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
            // read owner ID
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord ANAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record ANAM (FRMR) of CELL!\n";
              return false;
            }
            OwnerID = std::string(Buffer);
@@ -460,38 +460,38 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cCNAM:
            if (!OwnerFactionID.empty())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two CNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two CNAM sub records.\n";
              return false;
            }
            if (!OwnerID.empty())
            {
              std::cerr << "Error: Reference of record CELL seems to have both "
-                       << "ANAM and CNAM subrecords, but it should have only "
+                       << "ANAM and CNAM sub records, but it should have only "
                        << "one of them.\n";
              return false;
            }
            // CNAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 255)
            {
-             std::cerr << "Error: Subrecord CNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record CNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
            // read owner faction ID
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord CNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record CNAM (FRMR) of CELL!\n";
              return false;
            }
            OwnerFactionID = std::string(Buffer);
 
            // INDX should follow right now.
            // read INDX
-           in_File.read(reinterpret_cast<char*>(&SubRecName), 4);
+           input.read(reinterpret_cast<char*>(&SubRecName), 4);
            BytesRead += 4;
            if (SubRecName != cINDX)
            {
@@ -499,44 +499,44 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
              return false;
            }
            // read INDX's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
-             std::cerr << "Error: Subrecord INDX (FRMR) of CELL has invalid length ("
+             std::cerr << "Error: Sub record INDX (FRMR) of CELL has invalid length ("
                        << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            // read faction rank number
-           in_File.read(reinterpret_cast<char*>(&FactionRank), 4);
+           input.read(reinterpret_cast<char*>(&FactionRank), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord INDX (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record INDX (FRMR) of CELL!\n";
              return false;
            }
            break;
       case cBNAM:
            if (!GlobalVarID.empty())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two BNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two BNAM sub records.\n";
              return false;
            }
            // BNAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 255)
            {
-             std::cerr << "Error: Subrecord BNAM (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record BNAM (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
            // read global var ID
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord BNAM (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record BNAM (FRMR) of CELL!\n";
              return false;
            }
            GlobalVarID = std::string(Buffer);
@@ -544,24 +544,24 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cXSOL:
            if (!SoulCreatureID.empty())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two XSOL subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two XSOL sub records.\n";
              return false;
            }
            // XSOL's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength > 255)
            {
-             std::cerr << "Error: Subrecord XSOL (FRMR) of CELL is longer than 255 characters.\n";
+             std::cerr << "Error: Sub record XSOL (FRMR) of CELL is longer than 255 characters.\n";
              return false;
            }
            // read soul creature's ID
            memset(Buffer, '\0', 256);
-           in_File.read(Buffer, SubLength);
+           input.read(Buffer, SubLength);
            BytesRead += SubLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord XSOL (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record XSOL (FRMR) of CELL!\n";
              return false;
            }
            SoulCreatureID = std::string(Buffer);
@@ -569,61 +569,61 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
       case cXCHG:
            if (EnchantCharge.has_value())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two XCHG subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two XCHG sub records.\n";
              return false;
            }
            // XCHG's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
-             std::cerr << "Error: Subrecord XCHG (FRMR) of CELL has invalid length ("
+             std::cerr << "Error: Sub record XCHG (FRMR) of CELL has invalid length ("
                        << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            // read charged enchantment points
            EnchantCharge = 0.0f;
-           in_File.read(reinterpret_cast<char*>(&EnchantCharge.value()), 4);
+           input.read(reinterpret_cast<char*>(&EnchantCharge.value()), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord XCHG (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record XCHG (FRMR) of CELL!\n";
              return false;
            }
            break;
       case cNAM9:
            if (UnknownNAM9.has_value())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two NAM9 subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two NAM9 sub records.\n";
              return false;
            }
            // NAM9's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
-             std::cerr << "Error: Subrecord NAM9 (FRMR) of CELL has invalid length ("
+             std::cerr << "Error: Sub record NAM9 (FRMR) of CELL has invalid length ("
                        << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            // read unknown value
            UnknownNAM9 = 0;
-           in_File.read(reinterpret_cast<char*>(&UnknownNAM9.value()), 4);
+           input.read(reinterpret_cast<char*>(&UnknownNAM9.value()), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord NAM9 (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record NAM9 (FRMR) of CELL!\n";
              return false;
            }
            break;
       case cUNAM:
            if (ReferenceBlockedByte.has_value())
            {
-             std::cerr << "Error: Reference of record CELL seems to have two UNAM subrecords.\n";
+             std::cerr << "Error: Reference of record CELL seems to have two UNAM sub records.\n";
              return false;
            }
            // UNAM's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 1)
            {
@@ -633,35 +633,35 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
            }
            // read reference blocked
            ReferenceBlockedByte = 0;
-           in_File.read(reinterpret_cast<char*>(&ReferenceBlockedByte.value()), 1);
+           input.read(reinterpret_cast<char*>(&ReferenceBlockedByte.value()), 1);
            BytesRead += 1;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord UNAM of CELL!\n";
+             std::cerr << "Error while reading sub record UNAM of CELL!\n";
              return false;
            }
            break;
       case cDELE:
            // DELE's length
-           in_File.read(reinterpret_cast<char*>(&SubLength), 4);
+           input.read(reinterpret_cast<char*>(&SubLength), 4);
            BytesRead += 4;
            if (SubLength != 4)
            {
-             std::cerr << "Error: Subrecord DELE (FRMR) of CELL has invalid length ("
+             std::cerr << "Error: Sub record DELE (FRMR) of CELL has invalid length ("
                        << SubLength << " bytes). Should be four bytes.\n";
              return false;
            }
            // read deletion value
-           in_File.read(reinterpret_cast<char*>(&DeletionLong), 4);
+           input.read(reinterpret_cast<char*>(&DeletionLong), 4);
            BytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DELE (FRMR) of CELL!\n";
+             std::cerr << "Error while reading sub record DELE (FRMR) of CELL!\n";
              return false;
            }
            isDeleted = true;
-           // DELE is the last subrecord of a reference, so we can return here.
-           return in_File.good();
+           // DELE is the last sub record of a reference, so we can return here.
+           return input.good();
       default:
            std::cerr << "Error while reading CELL: Expected record name XSCL, "
                      << "DODT, DNAM, FLTV, INTV, KNAM, TNAM, ANAM, BNAM, CNAM, "
@@ -671,7 +671,7 @@ bool ReferencedObject::loadFromStream(std::istream& in_File, uint32_t& BytesRead
     }
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 #ifndef MW_UNSAVEABLE_RECORDS

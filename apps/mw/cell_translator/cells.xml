@@ -1331,9 +1331,6 @@
     <en>Dagoth Ur</en>
   </cell>
   <cell>
-    <de>Dagoth Ur, Facility Cavern</de>
-  </cell>
-  <cell>
     <de>Dagoth Ur, Höhle</de>
     <en>Dagoth Ur, Facility Cavern</en>
   </cell>
@@ -3692,6 +3689,7 @@
   </cell>
   <cell>
     <de>Seyda Neen, Finomoldos Hütte</de>
+    <en>Seyda Neen, Fine-Mouth's Shack</en>
   </cell>
   <cell>
     <de>Seyda Neen, Foryn Gilniths Hütte</de>
@@ -5474,9 +5472,11 @@
   </cell>
   <cell>
     <de>Vor Lair, Chambers of Alta Vor</de>
+    <en>Vor Lair, Chambers of Alta Vor</en>
   </cell>
   <cell>
     <de>Vor Lair, Interior</de>
+    <en>Vor Lair, Interior</en>
   </cell>
   <cell>
     <de>Vos</de>
@@ -5544,6 +5544,7 @@
   </cell>
   <cell>
     <de>Wunderland</de>
+    <en>character stuff wonderland</en>
   </cell>
   <cell>
     <de>Yakanalit</de>

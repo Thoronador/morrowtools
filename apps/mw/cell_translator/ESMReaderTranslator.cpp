@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2014  Dirk Stolle
+    Copyright (C) 2011, 2014, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,33 +38,28 @@ namespace MWTP
 ESMReaderTranslator::ESMReaderTranslator(VectorType* vec)
 : ESMReaderGeneric(vec)
 {
-  if (NULL==vec)
+  if (nullptr == vec)
   {
-    std::cout << "ESMReaderTranslator: Error: supplied pointer is NULL!\n";
-    throw std::runtime_error("ESMReaderTranslator: Error: supplied pointer is NULL!");
+    std::cerr << "ESMReaderTranslator: Error: Supplied pointer is NULL!\n";
+    throw std::runtime_error("ESMReaderTranslator: Error: Supplied pointer is NULL!");
   }
   m_VectorPointer = vec;
 }
 
-ESMReaderTranslator::~ESMReaderTranslator()
-{
-  //empty
-}
-
-int ESMReaderTranslator::processNextRecord(std::istream& in_File)
+int ESMReaderTranslator::processNextRecord(std::istream& input)
 {
   uint32_t RecordName = 0; //normally should be 4 char, but char is not eligible for switch
   int lastResult = 0;
 
-  GenericRecord* genRec = NULL;
-  BasicRecord* baseRec = NULL;
-  //read record name
-  in_File.read((char*) &RecordName, 4);
+  GenericRecord* genRec = nullptr;
+  BasicRecord* baseRec = nullptr;
+  // read record name
+  input.read((char*) &RecordName, 4);
   switch(RecordName)
   {
-    case cCELL: //has cell names
+    case cCELL: // has cell names
          baseRec = new CellRecord;
-         if (baseRec->loadFromStream(in_File))
+         if (baseRec->loadFromStream(input))
          {
            m_VectorPointer->push_back(baseRec);
            return 1;
@@ -72,13 +67,13 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
          else
          {
            delete baseRec;
-           std::cout << "Error: failed to load cell record!\n!";
+           std::cerr << "Error: Failed to load cell record!\n";
            return -1;
          }
          break;
-    case cCREA: //has cell info (AI and dest.)
+    case cCREA: // has cell info (AI and dest.)
          baseRec = new CreatureRecord;
-         if (baseRec->loadFromStream(in_File))
+         if (baseRec->loadFromStream(input))
          {
            m_VectorPointer->push_back(baseRec);
            return 1;
@@ -86,13 +81,13 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
          else
          {
            delete baseRec;
-           std::cout << "Error: failed to load creature record!\n!";
+           std::cerr << "Error: Failed to load creature record!\n";
            return -1;
          }
          break;
-    case cINFO: //has cell info, but isn't processed yet
+    case cINFO: // has cell info
          baseRec = new DialogueInfoRecord;
-         if (baseRec->loadFromStream(in_File))
+         if (baseRec->loadFromStream(input))
          {
            m_VectorPointer->push_back(baseRec);
            return 1;
@@ -100,13 +95,13 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
          else
          {
            delete baseRec;
-           std::cout << "Error: failed to load dialogue info record!\n!";
+           std::cerr << "Error: Failed to load dialogue info record!\n";
            return -1;
          }
          break;
-    case cNPC_: //has cell info (AI and dest)
+    case cNPC_: // has cell info (AI and dest)
          baseRec = new NPCRecord;
-         if (baseRec->loadFromStream(in_File))
+         if (baseRec->loadFromStream(input))
          {
            m_VectorPointer->push_back(baseRec);
            return 1;
@@ -114,13 +109,13 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
          else
          {
            delete baseRec;
-           std::cout << "Error: failed to load NPC record!\n!";
+           std::cerr << "Error: Failed to load NPC record!\n";
            return -1;
          }
          break;
-    case cPGRD: //has cell info (cell name)
+    case cPGRD: // has cell info (cell name)
          baseRec = new PathGridRecord;
-         if (baseRec->loadFromStream(in_File))
+         if (baseRec->loadFromStream(input))
          {
            m_VectorPointer->push_back(baseRec);
            return 1;
@@ -128,13 +123,13 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
          else
          {
            delete baseRec;
-           std::cout << "Error: failed to load path grid record!\n!";
+           std::cerr << "Error: Failed to load path grid record!\n";
            return -1;
          }
          break;
     case cSCPT: //might have cell names in script text
          baseRec = new ScriptRecord;
-         if (baseRec->loadFromStream(in_File))
+         if (baseRec->loadFromStream(input))
          {
            m_VectorPointer->push_back(baseRec);
            return 1;
@@ -142,7 +137,7 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
          else
          {
            delete baseRec;
-           std::cout << "Error: failed to load script record!\n!";
+           std::cerr << "Error: Failed to load script record!\n";
            return -1;
          }
          break;
@@ -183,7 +178,7 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
     case cSTAT: //no cell names
     case cWEAP: //no cell names
          genRec = new GenericRecord;
-         if (genRec->loadFromStream(in_File))
+         if (genRec->loadFromStream(input))
          {
            genRec->Header = RecordName;
            m_VectorPointer->push_back(genRec);
@@ -192,18 +187,18 @@ int ESMReaderTranslator::processNextRecord(std::istream& in_File)
          else
          {
            delete genRec;
-           std::cout << "Error: failed to load generic record!\n!";
+           std::cerr << "Error: Failed to load generic record!\n!";
            return -1;
          }
          break;
     default:
-         std::cout << "processNextRecord: ERROR: unknown record type found: \""
-                   << IntTo4Char(RecordName)<<"\".\n"
-                   << "Current file position: "<<in_File.tellg()<< " bytes.\n";
+         std::cerr << "processNextRecord: ERROR: Unknown record type found: \""
+                   << IntTo4Char(RecordName) << "\".\n"
+                   << "Current file position: " << input.tellg() << " bytes.\n";
          lastResult = -1;
          break;
   }
   return lastResult;
 }
 
-} //namespace
+} // namespace

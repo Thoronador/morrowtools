@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011  Dirk Stolle
+    Copyright (C) 2011, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -18,39 +18,42 @@
  -------------------------------------------------------------------------------
 */
 
-#ifndef ESMREADERTRANSLATOR_H
-#define ESMREADERTRANSLATOR_H
+#ifndef MW_ESMREADERTRANSLATOR_HPP
+#define MW_ESMREADERTRANSLATOR_HPP
 
 #include "../../../lib/mw/ESMReaderGeneric.hpp"
 
 namespace MWTP
 {
 
+/** \brief This class is a specialization of ESMReaderGeneric and loads all
+ * record types which can potentially contain translatable data into their
+ * proper, typed record class while all other records (those where no data has
+ * to be translated) are loaded as GenericRecord instead.
+ */
 class ESMReaderTranslator: public ESMReaderGeneric
 {
   public:
-    /* constructor
-
-       parameters:
-           vec - pointer to the vector that will hold the records that will be
-                 read. This pointer must not be NULL.
-    */
+    /** \brief Constructs a new reader based on a record vector.
+     *
+     * \param vec  pointer to the vector that will hold the records that will
+     *             be read. This pointer must not be NULL and has to live at
+     *             least as long as the ESMReaderTranslator.
+     */
     ESMReaderTranslator(VectorType* vec);
 
-    /* destructor */
-    virtual ~ESMReaderTranslator();
+    virtual ~ESMReaderTranslator() = default;
   protected:
-    /* tries to read the next record from a stream and returns the number of
-       relevant records that were read (usually one). If an error occurred,
-       -1 is returned. If the record was skipped or contained no relevant data,
-       zero is returned.
+    /** \brief Tries to read the next record from a stream.
+     *
+     * \param input  the input stream the record shall be read from
+     * \return Returns the number of relevant records that were read (usually
+     *         one). If an error occurred, -1 is returned. If the record was
+     *         skipped or contained no relevant data, zero is returned.
+     */
+    virtual int processNextRecord(std::istream& input) override;
+}; // class
 
-       parameters:
-           in_File  - the input stream the record shall be read from
-    */
-    virtual int processNextRecord(std::istream& in_File) override;
-};//class
+} // namespace
 
-} //namespace
-
-#endif // ESMREADERTRANSLATOR_H
+#endif // MW_ESMREADERTRANSLATOR_HPP

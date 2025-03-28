@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,26 +27,27 @@ namespace MWTP
 
 bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
 {
-  if (c_rec==NULL)
+  if (c_rec == nullptr)
+  {
     return false;
+  }
 
   bool changed = false;
-  CellListType::const_iterator cells_iter;
-  //translate destinations
-  unsigned int i;
-  for (i=0; i<c_rec->Destinations.size(); ++i)
+  // translate destinations
+  for (auto& destination: c_rec->Destinations)
   {
-    cells_iter = cells.find(c_rec->Destinations.at(i).CellName);
-    if (cells_iter!=cells.end())
+    const auto cells_iter = cells.find(destination.CellName);
+    if (cells_iter != cells.end())
     {
-      c_rec->Destinations.at(i).CellName = cells_iter->second;
+      destination.CellName = cells_iter->second;
       changed = true;
     }
-  }//for
-  //translate AI packages
-  for (i=0; i<c_rec->AIPackages.size(); ++i)
+  }
+  // translate AI packages
+  CellListType::const_iterator cells_iter;
+  for (auto* package: c_rec->AIPackages)
   {
-    switch (c_rec->AIPackages.at(i)->getPackageType())
+    switch (package->getPackageType())
     {
       case PackageType::ptActivate:
       case PackageType::ptTravel:
@@ -55,17 +56,19 @@ bool translatePreNPCRecord(PreNPCRecord* c_rec, const CellListType& cells, unsig
            break;
       case PackageType::ptEscort:
       case PackageType::ptFollow:
-           cells_iter = cells.find(static_cast<NPC_AIEscortFollow*>(c_rec->AIPackages.at(i))->CellName);
-           if (cells_iter!=cells.end())
+           cells_iter = cells.find(static_cast<NPC_AIEscortFollow*>(package)->CellName);
+           if (cells_iter != cells.end())
            {
-             static_cast<NPC_AIEscortFollow*>(c_rec->AIPackages.at(i))->CellName = cells_iter->second;
+             static_cast<NPC_AIEscortFollow*>(package)->CellName = cells_iter->second;
              changed = true;
            }
            break;
     }
   }
   if (changed)
+  {
     ++changedRecords;
+  }
   return true;
 }
 
@@ -90,7 +93,9 @@ bool translateReferences(std::vector<ReferencedObject>& references, const CellLi
 bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned int& changedRecords)
 {
   if (c_rec == nullptr)
+  {
     return false;
+  }
 
   bool changed = false;
   // translate cell name
@@ -104,19 +109,24 @@ bool translateCellRecord(CellRecord* c_rec, const CellListType& cells, unsigned 
   changed |= translateReferences(c_rec->ReferencesPersistent, cells);
   changed |= translateReferences(c_rec->ReferencesOther, cells);
   if (changed)
+  {
     ++changedRecords;
+  }
   return true;
 }
 
 bool getNextScriptParameter(const std::string& scriptText, size_t& start, std::string& param)
 {
   const std::string::size_type len = scriptText.length();
-  if (start>=len) return false;
+  if (start >= len)
+  {
+    return false;
+  }
 
   unsigned int look = start;
   unsigned int offset = start;
   bool insideQuote = false;
-  while (look<len)
+  while (look < len)
   {
     if (scriptText.at(look) == '"')
     {
@@ -133,17 +143,16 @@ bool getNextScriptParameter(const std::string& scriptText, size_t& start, std::s
         stripEnclosingQuotes(param);
         start = look + 1;
         return true;
-      }//if
+      }
       offset = look + 1;
-    }//else
+    }
     ++look;
-  }//while
-  //we are at the end of the string, whole stuff is one piece
+  }
+  // We are at the end of the string, whole stuff is one piece.
   param = scriptText.substr(offset);
   stripEnclosingQuotes(param);
   start = len;
-  if (param.length()>0) return true;
-  return false;
+  return (param.length() > 0);
 }
 
 bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells)
@@ -181,40 +190,40 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
       {
         param_start = pos_AIFollowCell;
       }
-      //skip function name
+      // skip function name
       if (getNextScriptParameter(newText, param_start, param))
       {
-        //skip first param
+        // skip first param
         if (getNextScriptParameter(newText, param_start, param))
         {
-          //remember position where cell name starts
+          // remember position where cell name starts
           const size_t cell_start = param_start;
-          //get and skip cell name
+          // get and skip cell name
           if (getNextScriptParameter(newText, param_start, param))
           {
-            //now param contains the cell name
+            // now param contains the cell name
             const CellListType::const_iterator iter = cells.find(param);
-            if (iter!=cells.end())
+            if (iter != cells.end())
             {
-              newText = newText.substr(0, cell_start)+"\""+iter->second
-                       +"\" "+newText.substr(param_start);
+              newText = newText.substr(0, cell_start) + "\"" +iter->second
+                       + "\" " + newText.substr(param_start);
               lowerText = lowerCase(newText);
               changed = true;
-            }//if some match found
-          }//if (cell)
-        }//if (1st param)
-      }//if (function name)
-      // when done, set offset to occurrence +1
-      if (std::string::npos!=pos_AIEscortCell)
+            } // if some match found
+          } // if (cell)
+        } // if (1st param)
+      } // if (function name)
+      // when done, set offset to occurrence + 1
+      if (std::string::npos != pos_AIEscortCell)
       {
-        offset = pos_AIEscortCell+1;
+        offset = pos_AIEscortCell + 1;
       }
       else
       {
-        offset = pos_AIFollowCell+1;
+        offset = pos_AIFollowCell + 1;
       }
     }
-    else if (std::string::npos!=pos_GetPCCell)
+    else if (std::string::npos != pos_GetPCCell)
     {
       //replace cell name in GetPCCell command
       //params: 1: cell ID
@@ -230,95 +239,95 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
         if (getNextScriptParameter(newText, param_start, param))
         {
           const CellListType::const_iterator iter = cells.find(param);
-          if (iter!=cells.end())
+          if (iter != cells.end())
           {
-            newText = newText.substr(0, cell_start)+"\""+iter->second
-                     +"\" "+newText.substr(param_start);
+            newText = newText.substr(0, cell_start) + "\"" + iter->second
+                     + "\" " + newText.substr(param_start);
             lowerText = lowerCase(newText);
             changed = true;
-          }//if some match found
-        }//if first param
-      }//if function name
-      // when done, set offset to occurrence +1
-      offset = pos_GetPCCell+1;
+          } // if some match found
+        } // if first param
+      } // if function name
+      // when done, set offset to occurrence + 1
+      offset = pos_GetPCCell + 1;
     }
-    else if (std::string::npos!=pos_PlaceItemCell)
+    else if (std::string::npos != pos_PlaceItemCell)
     {
       //replace cell name in PlaceItemCell command
       //params: 6: ObjectID, CellID, X, Y, Z, ZRot
       // --> skip first, get second
       std::string param;
       size_t param_start = pos_PlaceItemCell;
-      //skip function name
+      // skip function name
       if (getNextScriptParameter(newText, param_start, param))
       {
-        //skip first param
+        // skip first param
         if (getNextScriptParameter(newText, param_start, param))
         {
-          //remember position where cell name starts
+          // remember position where cell name starts
           const size_t cell_start = param_start;
-          //get and skip cell name
+          // get and skip cell name
           if (getNextScriptParameter(newText, param_start, param))
           {
-            //now param contains the cell name
+            // now param contains the cell name
             const CellListType::const_iterator iter = cells.find(param);
-            if (iter!=cells.end())
+            if (iter != cells.end())
             {
-              newText = newText.substr(0, cell_start)+"\""+iter->second
-                       +"\" "+newText.substr(param_start);
+              newText = newText.substr(0, cell_start) + "\"" + iter->second
+                       + "\" " + newText.substr(param_start);
               lowerText = lowerCase(newText);
               changed = true;
-            }//if some match found
-          }//if (cell)
-        }//if (1st param)
-      }//if (function name)
-      // when done, set offset to occurrence +1
-      offset = pos_PlaceItemCell+1;
+            } // if some match found
+          } // if (cell)
+        } // if (1st param)
+      } // if (function name)
+      // when done, set offset to occurrence + 1
+      offset = pos_PlaceItemCell + 1;
     }
-    else if (std::string::npos!=pos_PositionCell)
+    else if (std::string::npos != pos_PositionCell)
     {
       //replace cell name in PositionCell command
       //params: 5: x, y, z, zRot, CellID
       // --> skip first four params, get fifth
       std::string param;
       size_t param_start = pos_PositionCell;
-      //skip function name
+      // skip function name
       if (getNextScriptParameter(newText, param_start, param))
       {
-        //skip first param
+        // skip first param
         if (getNextScriptParameter(newText, param_start, param))
         {
-          //skip second param
+          // skip second param
           if (getNextScriptParameter(newText, param_start, param))
           {
-            //skip third param
+            // skip third param
             if (getNextScriptParameter(newText, param_start, param))
             {
-              //skip fourth param
+              // skip fourth param
               if (getNextScriptParameter(newText, param_start, param))
               {
-                //remember position where cell name starts
+                // remember position where cell name starts
                 const size_t cell_start = param_start;
-                //get and skip cell name
+                // get and skip cell name
                 if (getNextScriptParameter(newText, param_start, param))
                 {
-                  //now param contains the cell name
+                  // now param contains the cell name
                   const CellListType::const_iterator iter = cells.find(param);
-                  if (iter!=cells.end())
+                  if (iter != cells.end())
                   {
-                    newText = newText.substr(0, cell_start)+"\""+iter->second
-                             +"\" "+newText.substr(param_start);
+                    newText = newText.substr(0, cell_start) + "\"" + iter->second
+                             + "\" " + newText.substr(param_start);
                     lowerText = lowerCase(newText);
                     changed = true;
-                  }//if some match found
-                }//if fifth param/cell name
-              }//if fourth param
-            }//if third param
-          }//if second param
-        }//if first param
-      }//if function name
-      // when done, set offset to occurrence +1
-      offset = pos_PositionCell+1;
+                  } // if some match found
+                } // if fifth param/cell name
+              } // if fourth param
+            } // if third param
+          } // if second param
+        } // if first param
+      } // if function name
+      // when done, set offset to occurrence + 1
+      offset = pos_PositionCell + 1;
     }
     else
     {
@@ -326,7 +335,7 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
       break;
     }
     /// TODO: Might not work properly yet!
-  }//while
+  } // while
 
   if (changed)
   {
@@ -338,18 +347,20 @@ bool replaceCellsInScriptText(std::string& scriptText, const CellListType& cells
 
 bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells, unsigned int& changedRecords)
 {
-  if (di_rec==NULL) return false;
+  if (di_rec == nullptr)
+  {
+    return false;
+  }
 
   bool changed = false;
-  CellListType::const_iterator cells_iter;
-  //translate cell ID
-  cells_iter = cells.find(di_rec->CellID);
-  if (cells_iter!=cells.end())
+  // translate cell ID
+  const auto cells_iter = cells.find(di_rec->CellID);
+  if (cells_iter != cells.end())
   {
     di_rec->CellID = cells_iter->second;
     changed = true;
   }
-  //result string might be a script
+  // result string might be a script
   if (!di_rec->ResultString.empty())
   {
     if (replaceCellsInScriptText(di_rec->ResultString, cells))
@@ -357,20 +368,26 @@ bool translateInfoRecord(DialogueInfoRecord* di_rec, const CellListType& cells, 
       changed = true;
     }
   }
-  if (changed) ++changedRecords;
+  if (changed)
+  {
+    ++changedRecords;
+  }
   return true;
 }
 
 /*
 bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, unsigned int& changedRecords)
 {
-  if (script_rec==NULL) return false;
+  if (script_rec == nullptr)
+  {
+    return false;
+  }
   if (replaceCellsInScriptText(script_rec->ScriptText, cells))
   {
     ++changedRecords;
-    //something was replaced, so we have to recompile the script here
+    // something was replaced, so we have to recompile the script here
     return ScriptCompiler::CompileScript(script_rec->ScriptText, *script_rec);
-  }//if stuff was replaces
+  }
   return true;
 }
 */
@@ -378,8 +395,11 @@ bool translateScriptRecord(ScriptRecord* script_rec, const CellListType& cells, 
 bool canCompileScriptProperly(const ScriptRecord& original)
 {
   ScriptRecord temp;
-  if (!ScriptCompiler::CompileScript(original.ScriptText, temp)) return false;
-  return (original.equals(temp));
+  if (!ScriptCompiler::CompileScript(original.ScriptText, temp))
+  {
+    return false;
+  }
+  return original.equals(temp);
 }
 
-} //namespace
+} // namespace

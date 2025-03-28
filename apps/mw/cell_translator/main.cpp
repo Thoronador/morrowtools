@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2022, 2023  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2022, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,28 +42,28 @@ void showHelp()
   std::cout << "\ncell_translator -f PLUGINFILE [-o FILENAME1] [-xml FILENAME2]\n"
             << "\n"
             << "options:\n"
-            << "  --help             - displays this help message and quits\n"
+            << "  --help             - Displays this help message and quits.\n"
             << "  -?                 - same as --help\n"
-            << "  --version          - displays the version of the program and quits\n"
-            << "  -d DIRECTORY       - set path to the Data Files directory of Morrowind to\n"
+            << "  --version          - Displays the version of the program and quits.\n"
+            << "  -d DIRECTORY       - Set path to the Data Files directory of Morrowind to\n"
             << "                       DIRECTORY. If omitted, the path will be read from the\n"
             << "                       registry or a default value will be used.\n"
             << "  -dir DIRECTORY     - same as -d\n"
-            << "  -f PLUGINFILE      - sets the plugin PLUGINFILE as the files that will be\n"
+            << "  -f PLUGINFILE      - Sets the plugin PLUGINFILE as the files that will be\n"
             << "                       translated by this program. This option is required.\n"
-            << "  --output FILENAME1 - sets the name of the created output file to FILENAME1.\n"
+            << "  --output FILENAME1 - Sets the name of the created output file to FILENAME1.\n"
             << "                       If omitted, the default output file is \"out.esp\".\n"
             << "  -o FILENAME1       - short for --output\n"
             << "  --force            - Usually the program would not overwrite existing\n"
             << "                       plugin files, so that giving an existing file as output\n"
             << "                       file would abort the program. If you want to avoid it\n"
             << "                       and overwrite the file anyway, use --force.\n"
-            << "  -xml FILENAME2     - sets the name of the XML file that contains the cell\n"
+            << "  -xml FILENAME2     - Sets the name of the XML file that contains the cell\n"
             << "                       names to FILENAME2. If omitted, the default XML file\n"
             << "                       name is \"cells.xml\".\n"
-            << "  -de                - sets translation mode to translate from English to\n"
+            << "  -de                - Sets translation mode to translate from English to\n"
             << "                       German. Mutually exclusive with -en.\n"
-            << "  -en                - sets translation mode to translate from German to\n"
+            << "  -en                - Sets translation mode to translate from German to\n"
             << "                       English. Mutually exclusive with -de.\n"
             << "  --no-scripts       - Script records will not be processed, if this parameter\n"
             << "                       is specified.\n"

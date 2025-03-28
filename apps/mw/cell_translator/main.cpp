@@ -96,13 +96,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.4.2_rev525, 2025-03-28\n";
+  std::cout << "Cell Translator for Morrowind, version 0.4.3_rev526, 2025-03-28\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 525;
+  return 526;
 }
 
 int main(int argc, char **argv)
@@ -168,8 +168,8 @@ int main(int argc, char **argv)
             }
             else
             {
-              std::cerr << "Parameter \"" << param << "\" is too short to be "
-                        << "a proper directory path.\n";
+              std::cerr << "Parameter \"" << argv[i+1] << "\" is too short to "
+                        << "be a proper directory path.\n";
               return MWTP::rcInvalidParameter;
             }
           }

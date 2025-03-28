@@ -96,13 +96,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.4.3_rev526, 2025-03-28\n";
+  std::cout << "Cell Translator for Morrowind, version 0.4.3_rev527, 2025-03-28\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 526;
+  return 527;
 }
 
 int main(int argc, char **argv)
@@ -563,7 +563,7 @@ int main(int argc, char **argv)
 
   if (changedRecords == 0)
   {
-    std::cout << "No records of the file " << pluginFile << " were changed.";
+    std::cout << "No records of the file " << pluginFile << " were changed.\n";
     reader.deallocateRecordsInVector();
     return MWTP::rcNoChange;
   }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -570,6 +570,61 @@ TEST_CASE("MWTP::DialogueInfoRecord")
       REQUIRE_FALSE( record.isQuestRestart );
       REQUIRE( record.Response == "Sie ist hier. Oben." );
       REQUIRE( record.Functions.empty() );
+      REQUIRE( record.ResultString.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load info with empty response string")
+    {
+      const auto data = "INFO\x73\0\0\0\0\0\0\0\0\0\0\0INAM\x11\0\0\08365116839732275\0PNAM\x01\0\0\0\0NNAM\x12\0\0\0\x36\x31\x31\x36\x37\x33\x38\x32\x32\x36\x31\x35\x33\x30\x38\x36\x33\0DATA\x0C\0\0\0\x01\0\0\0\0\0\0\0\xFF\xFF\xFF\0SCVR\x0F\0\0\0\x30\x33sX0nointruderINTV\x04\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip INFO, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      DialogueInfoRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "8365116839732275" );
+      REQUIRE( record.PreviousInfoID.empty() );
+      REQUIRE( record.NextInfoID == "61167382261530863" );
+      REQUIRE( record.UnknownLong == 0x00000001 );
+      REQUIRE( record.Disposition == 0 );
+      REQUIRE( record.Rank == 0xFF );
+      REQUIRE( record.Gender == 0xFF );
+      REQUIRE( record.PCRank == 0xFF );
+      REQUIRE( record.UnknownByte == 0 );
+      REQUIRE( record.ActorID.empty() );
+      REQUIRE( record.RaceID.empty() );
+      REQUIRE( record.ClassID.empty() );
+      REQUIRE( record.FactionID.empty() );
+      REQUIRE( record.CellID.empty() );
+      REQUIRE( record.PCFactionID.empty() );
+      REQUIRE( record.SoundFile.empty() );
+      REQUIRE_FALSE( record.isQuestName );
+      REQUIRE_FALSE( record.isQuestFinished );
+      REQUIRE_FALSE( record.isQuestRestart );
+      REQUIRE( record.Response.empty() );
+      REQUIRE( record.Functions.size() == 1 );
+      REQUIRE( record.Functions[0].Index == 48 );
+      REQUIRE( record.Functions[0].Type == 51 );
+      REQUIRE( record.Functions[0].Function == 0x5873 );
+      REQUIRE( record.Functions[0].CompareOp == 48 );
+      REQUIRE( record.Functions[0].Name == "nointruder" );
+      REQUIRE_FALSE( record.Functions[0].isFloat );
+      REQUIRE( record.Functions[0].iVal == 0 );
       REQUIRE( record.ResultString.empty() );
 
       // Writing should succeed.

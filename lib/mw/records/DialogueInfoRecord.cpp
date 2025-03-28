@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -95,9 +95,7 @@ uint32_t DialogueInfoRecord::getWriteSize() const
       + PreviousInfoID.length() + 1 /* length of ID +1 byte for NUL */
       + 4 /* NNAM */ + 4 /* 4 bytes for length */
       + NextInfoID.length() + 1 /* length of ID +1 byte for NUL termination */
-      + 4 /* DATA */ + 4 /* 4 bytes for length */ + 12 /* fixed: 12 bytes */
-      + 4 /* NAME */ + 4 /* 4 bytes for length */
-      + Response.length() /* length of response (no NUL termination) */;
+      + 4 /* DATA */ + 4 /* 4 bytes for length */ + 12 /* fixed: 12 bytes */;
 
   if (!ActorID.empty())
   {
@@ -133,6 +131,11 @@ uint32_t DialogueInfoRecord::getWriteSize() const
   {
     Size += 4 /* SNAM */ + 4 /* 4 bytes for length */
           + SoundFile.length() + 1 /* length of file path +1 byte for NUL */;
+  }
+  if (!Response.empty())
+  {
+    Size += 4 /* NAME */ + 4 /* 4 bytes for length */
+          + Response.length() /* length of response (no NUL termination) */;
   }
   if (isQuestName)
   {
@@ -333,11 +336,14 @@ bool DialogueInfoRecord::saveToStream(std::ostream& output) const
     output.write(SoundFile.c_str(), SubLength);
   }
 
-  // write response (NAME)
-  output.write(reinterpret_cast<const char*>(&cNAME), 4);
-  SubLength = Response.length();
-  output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(Response.c_str(), SubLength);
+  if (!Response.empty())
+  {
+    // write response (NAME)
+    output.write(reinterpret_cast<const char*>(&cNAME), 4);
+    SubLength = Response.length();
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(Response.c_str(), SubLength);
+  }
 
   if (isQuestName)
   {
@@ -560,9 +566,9 @@ bool DialogueInfoRecord::loadFromStream(std::istream& input)
     return false;
   }
 
-  //read DATA
   uint32_t SubRecName = 0;
   uint32_t SubLength = 0;
+  // read DATA
   input.read(reinterpret_cast<char*>(&SubRecName), 4);
   BytesRead += 4;
   if (SubRecName != cDATA)

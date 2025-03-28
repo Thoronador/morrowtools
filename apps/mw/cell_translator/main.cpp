@@ -77,7 +77,7 @@ void showGPLNotice()
 {
   std::cout << "Cell Translator for Morrowind\n"
             << "  This program is part of the Morrowind Tools Project.\n"
-            << "  Copyright (C) 2011, 2012, 2013  Thoronador\n"
+            << "  Copyright (C) 2011, 2012, 2013, 2025  Thoronador\n"
             << "\n"
             << "  The Morrowind Tools are free software: you can redistribute them and/or\n"
             << "  modify them under the terms of the GNU General Public License as published\n"
@@ -96,13 +96,13 @@ void showGPLNotice()
 
 void showVersion()
 {
-  std::cout << "Cell Translator for Morrowind, version 0.4.1b_rev521, 2013-03-19\n";
+  std::cout << "Cell Translator for Morrowind, version 0.4.2_rev525, 2025-03-28\n";
 }
 
 int showVersionExitcode()
 {
   showVersion();
-  return 521;
+  return 525;
 }
 
 int main(int argc, char **argv)

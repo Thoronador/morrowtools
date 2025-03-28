@@ -705,6 +705,63 @@ TEST_CASE("MWTP::ReferencedObject")
       REQUIRE( data.size() == object.getWrittenSize() );
     }
 
+    SECTION("default: load reference with door data and exit name and owner and NAM9")
+    {
+      const auto data = "FRMR\x04\0\0\0\x5A\xD7\x02\0\x4E\x41\x4D\x45\x17\0\0\0ex_velothi_loaddoor_01\0ANAM\x11\0\0\0a shady smuggler\0INTV\x04\0\0\0\0\0\0\0NAM9\x04\0\0\0\x01\0\0\0DODT\x18\0\0\0\xC5\xF7\x0E\xC5\x44\x30\x62\x44o\xB4X\xC4\0\0\0\0\0\0\0\0\xDB\x0F\xC9?DNAM\x18\0\0\0Molag Mar, Bodensektion\0DATA\x18\0\0\0$C\xD3G\x9C\x01o\xC7+\xBB\xEB\x44\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip FRMR, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      ReferencedObject object;
+      REQUIRE( object.loadFromStream(stream, bytesRead, buffer) );
+      // Check data.
+      REQUIRE( object.ObjectIndex == 0x0002d75a );
+      REQUIRE( object.ObjectID == "ex_velothi_loaddoor_01" );
+      REQUIRE( object.Scale == 1.0f );
+      REQUIRE( object.PosX == 108166.28125f );
+      REQUIRE( object.PosY == -61185.609375f );
+      REQUIRE( object.PosZ == 1885.8489990234f );
+      REQUIRE( object.RotX == 0.0f );
+      REQUIRE( object.RotY == 0.0f );
+      REQUIRE( object.RotZ == 0.0f );
+      REQUIRE( object.DoorData.has_value() );
+      REQUIRE( object.DoorData.value().PosX == -2287.4855957031f );
+      REQUIRE( object.DoorData.value().PosY == 904.75415039062f );
+      REQUIRE( object.DoorData.value().PosZ == -866.81927490234f );
+      REQUIRE( object.DoorData.value().RotX == 0.0f );
+      REQUIRE( object.DoorData.value().RotY == 0.0f );
+      REQUIRE( object.DoorData.value().RotZ == 1.5707963705063f );
+      REQUIRE( object.DoorData.value().ExitName == "Molag Mar, Bodensektion" );
+      REQUIRE_FALSE( object.LockLevel.has_value() );
+      REQUIRE( object.KeyID.empty() );
+      REQUIRE( object.TrapID.empty() );
+      REQUIRE( object.OwnerID == "a shady smuggler" );
+      REQUIRE( object.OwnerFactionID.empty() );
+      REQUIRE( object.FactionRank == -1 );
+      REQUIRE( object.GlobalVarID.empty() );
+      REQUIRE( object.SoulCreatureID.empty() );
+      REQUIRE_FALSE( object.EnchantCharge.has_value() );
+      REQUIRE( object.NumberOfUses.has_value() );
+      REQUIRE( object.NumberOfUses.value() == 0 );
+      REQUIRE( object.UnknownNAM9.has_value() );
+      REQUIRE( object.UnknownNAM9.value() == 1 );
+      REQUIRE_FALSE( object.ReferenceBlockedByte.has_value() );
+      REQUIRE_FALSE( object.isDeleted );
+      REQUIRE( object.DeletionLong == 0 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( object.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+      // Check size and predicted size.
+      REQUIRE( data.size() == object.getWrittenSize() );
+    }
+
     SECTION("default: load reference with lock")
     {
       const auto data = "FRMR\x04\0\0\0\x13\x19\x17\0NAME\x16\0\0\0de_p_chest_02_gold_25\0FLTV\x04\0\0\0\x0F\0\0\0DATA\x18\0\0\0\x1B\xDB|E\x0Bx{E\x80t4\xC4\xFD\xB5\xC5@\xAA\x61\x9C@~\xFFQ@"sv;

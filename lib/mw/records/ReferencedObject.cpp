@@ -748,30 +748,6 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&Scale), 4);
   }
 
-  if (DoorData.has_value())
-  {
-    // write door position data (DODT)
-    output.write(reinterpret_cast<const char*>(&cDODT), 4);
-    SubLength = 24;
-    output.write(reinterpret_cast<const char*>(&SubLength), 4);
-    const auto& data = DoorData.value();
-    output.write(reinterpret_cast<const char*>(&data.PosX), 4);
-    output.write(reinterpret_cast<const char*>(&data.PosY), 4);
-    output.write(reinterpret_cast<const char*>(&data.PosZ), 4);
-    output.write(reinterpret_cast<const char*>(&data.RotX), 4);
-    output.write(reinterpret_cast<const char*>(&data.RotY), 4);
-    output.write(reinterpret_cast<const char*>(&data.RotZ), 4);
-
-    if (!data.ExitName.empty())
-    {
-      // write door's exit name (DNAM)
-      output.write(reinterpret_cast<const char*>(&cDNAM), 4);
-      SubLength = data.ExitName.length() + 1;
-      output.write(reinterpret_cast<const char*>(&SubLength), 4);
-      output.write(data.ExitName.c_str(), SubLength);
-    }
-  }
-
   if (!OwnerID.empty())
   {
     // write owner ID (ANAM)
@@ -838,6 +814,30 @@ bool ReferencedObject::saveToStream(std::ostream& output) const
     SubLength = 4;
     output.write(reinterpret_cast<const char*>(&SubLength), 4);
     output.write(reinterpret_cast<const char*>(&UnknownNAM9.value()), 4);
+  }
+
+  if (DoorData.has_value())
+  {
+    // write door position data (DODT)
+    output.write(reinterpret_cast<const char*>(&cDODT), 4);
+    SubLength = 24;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    const auto& data = DoorData.value();
+    output.write(reinterpret_cast<const char*>(&data.PosX), 4);
+    output.write(reinterpret_cast<const char*>(&data.PosY), 4);
+    output.write(reinterpret_cast<const char*>(&data.PosZ), 4);
+    output.write(reinterpret_cast<const char*>(&data.RotX), 4);
+    output.write(reinterpret_cast<const char*>(&data.RotY), 4);
+    output.write(reinterpret_cast<const char*>(&data.RotZ), 4);
+
+    if (!data.ExitName.empty())
+    {
+      // write door's exit name (DNAM)
+      output.write(reinterpret_cast<const char*>(&cDNAM), 4);
+      SubLength = data.ExitName.length() + 1;
+      output.write(reinterpret_cast<const char*>(&SubLength), 4);
+      output.write(data.ExitName.c_str(), SubLength);
+    }
   }
 
   if (LockLevel.has_value())

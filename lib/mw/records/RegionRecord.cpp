@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2009, 2011, 2012, 2022  Dirk Stolle
+    Copyright (C) 2009, 2011, 2012, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -46,6 +46,7 @@ RegionRecord::RegionRecord()
   Clear(0), Cloudy(0), Foggy(0), Overcast(0),
   Rain(0), Thunder(0), Ash(0), Blight(0),
   Snow(0), Blizzard(0),
+  UseBloodmoonStyle(std::nullopt),
   SleepCreature(""),
   Red(0), Green(0), Blue(0), Zero(0),
   SoundChances(std::vector<SoundChanceRecord>())
@@ -58,6 +59,7 @@ RegionRecord::RegionRecord(const std::string& ID)
   Clear(0), Cloudy(0), Foggy(0), Overcast(0),
   Rain(0), Thunder(0), Ash(0), Blight(0),
   Snow(0), Blizzard(0),
+  UseBloodmoonStyle(std::nullopt),
   SleepCreature(""),
   Red(0), Green(0), Blue(0), Zero(0),
   SoundChances(std::vector<SoundChanceRecord>())
@@ -75,13 +77,13 @@ bool RegionRecord::equals(const RegionRecord& other) const
       && (SoundChances == other.SoundChances);
 }
 
-#ifndef MW_UNSAVEABLE_RECORDS
-bool RegionRecord::saveToStream(std::ostream& output) const
+bool RegionRecord::needsBloodmoonStyle() const
 {
-  return saveToStream(output, false);
+  return UseBloodmoonStyle.value_or(false) || (Snow != 0) || (Blizzard != 0);
 }
 
-bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonStyle) const
+#ifndef MW_UNSAVEABLE_RECORDS
+bool RegionRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cREGN), 4);
   uint32_t Size = 4 /* NAME */ + 4 /* 4 bytes for length */
@@ -94,7 +96,7 @@ bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonS
                 // add length of sounds
                 + (4 /* SNAM */ + 4 /* 4 bytes for length */
                    + 33 /* length of SNAM record */) * SoundChances.size();
-  if (forceBloodmoonStyle || (Snow != 0) || (Blizzard != 0))
+  if (needsBloodmoonStyle())
   {
     // We need two additional bytes for Bloodmoon-styled Weather data.
     Size +=2;
@@ -120,6 +122,8 @@ bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonS
         byte Thunder
         byte Ash
         byte Blight
+        byte Snow     (Tribunal/Bloodmoon/v1.3 only)
+        byte Blizzard (Tribunal/Bloodmoon/v1.3 only)
     BNAM = Sleep creature string (note: optional)
     CNAM = Map Color (4 bytes, COLORREF)
         byte Red
@@ -145,8 +149,8 @@ bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonS
 
   // write weather data (WEAT)
   output.write(reinterpret_cast<const char*>(&cWEAT), 4);
-  //WEAT's length
-  if (forceBloodmoonStyle || (Snow != 0) || (Blizzard != 0))
+  // WEAT's length
+  if (needsBloodmoonStyle())
   {
     SubLength = 10; // 10 bytes for Bloodmoon-styled weather
   }
@@ -164,7 +168,7 @@ bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonS
   output.write(reinterpret_cast<const char*>(&Thunder), 1);
   output.write(reinterpret_cast<const char*>(&Ash), 1);
   output.write(reinterpret_cast<const char*>(&Blight), 1);
-  if (forceBloodmoonStyle || (Snow != 0) || (Blizzard != 0))
+  if (needsBloodmoonStyle())
   {
     output.write(reinterpret_cast<const char*>(&Snow), 1);
     output.write(reinterpret_cast<const char*>(&Blizzard), 1);
@@ -202,7 +206,7 @@ bool RegionRecord::saveToStream(std::ostream& output, const bool forceBloodmoonS
     {
       len = 31;
       std::cout << "RegionRecord::saveToStream: Warning: Sound name of region \""
-                << recordID<< "\" got truncated.\n";
+                << recordID << "\" got truncated.\n";
     }
     output.write(element.Sound.c_str(), len);
     if (len < 32)
@@ -237,6 +241,8 @@ bool RegionRecord::loadFromStream(std::istream& input)
         byte Thunder
         byte Ash
         byte Blight
+        byte Snow     (Tribunal/Bloodmoon/v1.3 only)
+        byte Blizzard (Tribunal/Bloodmoon/v1.3 only)
     BNAM = Sleep creature string (note: optional)
     CNAM = Map Color (4 bytes, COLORREF)
         byte Red
@@ -298,12 +304,14 @@ bool RegionRecord::loadFromStream(std::istream& input)
   // check for BM chances
   if (SubLength == 10)
   {
+    UseBloodmoonStyle = true;
     input.read(reinterpret_cast<char*>(&Snow), 1);
     input.read(reinterpret_cast<char*>(&Blizzard), 1);
     BytesRead += 2;
   }
   else
   {
+    UseBloodmoonStyle = false;
     Snow = 0;
     Blizzard = 0;
   }

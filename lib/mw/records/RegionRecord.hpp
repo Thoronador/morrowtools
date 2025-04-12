@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,7 @@
 #ifndef MW_REGIONRECORD_HPP
 #define MW_REGIONRECORD_HPP
 
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -53,6 +54,7 @@ struct RegionRecord: public BasicRecord
   uint8_t Blight;
   uint8_t Snow; // Bloodmoon only
   uint8_t Blizzard; // Bloodmoon only
+  std::optional<bool> UseBloodmoonStyle;
   // end of weather data
   std::string SleepCreature;
   // Region Map Colour
@@ -78,19 +80,14 @@ struct RegionRecord: public BasicRecord
    */
   bool equals(const RegionRecord& other) const;
 
-  #ifndef MW_UNSAVEABLE_RECORDS
-  /** \brief Writes the record to the given output stream, enforcing
-   *         Bloodmoon-styled weather data.
+  /** \brief Determines whether the record needs to use Bloodmoon-styled weather data.
    *
-   * \param output  the output stream
-   * \param forceBloodmoonStyle  if set to true, the written WEAT subrecord will
-                                 have a size of 10 bytes, even when it wouldn't
-                                 be necessary.
-   * \return Returns true on success (record was written to stream).
-   *         Returns false, if an error occurred.
+   * \return Returns true, if the record needs Bloodmoon-styled weather data.
+   *         Returns false otherwise.
    */
-  bool saveToStream(std::ostream& output, const bool forceBloodmoonStyle) const;
+  bool needsBloodmoonStyle() const;
 
+  #ifndef MW_UNSAVEABLE_RECORDS
   /** \brief Writes the record to the given output stream.
    *
    * \param output  the output stream

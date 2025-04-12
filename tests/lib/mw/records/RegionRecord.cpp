@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,6 +44,7 @@ TEST_CASE("MWTP::RegionRecord")
     REQUIRE( record.Blight == 0 );
     REQUIRE( record.Snow == 0 );
     REQUIRE( record.Blizzard == 0 );
+    REQUIRE_FALSE( record.UseBloodmoonStyle.has_value() );
     REQUIRE( record.SleepCreature.empty() );
     REQUIRE( record.Red == 0 );
     REQUIRE( record.Green == 0 );
@@ -68,6 +69,7 @@ TEST_CASE("MWTP::RegionRecord")
     REQUIRE( record.Blight == 0 );
     REQUIRE( record.Snow == 0 );
     REQUIRE( record.Blizzard == 0 );
+    REQUIRE_FALSE( record.UseBloodmoonStyle.has_value() );
     REQUIRE( record.SleepCreature.empty() );
     REQUIRE( record.Red == 0 );
     REQUIRE( record.Green == 0 );
@@ -331,9 +333,43 @@ TEST_CASE("MWTP::RegionRecord")
     }
   }
 
+  SECTION("needsBloodmoonStyle")
+  {
+    RegionRecord record;
+
+    SECTION("fresh record needs no Bloodmoon-style weather")
+    {
+      REQUIRE_FALSE( record.needsBloodmoonStyle() ) ;
+    }
+
+    SECTION("record with snow chance needs Bloodmoon-style weather")
+    {
+      record.Snow = 50;
+      REQUIRE( record.needsBloodmoonStyle() ) ;
+    }
+
+    SECTION("record with blizzard chance needs Bloodmoon-style weather")
+    {
+      record.Blizzard = 50;
+      REQUIRE( record.needsBloodmoonStyle() ) ;
+    }
+
+    SECTION("record with with Bloodmoon flag set to true needs Bloodmoon-style weather")
+    {
+      record.UseBloodmoonStyle = true;
+      REQUIRE( record.needsBloodmoonStyle() ) ;
+    }
+
+    SECTION("record with with Bloodmoon flag set to false needs no Bloodmoon-style weather")
+    {
+      record.UseBloodmoonStyle = false;
+      REQUIRE_FALSE( record.needsBloodmoonStyle() ) ;
+    }
+  }
+
   SECTION("loadFromStream")
   {
-    SECTION("default: load record Morrowind-style record")
+    SECTION("default: load Morrowind-style record")
     {
       const auto data = "REGN\x34\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0Grazelands Region\0FNAM\x0D\0\0\0Weidenl\xE4nder\0WEAT\x08\0\0\0\x1E(\x05\x05\x0A\x0A\0\0BNAM\x14\0\0\0ex_grazelands_sleep\0CNAM\x04\0\0\0\xFF\xB1 \0SNAM!\0\0\0wind calm1\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04SNAM!\0\0\0wind calm2\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04SNAM!\0\0\0wind calm3\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04SNAM!\0\0\0wind calm4\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04SNAM!\0\0\0wind calm5\0\0\0\0\0\0\xFC\xD6\xE8\0\x98\x09m\0\xA0\xF3U\0`m\xE8\0\x04"sv;
       const auto data_clean = "REGN\x34\x01\0\0\0\0\0\0\0\0\0\0NAME\x12\0\0\0Grazelands Region\0FNAM\x0D\0\0\0Weidenl\xE4nder\0WEAT\x08\0\0\0\x1E(\x05\x05\x0A\x0A\0\0BNAM\x14\0\0\0ex_grazelands_sleep\0CNAM\x04\0\0\0\xFF\xB1 \0SNAM!\0\0\0wind calm1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind calm2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind calm3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind calm4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind calm5\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04"sv;
@@ -365,6 +401,8 @@ TEST_CASE("MWTP::RegionRecord")
       REQUIRE( record.Blight == 0 );
       REQUIRE( record.Snow == 0 );
       REQUIRE( record.Blizzard == 0 );
+      REQUIRE( record.UseBloodmoonStyle.has_value() );
+      REQUIRE_FALSE( record.UseBloodmoonStyle.value() );
       REQUIRE( record.SleepCreature == "ex_grazelands_sleep" );
       REQUIRE( record.Red == 255 );
       REQUIRE( record.Green == 177 );
@@ -421,6 +459,8 @@ TEST_CASE("MWTP::RegionRecord")
       REQUIRE( record.Blight == 0 );
       REQUIRE( record.Snow == 0 );
       REQUIRE( record.Blizzard == 0 );
+      REQUIRE( record.UseBloodmoonStyle.has_value() );
+      REQUIRE( record.UseBloodmoonStyle.value() );
       REQUIRE( record.SleepCreature.empty() );
       REQUIRE( record.Red == 254 );
       REQUIRE( record.Green == 147 );
@@ -430,9 +470,71 @@ TEST_CASE("MWTP::RegionRecord")
 
       // Writing should succeed.
       std::ostringstream streamOut;
-      REQUIRE( record.saveToStream(streamOut, true) );
+      REQUIRE( record.saveToStream(streamOut) );
       // Check written data.
       REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load Bloodmoon-style record from Tribunal")
+    {
+      const auto data = "REGN\x1D\x01\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0Mournhold Region\0FNAM\x11\0\0\0Mournhold Region\0WEAT\x0A\0\0\0\x19#\x05\x14\x0A\x05\0\0\0\0CNAM\x04\0\0\09H\xCC\0SNAM!\0\0\0wind calm1\0\x01\0\0\0\0\xBC\x04\xF3\x01\xD8<m\0`DV\0\x98t>\x12\x04SNAM!\0\0\0wind calm2\0\x01\0\0\0\0\xBC\x04\xF3\x01\xD8<m\0`DV\0\x98t>\x12\x04SNAM!\0\0\0wind calm3\0\x01\0\0\0\0\xBC\x04\xF3\x01\xD8<m\0`DV\0\x98t>\x12\x04SNAM!\0\0\0wind calm4\0\x01\0\0\0\0\xBC\x04\xF3\x01\xD8<m\0`DV\0\x98t>\x12\x04SNAM!\0\0\0wind trees4\0\0\0\0\0\xBC\x04\xF3\x01\xD8<m\0`DV\0\x98t>\x12\x04"sv;
+      const auto data_clean = "REGN\x1D\x01\0\0\0\0\0\0\0\0\0\0NAME\x11\0\0\0Mournhold Region\0FNAM\x11\0\0\0Mournhold Region\0WEAT\x0A\0\0\0\x19#\x05\x14\x0A\x05\0\0\0\0CNAM\x04\0\0\09H\xCC\0SNAM!\0\0\0wind calm1\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind calm2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind calm3\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind calm4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04SNAM!\0\0\0wind trees4\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\x04"sv;
+      REQUIRE( data.size() == data_clean.size() );
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip REGN, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      RegionRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "Mournhold Region" );
+      REQUIRE( record.RegionName == "Mournhold Region" );
+      REQUIRE( record.Clear == 25 );
+      REQUIRE( record.Cloudy == 35 );
+      REQUIRE( record.Foggy == 5 );
+      REQUIRE( record.Overcast == 20 );
+      REQUIRE( record.Rain == 10 );
+      REQUIRE( record.Thunder == 5 );
+      REQUIRE( record.Ash == 0 );
+      REQUIRE( record.Blight == 0 );
+      REQUIRE( record.Snow == 0 );
+      REQUIRE( record.Blizzard == 0 );
+      REQUIRE( record.UseBloodmoonStyle.has_value() );
+      REQUIRE( record.UseBloodmoonStyle.value() );
+      REQUIRE( record.SleepCreature.empty() );
+      REQUIRE( record.Red == 57 );
+      REQUIRE( record.Green == 72 );
+      REQUIRE( record.Blue == 204 );
+      REQUIRE( record.Zero == 0 );
+      REQUIRE( record.SoundChances.size() == 5 );
+      REQUIRE( record.SoundChances[0].Sound == "wind calm1" );
+      REQUIRE( record.SoundChances[0].Chance == 4 );
+      REQUIRE( record.SoundChances[1].Sound == "wind calm2" );
+      REQUIRE( record.SoundChances[1].Chance == 4 );
+      REQUIRE( record.SoundChances[2].Sound == "wind calm3" );
+      REQUIRE( record.SoundChances[2].Chance == 4 );
+      REQUIRE( record.SoundChances[3].Sound == "wind calm4" );
+      REQUIRE( record.SoundChances[3].Chance == 4 );
+      REQUIRE( record.SoundChances[4].Sound == "wind trees4" );
+      REQUIRE( record.SoundChances[4].Chance == 4 );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      // Morrowind's implementation writes some garbage data after the sound
+      // names, so we check against a cleaned version of the original data.
+      const auto written = streamOut.str();
+      REQUIRE( written.size() == data_clean.size() );
+      REQUIRE( written == data_clean );
     }
 
     SECTION("corrupt data: stream ends before header can be read")

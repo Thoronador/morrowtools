@@ -28,13 +28,13 @@
 namespace MWTP
 {
 
-SoundChanceRecord::SoundChanceRecord()
+SoundChance::SoundChance()
 : Sound(""),
   Chance(0)
 {
 }
 
-bool SoundChanceRecord::operator==(const SoundChanceRecord& other) const
+bool SoundChance::operator==(const SoundChance& other) const
 {
   return (Sound == other.Sound) && (Chance == other.Chance);
 }
@@ -49,7 +49,7 @@ RegionRecord::RegionRecord()
   UseBloodmoonStyle(std::nullopt),
   SleepCreature(""),
   Red(0), Green(0), Blue(0), Zero(0),
-  SoundChances(std::vector<SoundChanceRecord>())
+  SoundChances(std::vector<SoundChance>())
 {}
 
 RegionRecord::RegionRecord(const std::string& ID)
@@ -62,7 +62,7 @@ RegionRecord::RegionRecord(const std::string& ID)
   UseBloodmoonStyle(std::nullopt),
   SleepCreature(""),
   Red(0), Green(0), Blue(0), Zero(0),
-  SoundChances(std::vector<SoundChanceRecord>())
+  SoundChances(std::vector<SoundChance>())
 {}
 
 bool RegionRecord::equals(const RegionRecord& other) const
@@ -397,7 +397,7 @@ bool RegionRecord::loadFromStream(std::istream& input)
       std::cerr << "Error while reading sub record SNAM of REGN (1st part).\n";
       return false;
     }
-    SoundChanceRecord temp;
+    SoundChance temp;
     temp.Sound = std::string(Buffer);
     // read chance
     input.read(reinterpret_cast<char*>(&temp.Chance), 1);

@@ -253,7 +253,7 @@ TEST_CASE("MWTP::RegionRecord")
       SECTION("SoundChances mismatch")
       {
         a.SoundChances.clear();
-        SoundChanceRecord sc;
+        SoundChance sc;
         sc.Sound = "foo";
         sc.Chance = 100;
         b.SoundChances.push_back(sc);
@@ -941,7 +941,7 @@ TEST_CASE("MWTP::RegionRecord")
       record.Blue = 32;
       record.Zero = 0;
 
-      SoundChanceRecord sc;
+      SoundChance sc;
 
       sc.Sound = "wind calm1";
       sc.Chance = 4;

@@ -29,14 +29,14 @@
 namespace MWTP
 {
 
-struct SoundChanceRecord
+struct SoundChance
 {
   std::string Sound;
   uint8_t Chance;
 
-  SoundChanceRecord();
+  SoundChance();
 
-  bool operator==(const SoundChanceRecord& other) const;
+  bool operator==(const SoundChance& other) const;
 }; // struct
 
 struct RegionRecord: public BasicRecord
@@ -62,7 +62,7 @@ struct RegionRecord: public BasicRecord
   uint8_t Green;
   uint8_t Blue;
   uint8_t Zero;
-  std::vector<SoundChanceRecord> SoundChances;
+  std::vector<SoundChance> SoundChances;
 
   RegionRecord();
 

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Morrowind Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 #include "../../locate_catch.hpp"
 #include "../../../../lib/mw/records/RegionRecord.hpp"
 
-TEST_CASE("MWTP::SoundChanceRecord")
+TEST_CASE("MWTP::SoundChance")
 {
   using namespace MWTP;
 
   SECTION("constructor")
   {
-    SoundChanceRecord sc;
+    SoundChance sc;
 
     REQUIRE( sc.Sound.empty() );
     REQUIRE( sc.Chance == 0 );
@@ -35,8 +35,8 @@ TEST_CASE("MWTP::SoundChanceRecord")
 
   SECTION("equality operator")
   {
-    SoundChanceRecord a;
-    SoundChanceRecord b;
+    SoundChance a;
+    SoundChance b;
 
     SECTION("equal")
     {

@@ -116,7 +116,7 @@ set(lib_mw_tests_sources
     records/RepairItemRecord.cpp
     records/ScriptRecord.cpp
     records/SkillRecord.cpp
-    records/SoundChanceRecord.cpp
+    records/SoundChance.cpp
     records/SoundRecord.cpp
     records/SpellRecord.cpp
     records/StartScriptRecord.cpp

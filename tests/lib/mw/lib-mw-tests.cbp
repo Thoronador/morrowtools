@@ -200,7 +200,7 @@
 		<Unit filename="records/RepairItemRecord.cpp" />
 		<Unit filename="records/ScriptRecord.cpp" />
 		<Unit filename="records/SkillRecord.cpp" />
-		<Unit filename="records/SoundChanceRecord.cpp" />
+		<Unit filename="records/SoundChance.cpp" />
 		<Unit filename="records/SoundRecord.cpp" />
 		<Unit filename="records/SpellRecord.cpp" />
 		<Unit filename="records/StartScriptRecord.cpp" />

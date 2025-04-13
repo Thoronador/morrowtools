@@ -205,6 +205,40 @@ TEST_CASE("MWTP::MiscItemRecord")
       REQUIRE( streamOut.str() == data );
     }
 
+    SECTION("default: load record without inventory icon and without name")
+    {
+      const auto data = "MISC\x54\0\0\0\0\0\0\0\0\0\0\0NAME\x15\0\0\0Misc_Potion_Cheap_01\0MODL\x1B\0\0\0m\\Misc_Potion_Cheap_01.nif\0MCDT\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip MISC, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      MiscItemRecord record;
+      REQUIRE( record.loadFromStream(stream) );
+      // Check data.
+      // -- header
+      REQUIRE( record.getHeaderOne() == 0 );
+      REQUIRE( record.getHeaderFlags() == 0 );
+      // -- record data
+      REQUIRE( record.recordID == "Misc_Potion_Cheap_01" );
+      REQUIRE( record.ModelPath == "m\\Misc_Potion_Cheap_01.nif" );
+      REQUIRE( record.Name.empty() );
+      REQUIRE( record.Weight == 0.0f );
+      REQUIRE( record.Value == 0 );
+      REQUIRE( record.OtherStuff == 0 );
+      REQUIRE( record.InventoryIcon.empty() );
+      REQUIRE( record.ScriptID.empty() );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
     SECTION("corrupt data: stream ends before header can be read")
     {
       const auto data = "MISC\x91\0\0\0"sv;

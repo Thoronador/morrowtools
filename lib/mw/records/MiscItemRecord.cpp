@@ -19,7 +19,6 @@
 */
 
 #include "MiscItemRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../MW_Constants.hpp"
 #include "../HelperIO.hpp"
@@ -57,9 +56,7 @@ bool MiscItemRecord::saveToStream(std::ostream& output) const
     + recordID.length() + 1 /* length of ID +1 byte for NUL termination */
     + 4 /* MODL */ + 4 /* 4 bytes for length */
     + ModelPath.length() + 1 /* length of name +1 byte for NUL termination */
-    + 4 /* MCDT */ + 4 /* 4 bytes for length */ + 12 /* size of misc. data */
-    + 4 /* ITEX */ + 4 /* 4 bytes for length */
-    + InventoryIcon.length() + 1 /* length of path +1 byte for NUL termination */;
+    + 4 /* MCDT */ + 4 /* 4 bytes for length */ + 12 /* size of misc. data */;
   if (!Name.empty())
   {
     Size = Size + 4 /* FNAM */ + 4 /* 4 bytes for length */
@@ -69,6 +66,11 @@ bool MiscItemRecord::saveToStream(std::ostream& output) const
   {
     Size = Size + 4 /* SCRI */ + 4 /* 4 bytes for length */
          + ScriptID.length() + 1 /* length of ID +1 byte for NUL termination */;
+  }
+  if (!InventoryIcon.empty())
+  {
+    Size = Size + 4 /* ITEX */ + 4 /* 4 bytes for length */
+         + InventoryIcon.length() + 1 /* length of path +1 byte for NUL termination */;
   }
   output.write(reinterpret_cast<const char*>(&Size), 4);
   output.write(reinterpret_cast<const char*>(&HeaderOne), 4);
@@ -124,11 +126,14 @@ bool MiscItemRecord::saveToStream(std::ostream& output) const
     output.write(ScriptID.c_str(), SubLength);
   }
 
-  // write inventory icon (ITEX)
-  output.write(reinterpret_cast<const char*>(&cITEX), 4);
-  SubLength = InventoryIcon.length() + 1;
-  output.write(reinterpret_cast<const char*>(&SubLength), 4);
-  output.write(InventoryIcon.c_str(), SubLength);
+  if (!InventoryIcon.empty())
+  {
+    // write inventory icon (ITEX)
+    output.write(reinterpret_cast<const char*>(&cITEX), 4);
+    SubLength = InventoryIcon.length() + 1;
+    output.write(reinterpret_cast<const char*>(&SubLength), 4);
+    output.write(InventoryIcon.c_str(), SubLength);
+  }
 
   return output.good();
 }

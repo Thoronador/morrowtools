@@ -105,7 +105,7 @@ bool GlobalRecord::saveToStream(std::ostream& output) const
   // write variable type (FNAM)
   output.write(reinterpret_cast<const char*>(&cFNAM), 4);
   SubLength = 1;
-  output.write((const char*) &SubLength, 4);
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   char var_type = '\0';
   switch (Type)
   {

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -61,7 +61,7 @@ bool BodyPartAssociation::saveToStream(std::ostream& output) const
   // write body part index (INDX)
   output.write(reinterpret_cast<const char*>(&cINDX), 4);
   uint32_t subLength = 1;
-  output.write((const char*) &subLength, 4);
+  output.write(reinterpret_cast<const char*>(&subLength), 4);
   output.write(reinterpret_cast<const char*>(&Index), 1);
 
   if (!MaleBodyPart.empty())

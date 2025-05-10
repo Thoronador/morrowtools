@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2022, 2023  Dirk Stolle
+    Copyright (C) 2022, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -20,21 +20,73 @@
 
 #include "FileMetadata.hpp"
 #include <iostream>
+#include "../../../../lib/base/FileFunctions.hpp"
 #include "../../../../lib/sr/ReturnCodes.hpp"
 #include "../../../../lib/sr/bsa/BSA.hpp"
-#include "ArgumentParsingUtilities.hpp"
 
 namespace SRTP::bsa_cli
 {
 
 FileMetadata::FileMetadata()
-: bsaFileName(std::string())
+: bsaFileName(std::string()),
+  showTotal(false)
 {
 }
 
 int FileMetadata::parseArguments(int argc, char** argv)
 {
-  return parseArgumentsBsaFileNameOnly(argc, argv, bsaFileName);
+  if (argv == nullptr)
+  {
+    std::cerr << "Error: Parameter array pointer is NULL.\n";
+    return SRTP::rcInvalidParameter;
+  }
+
+  for(int i = 2; i < argc; ++i)
+  {
+    if (argv[i] != nullptr)
+    {
+      const std::string param = std::string(argv[i]);
+      if ((param == "--show-total") || (param == "--total"))
+      {
+        if (showTotal)
+        {
+          std::cerr << "Error: The option " << param
+                    << " was specified more than once.\n";
+          return SRTP::rcInvalidParameter;
+        }
+        showTotal = true;
+      }
+      else if (bsaFileName.empty())
+      {
+        if (!FileExists(param))
+        {
+          std::cerr << "Error: The file " << param << " does not exist!\n";
+          return SRTP::rcInvalidParameter;
+        }
+        bsaFileName = param;
+      }
+      else
+      {
+        // unknown or wrong parameter
+        std::cerr << "Invalid parameter given: \"" << param << "\".\n"
+                  << "Use --help to get a list of valid parameters.\n";
+        return SRTP::rcInvalidParameter;
+      }
+    }
+    else
+    {
+      std::cerr << "Error: Parameter at index " << i << " is NULL.\n";
+      return SRTP::rcInvalidParameter;
+    }
+  }
+  if (bsaFileName.empty())
+  {
+    std::cerr << "Error: A BSA file name has to be specified after the "
+              << "command!\n";
+    return SRTP::rcInvalidParameter;
+  }
+
+  return 0;
 }
 
 int FileMetadata::run()
@@ -54,6 +106,7 @@ int FileMetadata::run()
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
 
+  uint64_t totalSize = 0;
   std::cout << "hash|offset|block size|compression toggled|file size|file name\n"
             << "--------------------------------------------------------------\n";
   const auto& directories = bsa.getDirectoryBlocks();
@@ -82,6 +135,10 @@ int FileMetadata::run()
       if (extracted.has_value())
       {
         std::cout << extracted.value();
+        if (showTotal)
+        {
+          totalSize += extracted.value();
+        }
       }
       else
       {
@@ -89,6 +146,15 @@ int FileMetadata::run()
       }
       std::cout << "|" << directory.name << '\\' << file.fileName << "\n";
     }
+  }
+  if (showTotal)
+  {
+    std::cout << "\nTotal size of all contained files: " << totalSize << " bytes";
+    if (totalSize > 1024)
+    {
+      std::cout << " (" << getSizeString(totalSize) << ')';
+    }
+    std::cout << '\n';
   }
 
   return 0;
@@ -109,9 +175,12 @@ std::string FileMetadata::helpLong(const std::string_view binaryName) const
   return std::string(binaryName).append(" file-metadata\n")
       .append("Shows metadata of the files in an archive.\n\n")
       .append("Usage:\n    ")
-      .append(binaryName).append(" file-metadata BSA_FILE\n\n")
-      .append("Options:\n    BSA_FILE - Set path to the BSA file to operate on to BSA_FILE.\n")
-      .append("               The BSA_FILE must be given.\n\n")
+      .append(binaryName).append(" file-metadata [--show-total] BSA_FILE\n\n")
+      .append("Options:\n")
+      .append("    --show-total - Also show the total size that all files in the archive would\n")
+      .append("                   occupy, if they were extracted.\n")
+      .append("    BSA_FILE     - Set path to the BSA file to operate on to BSA_FILE.\n")
+      .append("                   The BSA_FILE must be given.\n\n")
       .append("Example:\n")
       .append("    To show the metadata of all files in the archive\n    ")
       .append(archive).append(" type:\n\n    ").append(binaryName)

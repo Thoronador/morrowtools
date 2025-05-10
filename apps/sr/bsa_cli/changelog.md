@@ -1,5 +1,13 @@
 # Version history of bsa-cli
 
+## Version 0.?.? (2025-05-??)
+
+__[feature]__
+The `file-metadata` command has a new option `--show-total` which shows the
+total cumulative size of all files in the archive, if they were extracted. This
+allows to get an estimate of the disk space required to extract all content in
+an archive.
+
 ## Version 0.11.1 (2024-05-05)
 
 __[bugfix]__

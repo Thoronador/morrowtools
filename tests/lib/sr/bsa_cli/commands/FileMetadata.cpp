@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -62,6 +62,30 @@ TEST_CASE("bsa_cli::FileMetadata")
     }
 
     REQUIRE( command.parseArguments(3, argv) == 0 );
+  }
+
+  SECTION("parseArguments: null in argument pointers")
+  {
+    std::array<char*, 4> argArr = {
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    };
+    char ** argv = argArr.data();
+
+    FileMetadata command;
+
+    REQUIRE( command.parseArguments(3, argv) != 0 );
+  }
+
+  SECTION("parseArguments: null as argument pointer")
+  {
+    char ** argv = nullptr;
+
+    FileMetadata command;
+
+    REQUIRE( command.parseArguments(3, argv) != 0 );
   }
 
   SECTION("run: fail with empty file")

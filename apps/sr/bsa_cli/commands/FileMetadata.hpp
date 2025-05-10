@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2022  Dirk Stolle
+    Copyright (C) 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -64,6 +64,7 @@ class FileMetadata: public Command
     std::string helpLong(const std::string_view binaryName) const final;
   private:
     std::string bsaFileName; /**< name of the BSA file */
+    bool showTotal; /**< whether to show the total uncompressed size */
 };
 
 } // namespace

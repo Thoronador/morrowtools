@@ -49,6 +49,7 @@ jobs:
           name: formID-GUI-build-windows
           path: |
             artifacts/*
+          if-no-files-found: error
 
   linux:
     runs-on: ubuntu-24.04
@@ -79,3 +80,4 @@ jobs:
           name: formID-GUI-build-linux
           path: |
             artifacts/*
+          if-no-files-found: error

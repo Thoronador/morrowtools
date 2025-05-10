@@ -83,6 +83,7 @@ jobs:
           name: msys2-artifacts-static-linking
           path: |
             artifacts/*.exe
+          if-no-files-found: error
       - name: Collect files for bsa-cli
         run: |
           export MSYSTEM=MINGW64

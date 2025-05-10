@@ -60,6 +60,7 @@ jobs:
           name: alpine-artifacts-static-linking
           path: |
             artifacts/*
+          if-no-files-found: error
       - name: Collect files for bsa-cli
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/bsa-cli
@@ -78,6 +79,7 @@ jobs:
           name: bsa-cli_linux-amd64-generic
           path: |
             bsa-cli_*_linux-amd64-generic.tar.gz
+          if-no-files-found: error
       - name: Collect files for bsafs
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/bsafs
@@ -96,6 +98,7 @@ jobs:
           name: bsafs_linux-amd64-generic
           path: |
             bsafs_*_linux-amd64-generic.tar.gz
+          if-no-files-found: error
       - name: Collect files for Form ID finder
         run: |
           mkdir -p "$GITHUB_WORKSPACE"/formID_finder
@@ -115,3 +118,4 @@ jobs:
           name: formID-finder_linux-amd64-generic
           path: |
             formID_finder_*_linux-amd64-generic.tar.gz
+          if-no-files-found: error

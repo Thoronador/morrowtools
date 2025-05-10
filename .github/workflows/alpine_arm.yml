@@ -1,0 +1,137 @@
+name: Alpine ARM
+
+on: push
+
+jobs:
+  alpine:
+    runs-on: ubuntu-24.04-arm
+    container:
+      image: 'alpine:3.21'
+      # Needed for Monkey-patch step.
+      volumes:
+        - /:/host
+    steps:
+      # Git is required so that actions/checkout does a proper Git checkout.
+      - name: Install Git in container
+        run: |
+          apk update
+          apk add git
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+      - name: Monkey-patch Alpine Node.js into runner
+        # This step is required because the actions refuse to run on ARM 64
+        # while in a container. So the OS ID is changed and the host's Node.js
+        # binary is replaced with the one from the container.
+        # Works for now, but may fail when Node or other stuff gets updated on
+        # the runner's side.
+        run: |
+          apk add nodejs
+          sed -i 's~ID=alpine~ID=nopine~g' /etc/os-release
+          cd /host/home/runner/runners/*/externals/
+          rm -rf node20/*
+          mkdir node20/bin
+          ln -s /usr/bin/node node20/bin/node
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install packages
+        run: |
+          apk update
+          apk add catch2 cmake fuse3-dev g++ git lz4-dev make pkgconf zlib-dev
+          apk add fuse3-static lz4-static zlib-static
+      - name: Build statically linked binaries
+        run: |
+          cd "$GITHUB_WORKSPACE"
+          mkdir build-static
+          cd build-static
+          cmake ../ -DENABLE_LTO=ON -DENABLE_STATIC_LINKING=ON
+          # Skyrim tools
+          cmake --build . -j2 --target bsa-cli
+          cmake --build . -j2 --target bsafs
+          cmake --build . -j2 --target conv_cams
+          cmake --build . -j2 --target formID_finder
+          cmake --build . -j2 --target small_high_elves
+          # Morrowind tools
+          cmake --build . -j2 --target cell_translator
+          cmake --build . -j2 --target data_cleaner
+          cmake --build . -j2 --target name_generator_mw
+          cmake --build . -j2 --target skill_rebalance
+          cmake --build . -j2 --target spell_rename
+      - name: Collect statically linked artifacts
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/artifacts
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/mw/cell_translator/cell_translator artifacts/
+          cp build-static/apps/mw/data_cleaner/data_cleaner artifacts/
+          cp build-static/apps/mw/name_generator/name_generator_mw artifacts/
+          cp build-static/apps/mw/skill_rebalance/skill_rebalance artifacts/
+          cp build-static/apps/mw/spell_rename/spell_rename artifacts/
+          cp build-static/apps/sr/bsa_cli/bsa-cli artifacts/
+          cp build-static/apps/sr/bsafs/bsafs artifacts/
+          cp build-static/apps/sr/conv_cams/conv_cams artifacts/
+          cp build-static/apps/sr/formID_finder/formID_finder artifacts/
+          cp build-static/apps/sr/small_high_elves/small_high_elves artifacts/
+      - name: Archive build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: alpine-artifacts-static-linking-arm
+          path: |
+            artifacts/*
+      - name: Collect files for bsa-cli
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/bsa-cli
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/sr/bsa_cli/bsa-cli bsa-cli/
+          cp apps/sr/bsa_cli/readme.md bsa-cli/
+          cp apps/sr/bsa_cli/changelog.md bsa-cli/
+          cp apps/sr/bsa_cli/third-party.md bsa-cli/
+          cp LICENSE bsa-cli/
+          VERSION=$(git describe --always --match=bsa_cli_* | cut -d'_' -f3-)
+          mv bsa-cli bsa-cli_$VERSION
+          tar czf bsa-cli_${VERSION}_linux-arm64-generic.tar.gz bsa-cli_$VERSION
+      - name: Create bsa-cli artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsa-cli_linux-arm64-generic
+          path: |
+            bsa-cli_*_linux-arm64-generic.tar.gz
+          if-no-files-found: error
+      - name: Collect files for bsafs
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/bsafs
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/sr/bsafs/bsafs bsafs/
+          cp apps/sr/bsafs/readme.md bsafs/
+          cp apps/sr/bsafs/changelog.md bsafs/
+          cp apps/sr/bsafs/third-party.md bsafs/
+          cp LICENSE bsafs/
+          VERSION=$(git describe --always --match=bsafs_* | cut -d'_' -f2-)
+          mv bsafs bsafs_$VERSION
+          tar czf bsafs_${VERSION}_linux-arm64-generic.tar.gz bsafs_$VERSION
+      - name: Create bsafs artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: bsafs_linux-arm64-generic
+          path: |
+            bsafs_*_linux-arm64-generic.tar.gz
+          if-no-files-found: error
+      - name: Collect files for Form ID finder
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE"/formID_finder
+          cd "$GITHUB_WORKSPACE"
+          cp build-static/apps/sr/formID_finder/formID_finder formID_finder/
+          cp apps/sr/formID_finder/readme.md formID_finder/
+          cp apps/sr/formID_finder/ChangeLog.de.md formID_finder/
+          cp apps/sr/formID_finder/ChangeLog.en.md formID_finder/
+          cp apps/sr/formID_finder/third-party.md formID_finder/
+          cp LICENSE formID_finder/
+          VERSION=$(git describe --always --match=formID_finder_* | cut -d'_' -f3-)
+          mv formID_finder formID_finder_$VERSION
+          tar czf formID_finder_${VERSION}_linux-arm64-generic.tar.gz formID_finder_$VERSION
+      - name: Create Form ID finder artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: formID-finder_linux-arm64-generic
+          path: |
+            formID_finder_*_linux-arm64-generic.tar.gz
+          if-no-files-found: error

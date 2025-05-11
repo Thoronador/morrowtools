@@ -51,6 +51,8 @@ add_test(NAME bsa_cli_help_list
 # tests for running commands that do not extract files or directories
 add_test(NAME bsa_cli_run_check_hashes
          COMMAND $<TARGET_FILE:bsa-cli> check-hashes "${CMAKE_CURRENT_SOURCE_DIR}/test_v104_uncompressed.bsa")
+add_test(NAME bsa_cli_run_check_hashes_wrong_hashes
+         COMMAND $<TARGET_FILE:bsa-cli> check-hashes "${CMAKE_CURRENT_SOURCE_DIR}/test_wrong_hashes.bsa")
 add_test(NAME bsa_cli_run_commands
          COMMAND $<TARGET_FILE:bsa-cli> commands)
 add_test(NAME bsa_cli_run_directories

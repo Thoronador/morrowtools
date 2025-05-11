@@ -99,9 +99,10 @@ int FileMetadata::run()
   const auto& header = bsa.getHeader();
   if (!header.hasNamesForDirectories() || !header.hasNamesForFiles())
   {
-    std::cout << "Info: The file " << bsaFileName << " does not contain "
-              << "information about its directory names and file names.\n";
-    return 0;
+    std::cerr << "Error: The file " << bsaFileName << " does not contain "
+              << "information about its directory names and file names. The "
+              << "program cannot handle such an archive.\n";
+    return SRTP::rcDataError;
   }
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;

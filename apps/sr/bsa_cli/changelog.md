@@ -2,6 +2,15 @@
 
 ## Version 0.?.? (2025-05-??)
 
+__[breaking change]__
+All commands that require information of file or directory names being present
+in the BSA file will now fail with a non-zero exit code instead of zero, if that
+information is missing in the BSA file. That behaviour is more coherent with
+other error conditions.
+
+Affected commands are: `check-hashes`, `directories`, `directory-metadata`,
+`extract-all`, `extract-directory`, `extract-file`, `file-metadata`, and `list`.
+
 __[feature]__
 The `file-metadata` command has a new option `--show-total` which shows the
 total cumulative size of all files in the archive, if they were extracted. This

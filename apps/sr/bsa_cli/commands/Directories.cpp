@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021, 2022, 2023  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -48,9 +48,10 @@ int Directories::run()
   const auto& header = bsa.getHeader();
   if (!header.hasNamesForDirectories())
   {
-    std::cout << "Info: The file " << bsaFileName << " does not contain "
-              << "information about its directory names.\n";
-    return 0;
+    std::cerr << "Error: The file " << bsaFileName << " does not contain "
+              << "information about its directory names. The program cannot "
+              << "handle such an archive.\n";
+    return SRTP::rcDataError;
   }
   if (!bsa.grabDirectoryData() || !bsa.grabDirectoryBlocks())
     return SRTP::rcFileError;

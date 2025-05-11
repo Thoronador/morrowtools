@@ -80,3 +80,6 @@ add_test(NAME bsa_cli_parameter_misuse
 # scripted test for umlauts in BSA file name
 add_test(NAME bsa_cli_parameter_umlauts
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/umlauts.${EXT} $<TARGET_FILE:bsa-cli> "${CMAKE_CURRENT_SOURCE_DIR}/Möwe.bsa")
+# scripted test for BSA file without file name metadata
+add_test(NAME bsa_cli_missing_name_data
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/missing-names.${EXT} $<TARGET_FILE:bsa-cli> "${CMAKE_CURRENT_SOURCE_DIR}/test_missing_names.bsa")

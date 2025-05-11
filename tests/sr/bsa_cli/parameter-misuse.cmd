@@ -1,6 +1,6 @@
 :: Script to test executable when parameters are used in the wrong way.
 ::
-::  Copyright (C) 2023  Dirk Stolle
+::  Copyright (C) 2023, 2025  Dirk Stolle
 ::
 ::  This program is free software: you can redistribute it and/or modify
 ::  it under the terms of the GNU Lesser General Public License as published by
@@ -25,6 +25,14 @@ if "%1" EQU "" (
 
 SET EXECUTABLE=%1
 
+:: 2nd parameter = path to test.bsa
+if "%2" EQU "" (
+  echo Second parameter must be path to BSA file!
+  exit /B 1
+)
+
+SET BSA_FILE=%2
+
 :: invalid operation given
 "%EXECUTABLE%" not-an-operation file.bsa
 if %ERRORLEVEL% NEQ 1 (
@@ -43,6 +51,20 @@ if %ERRORLEVEL% NEQ 1 (
 "%EXECUTABLE%" info this-file-is-missing.bsa
 if %ERRORLEVEL% NEQ 1 (
   echo Executable did not exit with code 1 when BSA file was missing.
+  exit /B 1
+)
+
+:: command file-metadata: --show-total is given twice
+"%EXECUTABLE%" file-metadata --show-total --show-total file.bsa
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when --show-total was given twice.
+  exit /B 1
+)
+
+:: command file-metadata: unknown parameter
+"%EXECUTABLE%" file-metadata "%BSA_FILE%" --not-a-valid-parameter
+if %ERRORLEVEL% NEQ 1 (
+  echo Executable did not exit with code 1 when an invalid parameter was given.
   exit /B 1
 )
 

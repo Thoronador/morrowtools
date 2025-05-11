@@ -2,7 +2,7 @@
 
 # Script to test executable when parameters are used in the wrong way.
 #
-#  Copyright (C) 2023  Dirk Stolle
+#  Copyright (C) 2023, 2025  Dirk Stolle
 #
 #  This program is free software: you can redistribute it and/or modify
 #  it under the terms of the GNU Lesser General Public License as published by
@@ -26,6 +26,15 @@ fi
 
 EXECUTABLE="$1"
 
+# 2nd parameter = path to test.bsa
+if [ -z "$2" ]
+then
+  echo "Second parameter must be the path to the BSA file!"
+  exit 1
+fi
+
+BSA_FILE="$2"
+
 # invalid operation given
 "$EXECUTABLE" not-an-operation file.bsa
 if [ $? -ne 1 ]
@@ -47,6 +56,22 @@ fi
 if [ $? -ne 1 ]
 then
   echo "Executable did not exit with code 1 when BSA file was missing."
+  exit 1
+fi
+
+# command file-metadata: --show-total is given twice
+"$EXECUTABLE" file-metadata --show-total --show-total file.bsa
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when --show-total was given twice."
+  exit 1
+fi
+
+# command file-metadata: unknown parameter
+"$EXECUTABLE" file-metadata "$BSA_FILE" --not-a-valid-parameter
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when an invalid parameter was given."
   exit 1
 fi
 

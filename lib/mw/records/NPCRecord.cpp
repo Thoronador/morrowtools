@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2023  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -321,7 +321,7 @@ bool NPCRecord::saveToStream(std::ostream& output) const
   // write record ID (NAME)
   output.write(reinterpret_cast<const char*>(&cNAME), 4);
   uint32_t SubLength = recordID.length() + 1;
-  output.write((const char*) &SubLength, 4);
+  output.write(reinterpret_cast<const char*>(&SubLength), 4);
   output.write(recordID.c_str(), SubLength);
 
   if (!ModelPath.empty())

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Morrowind Tools Project.
-    Copyright (C) 2010, 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2010, 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@ bool MagicEffectRecord::saveToStream(std::ostream& output) const
   */
 
   // write effect index (INDX)
-  output.write((const char*) &cINDX, 4);
+  output.write(reinterpret_cast<const char*>(&cINDX), 4);
   uint32_t SubLength;
   SubLength = 4;
   output.write(reinterpret_cast<const char*>(&SubLength), 4);

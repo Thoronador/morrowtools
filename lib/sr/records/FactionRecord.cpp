@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -219,7 +219,7 @@ bool FactionRecord::saveToStream(std::ostream& output) const
   // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
   uint16_t subLength = editorID.length() + 1;
-  output.write((const char*) &subLength, 2);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
   if (name.isPresent())
@@ -446,7 +446,7 @@ bool FactionRecord::loadFromStream(std::istream& in_File, const bool localized, 
     {
       case cXNAM:
            // XNAM's length
-           in_File.read((char*) &subLength, 2);
+           in_File.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 12)
            {

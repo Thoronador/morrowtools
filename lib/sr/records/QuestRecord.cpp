@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2014, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -1252,7 +1252,7 @@ bool QuestRecord::loadFromStream(std::istream& in_File, const bool localized, co
                case cALED:
                     // end marker
                     //ALED's length
-                    in_File.read((char*) &subLength, 2);
+                    in_File.read(reinterpret_cast<char*>(&subLength), 2);
                     bytesRead += 2;
                     if (subLength != 0)
                     {

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2021, 2022, 2023, 2024  Dirk Stolle
+    Copyright (C) 2021, 2022, 2023, 2024, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -36,7 +36,7 @@ void showVersion()
 {
   std::cout << "BSA Command Line Tool for Skyrim, version 0.11.1, 2024-05-05\n"
             << "\n"
-            << "Copyright (C) 2021 - 2024  Dirk Stolle\n"
+            << "Copyright (C) 2021 - 2025  Dirk Stolle\n"
             << "License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>\n"
             << "This is free software: you are free to change and redistribute it under the\n"
             << "terms of the GNU General Public License version 3 or any later version.\n"

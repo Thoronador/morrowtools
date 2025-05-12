@@ -150,7 +150,7 @@ For information how to build natively on Windows, see the
 
 ## Copyright and Licensing
 
-Copyright 2011-2024  Dirk Stolle
+Copyright 2011-2025  Dirk Stolle
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

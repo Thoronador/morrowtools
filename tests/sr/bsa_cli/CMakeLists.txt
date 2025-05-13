@@ -83,3 +83,6 @@ add_test(NAME bsa_cli_parameter_umlauts
 # scripted test for BSA file without file name metadata
 add_test(NAME bsa_cli_missing_name_data
          COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/missing-names.${EXT} $<TARGET_FILE:bsa-cli> "${CMAKE_CURRENT_SOURCE_DIR}/test_missing_names.bsa")
+# scripted test for BSA file without structure data
+add_test(NAME bsa_cli_missing_structure_data
+         COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/structure-data-fail.${EXT} $<TARGET_FILE:bsa-cli> "${CMAKE_CURRENT_SOURCE_DIR}/test_structure_data_fail.bsa")

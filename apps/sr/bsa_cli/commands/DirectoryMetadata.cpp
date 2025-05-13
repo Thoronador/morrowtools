@@ -55,17 +55,17 @@ int DirectoryMetadata::run()
   if (!bsa.grabAllStructureData())
     return SRTP::rcFileError;
 
-  std::cout << "hash|offset|file count|name\n"
-            << "---------------------------\n";
   const auto& directory_records = bsa.getDirectories();
   const auto& directory_blocks = bsa.getDirectoryBlocks();
   const auto dir_length = directory_records.size();
   if (directory_blocks.size() != dir_length)
   {
     std::cerr << "Error: Record and block size for directories do not match.\n"
-              << "BSA file may be damaged or incomplete." << std::endl;
+              << "BSA file may be damaged or incomplete.\n";
     return SRTP::rcDataError;
   }
+  std::cout << "hash|offset|file count|name\n"
+            << "---------------------------\n";
   for (std::vector<BSADirectoryRecord>::size_type i = 0; i < dir_length; ++i)
   {
     std::cout << "0x" << std::hex;

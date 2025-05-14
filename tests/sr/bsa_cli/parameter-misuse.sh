@@ -67,6 +67,17 @@ then
   exit 1
 fi
 
+# command extract-all: extraction destination already exists
+TEMP_DEST_DIR=$(mktemp --directory)
+"$EXECUTABLE" extract-all "$BSA_FILE" "$TEMP_DEST_DIR"
+if [ $? -ne 1 ]
+then
+  rmdir "$TEMP_DEST_DIR"
+  echo "Executable did not exit with code 1 when an existing extraction destination was given for extract-all."
+  exit 1
+fi
+rmdir "$TEMP_DEST_DIR"
+
 # command extract-directory: no directory to extract given
 "$EXECUTABLE" extract-directory "$BSA_FILE"
 if [ $? -ne 1 ]
@@ -82,6 +93,18 @@ then
   echo "Executable did not exit with code 1 when no extraction destination was given for extract-directory."
   exit 1
 fi
+
+# command extract-directory: extraction destination already exists
+TEMP_DEST_DIR=$(mktemp --directory)
+"$EXECUTABLE" extract-directory "$BSA_FILE" 'some\thing' "$TEMP_DEST_DIR"
+if [ $? -ne 1 ]
+then
+  rmdir "$TEMP_DEST_DIR"
+  echo "Executable did not exit with code 1 when an existing extraction destination was given for extract-directory."
+  exit 1
+fi
+rmdir "$TEMP_DEST_DIR"
+
 # command extract-file: no file to extract given
 "$EXECUTABLE" extract-file "$BSA_FILE"
 if [ $? -ne 1 ]
@@ -97,6 +120,17 @@ then
   echo "Executable did not exit with code 1 when no extraction destination was given for extract-file."
   exit 1
 fi
+
+# command extract-file: extraction destination already exists
+TEMP_DEST_FILE=$(mktemp)
+"$EXECUTABLE" extract-directory "$BSA_FILE" 'some\thing\test.txt' "$TEMP_DEST_FILE"
+if [ $? -ne 1 ]
+then
+  unlink "$TEMP_DEST_FILE"
+  echo "Executable did not exit with code 1 when an existing extraction destination was given for extract-file."
+  exit 1
+fi
+unlink "$TEMP_DEST_FILE"
 
 # command file-metadata: --show-total is given twice
 "$EXECUTABLE" file-metadata --show-total --show-total file.bsa

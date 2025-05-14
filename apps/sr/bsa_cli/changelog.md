@@ -1,6 +1,6 @@
 # Version history of bsa-cli
 
-## Version 0.?.? (2025-05-??)
+## Version 0.12.0 (2025-05-14)
 
 __[breaking change]__
 All commands that require information of file or directory names being present

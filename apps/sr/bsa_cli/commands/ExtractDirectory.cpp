@@ -91,8 +91,8 @@ int ExtractDirectory::parseArguments(int argc, char** argv)
   }
   if (archiveDirectoryName.empty())
   {
-    std::cerr << "Error: The name of the directory inside the archive has to "
-              << "be specified after the BSA file name!\n";
+    std::cerr << "Error: The name of the directory to extract from the archive "
+              << "has to be specified after the BSA file name!\n";
     return SRTP::rcInvalidParameter;
   }
   if (outputDirectoryName.empty())

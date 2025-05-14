@@ -59,6 +59,45 @@ then
   exit 1
 fi
 
+# command extract-all: no extraction destination given
+"$EXECUTABLE" extract-all "$BSA_FILE"
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when no extraction destination was given for extract-all."
+  exit 1
+fi
+
+# command extract-directory: no directory to extract given
+"$EXECUTABLE" extract-directory "$BSA_FILE"
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when no directory to extract was given for extract-directory."
+  exit 1
+fi
+
+# command extract-directory: no extraction destination given
+"$EXECUTABLE" extract-directory "$BSA_FILE" 'some\thing'
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when no extraction destination was given for extract-directory."
+  exit 1
+fi
+# command extract-file: no file to extract given
+"$EXECUTABLE" extract-file "$BSA_FILE"
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when no file to extract was given for extract-file."
+  exit 1
+fi
+
+# command extract-file: no extraction destination given
+"$EXECUTABLE" extract-file "$BSA_FILE" 'some\thing\test.txt'
+if [ $? -ne 1 ]
+then
+  echo "Executable did not exit with code 1 when no extraction destination was given for extract-file."
+  exit 1
+fi
+
 # command file-metadata: --show-total is given twice
 "$EXECUTABLE" file-metadata --show-total --show-total file.bsa
 if [ $? -ne 1 ]

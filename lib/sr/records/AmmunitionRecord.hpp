@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,13 +69,13 @@ struct AmmunitionRecord: public BasicRecord
 
     /** \brief Loads the record from the given input stream.
      *
-     * \param in_File    the input stream
+     * \param input      the input stream
      * \param localized  whether the file to read from is localized or not
      * \param table      the associated string table for localized files
      * \return Returns true on success (record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
     /** \brief Gets the record's type, usually its header.
      *
@@ -85,20 +85,20 @@ struct AmmunitionRecord: public BasicRecord
 
     std::string editorID; /**< ID of the record in the editor */
     std::array<uint8_t, 12> unknownOBND;
-    LocalizedString name; // subrecord FULL
+    LocalizedString name; // sub record FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    uint32_t pickupSoundFormID; // subrecord YNAM
-    uint32_t putdownSoundFormID; // subrecord ZNAM
-    LocalizedString description; // subrecord DESC
+    uint32_t pickupSoundFormID; // sub record YNAM
+    uint32_t putdownSoundFormID; // sub record ZNAM
+    LocalizedString description; // sub record DESC
     std::vector<uint32_t> keywords;
-    // subrecord DATA
+    // sub record DATA
     uint32_t projectileFormID;
     uint32_t DATAflags;
     float baseDamage;
     uint32_t value;
     std::optional<float> weight;
-    // end of subrecord DATA
+    // end of sub record DATA
 }; // struct
 
 } // namespace

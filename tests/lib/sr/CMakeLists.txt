@@ -76,6 +76,7 @@ set(lib_sr_tests_sources
     ../../../lib/sr/records/SpellRecord.cpp
     ../../../lib/sr/records/TalkingActivatorRecord.cpp
     ../../../lib/sr/records/TES4HeaderRecord.cpp
+    ../../../lib/sr/records/TextureSetRecord.cpp
     ../../../lib/sr/records/TreeRecord.cpp
     ../../../lib/sr/records/WeaponRecord.cpp
     ../../../lib/sr/records/WordOfPowerRecord.cpp
@@ -178,6 +179,7 @@ set(lib_sr_tests_sources
     records/TalkingActivatorRecord.cpp
     records/Tes4HeaderRecord.cpp
     records/Tes4HeaderRecord__MasterFile.cpp
+    records/TextureSetRecord.cpp
     records/TreeRecord.cpp
     records/WeaponRecord.cpp
     records/WordOfPowerRecord.cpp

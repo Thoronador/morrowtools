@@ -210,6 +210,8 @@
 		<Unit filename="../../../lib/sr/records/TES4HeaderRecord.hpp" />
 		<Unit filename="../../../lib/sr/records/TalkingActivatorRecord.cpp" />
 		<Unit filename="../../../lib/sr/records/TalkingActivatorRecord.hpp" />
+		<Unit filename="../../../lib/sr/records/TextureSetRecord.cpp" />
+		<Unit filename="../../../lib/sr/records/TextureSetRecord.hpp" />
 		<Unit filename="../../../lib/sr/records/TreeRecord.cpp" />
 		<Unit filename="../../../lib/sr/records/TreeRecord.hpp" />
 		<Unit filename="../../../lib/sr/records/WeaponRecord.cpp" />
@@ -320,6 +322,7 @@
 		<Unit filename="records/TalkingActivatorRecord.cpp" />
 		<Unit filename="records/Tes4HeaderRecord.cpp" />
 		<Unit filename="records/Tes4HeaderRecord__MasterFile.cpp" />
+		<Unit filename="records/TextureSetRecord.cpp" />
 		<Unit filename="records/TreeRecord.cpp" />
 		<Unit filename="records/WeaponRecord.cpp" />
 		<Unit filename="records/WordOfPowerRecord.cpp" />

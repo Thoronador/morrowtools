@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -32,9 +32,6 @@ struct TextureSetRecord: public BasicRecord
   public:
     /* constructor */
     TextureSetRecord();
-
-    /* destructor */
-    virtual ~TextureSetRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
     /* returns true, if the other record contains the same data */

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,8 +19,8 @@
 */
 
 #include "TextureSetRecord.hpp"
-#include <iostream>
 #include <cstring>
+#include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../mw/HelperIO.hpp"
 
@@ -36,14 +36,11 @@ TextureSetRecord::TextureSetRecord()
   texture04(""),
   texture05(""),
   texture07(""),
+  hasDODT(false),
   unknownDNAM(0)
 {
   memset(unknownOBND, 0, 12);
-}
-
-TextureSetRecord::~TextureSetRecord()
-{
-  //empty
+  memset(unknownDODT, 0, 36);
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
@@ -70,6 +67,7 @@ uint32_t TextureSetRecord::getWriteSize() const
   uint32_t writeSize;
   writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
         +editorID.length()+1 /* length of name +1 byte for NUL termination */
+        + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
         +4 /* TX00 */ +2 /* 2 bytes for length */
         +texture00.length()+1 /* length of name +1 byte for NUL termination */
         +4 /* DNAM */ +2 /* 2 bytes for length */ +2 /* fixed size */;
@@ -424,12 +422,18 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
              return false;
            break;
       default:
-           std::cerr << "Error: expected record name DNAM, DODT, TX01, TX02, "
+           std::cerr << "Error: Expected record name DNAM, DODT, TX01, TX02, "
                      << "TX03, TX04, TX05 or TX07 was not found. Instead, \""
-                     << IntTo4Char(subRecName)<<"\" was found.\n";
+                     << IntTo4Char(subRecName) << "\" was found.\n";
            return false;
     }//swi
   }//while
+
+  if (!hasReadDNAM)
+  {
+    std::cerr << "Error: Sub record DNAM of TXST is missing!\n";
+    return false;
+  }
 
   return in_File.good();
 }

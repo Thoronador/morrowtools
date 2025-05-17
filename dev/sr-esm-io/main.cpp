@@ -67,7 +67,8 @@ int main(int argc, char** argv)
     return 0;
   }
 
-  SRTP::ESMReaderContentsAll reader;
+  SRTP::ESMFileContents contents;
+  SRTP::ESMReaderContentsAll reader(contents);
   SRTP::Tes4HeaderRecord header;
   const int records_read = reader.readESM(esmFileName, header, std::nullopt);
   if (records_read < 0)
@@ -80,10 +81,7 @@ int main(int argc, char** argv)
             << ".\n";
 
   std::string outputFileName = getDestinationPath(esmFileName).string();
-  SRTP::ESMWriterContents writer;
-  // The following linge is potentially a huge copy operation and should be
-  // avoided / removed by adjusting the interface of content-based writers.
-  writer.contents = reader.contents;
+  SRTP::ESMWriterContents writer(contents);
   if (!writer.writeESM(outputFileName, header))
   {
     std::cerr << "Could not write ESM file to " << outputFileName << "!\n";

@@ -249,20 +249,21 @@ int main(int argc, char **argv)
   }
 
 
-  //now we can start the reading process
+  // now we can start the reading process
   SRTP::Tes4HeaderRecord tes4rec;
-  SRTP::ESMReaderConvCAMS reader;
+  SRTP::ESMFileContents contents;
+  SRTP::ESMReaderConvCAMS reader(contents);
   if (reader.readESM(dataDir + pluginFile, tes4rec, std::nullopt) < 0)
   {
     std::cout << "Error while reading \"" << dataDir + pluginFile << "\"!\n";
     return SRTP::rcFileError;
   }
 
-  //now change the records
+  // now change the records
   unsigned int changedRecords = 0;
 
-  std::vector<SRTP::Group>::iterator groupIter = reader.contents.m_Groups.begin();
-  while (groupIter!=reader.contents.m_Groups.end())
+  std::vector<SRTP::Group>::iterator groupIter = contents.m_Groups.begin();
+  while (groupIter != contents.m_Groups.end())
   {
     if ((groupIter->headerData.label() == SRTP::cCAMS)
         && (groupIter->headerData.type() == SRTP::GroupData::cTopLevelGroup))
@@ -273,13 +274,13 @@ int main(int argc, char **argv)
       {
         if ((*recIter)->getRecordType() == SRTP::cCAMS)
         {
-          //CAMS record type found
+          // CAMS record type found
           SRTP::CameraShotRecord* camPtr = static_cast<SRTP::CameraShotRecord*>(recIter->get());
           if (camPtr != nullptr)
           {
             if ((camPtr->dataLen == SRTP::CameraShotRecord::DataLengthType::dlt44Byte) && !camPtr->isDeleted())
             {
-              // record has 44 byte variant of DATA subrecord, change it
+              // record has 44 byte variant of DATA sub record, change it
               camPtr->dataLen = SRTP::CameraShotRecord::DataLengthType::dlt40Byte;
               ++changedRecords;
             }
@@ -324,13 +325,7 @@ int main(int argc, char **argv)
 
   // save it
   std::cout << "Saving file...\n";
-  SRTP::ESMWriterContents writer;
-  // ---- copy contents from reader to writer (expensive in terms of memory,
-  //      I should implement a faster, more lightweight way to do that.
-  //      Or wait for C++11's move semantics to be implemented by most compilers
-  //      and use that instead of copying that stuff.)
-  writer.contents = reader.contents;
-  // now write the actual .esm/.esp file
+  SRTP::ESMWriterContents writer(contents);
   if (!writer.writeESM(newName, tes4rec))
   {
     std::cout << "Error: Could not write converted data to \"" << newName

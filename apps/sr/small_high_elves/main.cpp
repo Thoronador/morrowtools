@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2023  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -194,10 +194,10 @@ int main(int argc, char** argv)
   // race record for transfer
   SRTP::RaceRecord* tempRaceRec = nullptr;
 
-  // the writer class itself
-  SRTP::ESMWriterContents writer;
+  SRTP::ESMFileContents contents;
+  SRTP::ESMWriterContents writer(contents);
   // add stuff
-  SRTP::Group& currentGroup = writer.contents.addNewGroup();
+  SRTP::Group& currentGroup = contents.addNewGroup();
   currentGroup.headerData.setLabel(SRTP::cRACE);
 
   iter = SRTP::Races::get().begin();
@@ -223,7 +223,7 @@ int main(int argc, char** argv)
 
   if (writer.writeESM(path.string(), write_header))
   {
-    std::cout << "Writing new file was successful!\n";
+    std::cout << "Writing new file (" << path.string() << ") was successful!\n";
   }
   else
   {

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2013  Thoronador
+    Copyright (C) 2011, 2013, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,51 +24,42 @@
 namespace SRTP
 {
 
-ESMWriterContents::ESMWriterContents()
-: contents(ESMFileContents())
+ESMWriterContents::ESMWriterContents(ESMFileContents& storage)
+: contents(storage)
 {
-}
-
-ESMWriterContents::~ESMWriterContents()
-{
-  contents.removeContents();
 }
 
 uint32_t ESMWriterContents::getTotalNumberOfRecords() const
 {
   uint32_t result = 0;
-  unsigned int i;
-  for (i=0; i<contents.m_Groups.size(); ++i)
+  for (const auto& group: contents.m_Groups)
   {
-    result += contents.m_Groups[i].getNumberOfRecordsIncludingSubGroups();
-  }//for
+    result += group.getNumberOfRecordsIncludingSubGroups();
+  }
   return result;
 }
 
 uint32_t ESMWriterContents::getTotalNumberOfGroups() const
 {
   uint32_t result = contents.getNumberOfGroups();
-  unsigned int i;
-  for (i=0; i<contents.m_Groups.size(); ++i)
+  for (const auto& group: contents.m_Groups)
   {
-    result += contents.m_Groups[i].getNumberOfGroupsIncludingSubGroups();
-  }//for
+    result += group.getNumberOfGroupsIncludingSubGroups();
+  }
   return result;
 }
 
 bool ESMWriterContents::writeGroups(std::ofstream& output) const
 {
-  const unsigned int groupCount = contents.getNumberOfGroups();
-  unsigned int i;
-  for (i=0; i<groupCount; ++i)
+  for (const auto& group: contents.m_Groups)
   {
-    if (!contents.m_Groups[i].saveToStream(output))
+    if (!group.saveToStream(output))
     {
       return false;
     }
-  }//for
+  }
   return true;
 }
 
-} //namespace
+} // namespace
 #endif //SR_UNSAVEABLE_RECORDS

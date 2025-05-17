@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,12 +30,15 @@ namespace SRTP
 class ESMReaderContentsBase: public ESMReader
 {
   public:
-    ESMReaderContentsBase();
+    /** \brief Constructs a new reader based on a file contents structure.
+     *
+     * \param storage  reference to the structure that will hold the records and
+     *                 groups that will be read. This reference has to live as
+     *                 long as the ESMReaderContentsBase instance, at least.
+     */
+    ESMReaderContentsBase(ESMFileContents& storage);
 
     virtual ~ESMReaderContentsBase();
-
-    // the structure that is used to store the read data
-    ESMFileContents contents;
   protected:
     /** \brief This function's sole purpose is to "notify" the reader that a
      *         new group was encountered and give the classes derived from
@@ -68,6 +71,9 @@ class ESMReaderContentsBase: public ESMReader
      *         Shall return false, only if the read process shall be aborted.
      */
     virtual bool groupFinished(const GroupData& g_data) override;
+
+    /** reference to the structure where the read data will be stored */
+    ESMFileContents& contents;
 
     /* internal group nesting level counter and pointer to latest group - should
        be made private later on */

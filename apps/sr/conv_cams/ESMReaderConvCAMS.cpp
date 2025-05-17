@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -27,14 +27,9 @@
 namespace SRTP
 {
 
-ESMReaderConvCAMS::ESMReaderConvCAMS()
+ESMReaderConvCAMS::ESMReaderConvCAMS(ESMFileContents& storage)
+: ESMReaderContentsBase(storage)
 {
-  contents.removeContents();
-}
-
-ESMReaderConvCAMS::~ESMReaderConvCAMS()
-{
-  contents.removeContents();
 }
 
 bool ESMReaderConvCAMS::needGroup([[maybe_unused]] const GroupData& g_data) const

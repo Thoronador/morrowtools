@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2014, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2014, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,15 +25,14 @@
 namespace SRTP
 {
 
-ESMReaderContentsBase::ESMReaderContentsBase()
-: contents(ESMFileContents()),
+ESMReaderContentsBase::ESMReaderContentsBase(ESMFileContents& storage)
+: contents(storage),
   m_InternalGroupLevel(0), m_InternalGroup(nullptr)
 {
 }
 
 ESMReaderContentsBase::~ESMReaderContentsBase()
 {
-  contents.removeContents();
   m_InternalGroupLevel = 0;
   m_InternalGroup = nullptr;
 }

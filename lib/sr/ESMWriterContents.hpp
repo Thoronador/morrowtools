@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011 Thoronador
+    Copyright (C) 2011, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -31,43 +31,40 @@ namespace SRTP
 class ESMWriterContents: public ESMWriter
 {
   public:
-    /* constructor */
-    ESMWriterContents();
-
-    /* destructor */
-    virtual ~ESMWriterContents();
-
-    /*the structure that is used to store the data that will be written - the
-      application has to fill it before calling writeESM() or the produced ESM
-      won't contain any records besides the header */
-    ESMFileContents contents;
+    /** \brief Constructs a new writer based on a file content structure.
+     *
+     * \param storage  reference to the structure that will hold the records and
+     *                 groups that will be written. This reference has to live
+     *                 at least as long as the ESMWriterContents instance.
+     * \remarks The application has to fill the storage before calling
+     *          writeESM() or the produced ESM won't contain any records besides
+     *          the header.
+     */
+    ESMWriterContents(ESMFileContents& storage);
   protected:
-    /* returns the number of records that will be written to the stream, not
-       including the header record
-
-       remarks:
-           This function has to be implemented by every derived class to match
-           the actual number of records.
-    */
+    /** \brief Gets the number of records that will be written to the stream, not
+     *         including the header record.
+     *
+     * \return Returns the number of records that will be written to the stream.
+     */
     virtual uint32_t getTotalNumberOfRecords() const;
 
-    /* returns the number of groups that will be written to the stream
-
-       remarks:
-           This function has to be implemented by every derived class to match
-           the actual number of groups.
-    */
+    /** \brief Gets the number of groups that will be written to the stream.
+     */
     virtual uint32_t getTotalNumberOfGroups() const;
 
-    /* tries to write all groups and data records and returns true on success
-
-       parameters:
-           output - the output file stream that's used to write the data
-    */
+    /** \brief Writes all groups and data records to a file stream.
+     *
+     * \param output  the output file stream that's used to write the data
+     * \return Returns true on success. Returns false, if an error occurred.
+     */
     virtual bool writeGroups(std::ofstream& output) const;
-};//class
 
-} //namespace
+    /** reference to the structure where the data to be written is stored */
+    ESMFileContents& contents;
+}; // class
+
+} // namespace
 #endif // SR_UNSAVEABLE_RECORDS
 
 #endif // SR_ESMWRITERCONTENTS_HPP

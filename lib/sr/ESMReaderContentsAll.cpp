@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -130,14 +130,9 @@
 namespace SRTP
 {
 
-ESMReaderContentsAll::ESMReaderContentsAll()
+ESMReaderContentsAll::ESMReaderContentsAll(ESMFileContents& storage)
+: ESMReaderContentsBase(storage)
 {
-  contents.removeContents();
-}
-
-ESMReaderContentsAll::~ESMReaderContentsAll()
-{
-  contents.removeContents();
 }
 
 bool ESMReaderContentsAll::needGroup(const GroupData& g_data) const
@@ -147,7 +142,7 @@ bool ESMReaderContentsAll::needGroup(const GroupData& g_data) const
 
 int ESMReaderContentsAll::readNextRecord(std::istream& input, const uint32_t recName, const bool localized, const StringTable& table)
 {
-  BasicRecord * recPtr = NULL;
+  BasicRecord * recPtr = nullptr;
   switch (recName)
   {
     case cAACT:

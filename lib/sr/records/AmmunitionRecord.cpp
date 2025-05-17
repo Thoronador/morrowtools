@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -92,7 +92,7 @@ uint32_t AmmunitionRecord::getWriteSize() const
   if (!keywords.empty())
   {
     writeSize = writeSize + 4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */
-        + keywords.size() * (4 /* KSIZ */ + 2 /* 2 bytes for length */ + 4 /* fixed size */);
+        + 4 /* KWDA */ + 2 /* 2 bytes for length */ + keywords.size() * 4 /* fixed size per keyword */;
   }
   if (weight.has_value())
   {

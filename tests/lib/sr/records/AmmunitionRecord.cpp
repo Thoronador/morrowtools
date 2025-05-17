@@ -285,6 +285,19 @@ TEST_CASE("AmmunitionRecord")
       REQUIRE( record.getWriteSize() == 80 );
     }
 
+    SECTION("size adjusts with length of keyword array")
+    {
+      record.editorID = "foo";
+      REQUIRE( record.getWriteSize() == 70 );
+
+      record.keywords.push_back(0x00C0FFEE);
+      REQUIRE( record.getWriteSize() == 90 );
+      record.keywords.push_back(0x001EA1EA);
+      REQUIRE( record.getWriteSize() == 94 );
+      record.keywords.push_back(0x0F00BA12);
+      REQUIRE( record.getWriteSize() == 98 );
+    }
+
     SECTION("size adjusts when weight is present")
     {
       record.editorID = "foo";
@@ -307,6 +320,7 @@ TEST_CASE("AmmunitionRecord")
     StringTable dummy_table;
     dummy_table.addString(0x00007DCD, "foo");
     dummy_table.addString(0x00012470, "bar");
+    dummy_table.addString(0x0000004A, "baz");
 
     SECTION("default: load record")
     {
@@ -417,6 +431,68 @@ TEST_CASE("AmmunitionRecord")
       REQUIRE( record.DATAflags == 0x00000006 );
       REQUIRE( record.baseDamage == 15.0f );
       REQUIRE( record.value == 0 );
+      REQUIRE( record.weight.has_value() );
+      REQUIRE( record.weight.value() == 0.1f );
+
+      // Writing should succeed.
+      std::ostringstream streamOut;
+      REQUIRE( record.saveToStream(streamOut) );
+      // Check written data.
+      REQUIRE( streamOut.str() == data );
+    }
+
+    SECTION("default: load record with multiple keywords")
+    {
+      const auto data = "AMMO\xD2\0\0\0\0\0\0\0\x3A\x08\0\x05\x1E-\x1E\0,\0\x01\0EDID\x15\0ccBGSSSE037_IronBolt\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0J\0\0\0MODL3\0CreationClub\\\x42GSSSE037\\Weapons\\Iron\\IronBolt01.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0w\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xE7\x17\x09\0\x18\xE7\x01\0DATA\x14\0;\x08\0\x05\0\0\0\0\0\0\0A\x01\0\0\0\xCD\xCC\xCC="sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // read AMMO, because header is handled before loadFromStream.
+      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      REQUIRE( stream.good() );
+
+      // Reading should succeed.
+      AmmunitionRecord record;
+      REQUIRE( record.loadFromStream(stream, true, dummy_table) );
+      // Check data.
+      // -- header
+      REQUIRE( record.headerFlags == 0 );
+      REQUIRE( record.headerFormID == 0x0500083A );
+      REQUIRE( record.headerRevision == 0x001E2D1E );
+      REQUIRE( record.headerVersion == 44 );
+      REQUIRE( record.headerUnknown5 == 0x0001 );
+      // -- record data
+      REQUIRE( record.editorID == "ccBGSSSE037_IronBolt" );
+      REQUIRE( record.unknownOBND[0] == 0x00 );
+      REQUIRE( record.unknownOBND[1] == 0x00 );
+      REQUIRE( record.unknownOBND[2] == 0x00 );
+      REQUIRE( record.unknownOBND[3] == 0x00 );
+      REQUIRE( record.unknownOBND[4] == 0x00 );
+      REQUIRE( record.unknownOBND[5] == 0x00 );
+      REQUIRE( record.unknownOBND[6] == 0x00 );
+      REQUIRE( record.unknownOBND[7] == 0x00 );
+      REQUIRE( record.unknownOBND[8] == 0x00 );
+      REQUIRE( record.unknownOBND[9] == 0x00 );
+      REQUIRE( record.unknownOBND[10] == 0x00 );
+      REQUIRE( record.unknownOBND[11] == 0x00 );
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000004A );
+      REQUIRE( record.modelPath == "CreationClub\\BGSSSE037\\Weapons\\Iron\\IronBolt01.nif" );
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+      REQUIRE( record.pickupSoundFormID == 0x0003E7B7 );
+      REQUIRE( record.putdownSoundFormID == 0x0003E877 );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+      REQUIRE( record.keywords.size() == 2 );
+      REQUIRE( record.keywords[0] == 0x000917E7 );
+      REQUIRE( record.keywords[1] == 0x0001E718 );
+      REQUIRE( record.projectileFormID == 0x0500083B );
+      REQUIRE( record.DATAflags == 0x00000000 );
+      REQUIRE( record.baseDamage == 8.0f );
+      REQUIRE( record.value == 1 );
       REQUIRE( record.weight.has_value() );
       REQUIRE( record.weight.value() == 0.1f );
 

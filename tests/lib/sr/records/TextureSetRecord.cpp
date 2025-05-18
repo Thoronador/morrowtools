@@ -46,11 +46,7 @@ TEST_CASE("TextureSetRecord")
     REQUIRE( record.texture04.empty() );
     REQUIRE( record.texture05.empty() );
     REQUIRE( record.texture07.empty() );
-    REQUIRE_FALSE( record.hasDODT );
-    for (unsigned int i = 0; i < 36; ++i)
-    {
-      REQUIRE( record.unknownDODT[i] == 0 );
-    }
+    REQUIRE_FALSE( record.unknownDODT.has_value() );
     REQUIRE( record.unknownDNAM == 0 );
   }
 
@@ -153,22 +149,25 @@ TEST_CASE("TextureSetRecord")
 
       SECTION("DODT mismatch")
       {
-        a.hasDODT = true;
+        constexpr auto data = std::array<uint8_t, 36>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+        a.unknownDODT = data;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDODT = false;
-        b.hasDODT = true;
+        a.unknownDODT.reset();
+        b.unknownDODT = data;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
 
-        a.hasDODT = true;
-        b.hasDODT = true;
+        a.unknownDODT = data;
+        b.unknownDODT = data;
 
-        a.unknownDODT[35] = 0x12;
-        b.unknownDODT[35] = 0x34;
+        a.unknownDODT.value()[35] = 0x12;
+        b.unknownDODT.value()[35] = 0x34;
 
         REQUIRE_FALSE( a.equals(b) );
         REQUIRE_FALSE( b.equals(a) );
@@ -303,7 +302,9 @@ TEST_CASE("TextureSetRecord")
       record.texture00 = "foo.dds";
       REQUIRE( record.getWriteSize() == 50 );
 
-      record.hasDODT = true;
+      record.unknownDODT = std::array<uint8_t, 36>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
       REQUIRE( record.getWriteSize() == 92 );
     }
   }
@@ -353,11 +354,7 @@ TEST_CASE("TextureSetRecord")
       REQUIRE( record.texture04.empty() );
       REQUIRE( record.texture05.empty() );
       REQUIRE( record.texture07.empty() );
-      REQUIRE_FALSE( record.hasDODT );
-      for (unsigned int i = 0; i < 36; ++i)
-      {
-        REQUIRE( record.unknownDODT[i] == 0 );
-      }
+      REQUIRE_FALSE( record.unknownDODT.has_value() );
       REQUIRE( record.unknownDNAM == 0 );
 
       // Writing should succeed.
@@ -408,44 +405,45 @@ TEST_CASE("TextureSetRecord")
       REQUIRE( record.texture04.empty() );
       REQUIRE( record.texture05 == "Cubemaps\\QuickSkyDark_e.dds" );
       REQUIRE( record.texture07.empty() );
-      REQUIRE( record.hasDODT );
+      REQUIRE( record.unknownDODT.has_value() );
       // DODT$\0 \0\0\x80\x43\0\0\0D\0\0\x80 \x43\0\0\0D\0\0\0C\0 \0\xC8\x43\0\0\x80?\x04z\x7F \0\xFF\xFF\xFF\0
-      REQUIRE( record.unknownDODT[0] == 0 );      // }
-      REQUIRE( record.unknownDODT[1] == 0 );      // } float, 256.0f
-      REQUIRE( record.unknownDODT[2] == 0x80 );   // }
-      REQUIRE( record.unknownDODT[3] == 0x43 );   // }
-      REQUIRE( record.unknownDODT[4] == 0x00 );   // )
-      REQUIRE( record.unknownDODT[5] == 0x00 );   // ) float, 512.0f
-      REQUIRE( record.unknownDODT[6] == 0x00 );   // )
-      REQUIRE( record.unknownDODT[7] == 0x44 );   // )
-      REQUIRE( record.unknownDODT[8] == 0x00 );   // ]
-      REQUIRE( record.unknownDODT[9] == 0x00 );   // ] float, 256.0f
-      REQUIRE( record.unknownDODT[10] == 0x80 );  // ]
-      REQUIRE( record.unknownDODT[11] == 0x43 );  // ]
-      REQUIRE( record.unknownDODT[12] == 0x00 );  // }
-      REQUIRE( record.unknownDODT[13] == 0x00 );  // } float, 512.0f
-      REQUIRE( record.unknownDODT[14] == 0x00 );  // }
-      REQUIRE( record.unknownDODT[15] == 0x44 );  // }
-      REQUIRE( record.unknownDODT[16] == 0x00 );  // )
-      REQUIRE( record.unknownDODT[17] == 0x00 );  // ) float, 128.0f
-      REQUIRE( record.unknownDODT[18] == 0x00 );  // )
-      REQUIRE( record.unknownDODT[19] == 0x43 );  // )
-      REQUIRE( record.unknownDODT[20] == 0x00 );  // ]
-      REQUIRE( record.unknownDODT[21] == 0x00 );  // ] float, 400.0f
-      REQUIRE( record.unknownDODT[22] == 0xC8 );  // ]
-      REQUIRE( record.unknownDODT[23] == 0x43 );  // ]
-      REQUIRE( record.unknownDODT[24] == 0x00 );  // }
-      REQUIRE( record.unknownDODT[25] == 0x00 );  // } float, 1.0f
-      REQUIRE( record.unknownDODT[26] == 0x80 );  // }
-      REQUIRE( record.unknownDODT[27] == 0x3F );  // }
-      REQUIRE( record.unknownDODT[28] == 0x04 );
-      REQUIRE( record.unknownDODT[29] == 0x7A );
-      REQUIRE( record.unknownDODT[30] == 0x7F );
-      REQUIRE( record.unknownDODT[31] == 0x00 );
-      REQUIRE( record.unknownDODT[32] == 0xFF );
-      REQUIRE( record.unknownDODT[33] == 0xFF );
-      REQUIRE( record.unknownDODT[34] == 0xFF );
-      REQUIRE( record.unknownDODT[35] == 0x00 );
+      const auto& DODT = record.unknownDODT.value();
+      REQUIRE( DODT[0] == 0 );      // }
+      REQUIRE( DODT[1] == 0 );      // } float, 256.0f
+      REQUIRE( DODT[2] == 0x80 );   // }
+      REQUIRE( DODT[3] == 0x43 );   // }
+      REQUIRE( DODT[4] == 0x00 );   // )
+      REQUIRE( DODT[5] == 0x00 );   // ) float, 512.0f
+      REQUIRE( DODT[6] == 0x00 );   // )
+      REQUIRE( DODT[7] == 0x44 );   // )
+      REQUIRE( DODT[8] == 0x00 );   // ]
+      REQUIRE( DODT[9] == 0x00 );   // ] float, 256.0f
+      REQUIRE( DODT[10] == 0x80 );  // ]
+      REQUIRE( DODT[11] == 0x43 );  // ]
+      REQUIRE( DODT[12] == 0x00 );  // }
+      REQUIRE( DODT[13] == 0x00 );  // } float, 512.0f
+      REQUIRE( DODT[14] == 0x00 );  // }
+      REQUIRE( DODT[15] == 0x44 );  // }
+      REQUIRE( DODT[16] == 0x00 );  // )
+      REQUIRE( DODT[17] == 0x00 );  // ) float, 128.0f
+      REQUIRE( DODT[18] == 0x00 );  // )
+      REQUIRE( DODT[19] == 0x43 );  // )
+      REQUIRE( DODT[20] == 0x00 );  // ]
+      REQUIRE( DODT[21] == 0x00 );  // ] float, 400.0f
+      REQUIRE( DODT[22] == 0xC8 );  // ]
+      REQUIRE( DODT[23] == 0x43 );  // ]
+      REQUIRE( DODT[24] == 0x00 );  // }
+      REQUIRE( DODT[25] == 0x00 );  // } float, 1.0f
+      REQUIRE( DODT[26] == 0x80 );  // }
+      REQUIRE( DODT[27] == 0x3F );  // }
+      REQUIRE( DODT[28] == 0x04 );
+      REQUIRE( DODT[29] == 0x7A );
+      REQUIRE( DODT[30] == 0x7F );
+      REQUIRE( DODT[31] == 0x00 );
+      REQUIRE( DODT[32] == 0xFF );
+      REQUIRE( DODT[33] == 0xFF );
+      REQUIRE( DODT[34] == 0xFF );
+      REQUIRE( DODT[35] == 0x00 );
 
       REQUIRE( record.unknownDNAM == 0 );
 
@@ -497,11 +495,7 @@ TEST_CASE("TextureSetRecord")
       REQUIRE( record.texture04.empty() );
       REQUIRE( record.texture05 == "Cubemaps\\EyeCubeMap.dds" );
       REQUIRE( record.texture07.empty() );
-      REQUIRE_FALSE( record.hasDODT );
-      for (unsigned int i = 0; i < 36; ++i)
-      {
-        REQUIRE( record.unknownDODT[i] == 0 );
-      }
+      REQUIRE_FALSE( record.unknownDODT.has_value() );
       REQUIRE( record.unknownDNAM == 0 );
 
       // Writing should succeed.
@@ -552,11 +546,7 @@ TEST_CASE("TextureSetRecord")
       REQUIRE( record.texture04 == "Actors\\Character\\Male\\BlankDetailmap.dds" );
       REQUIRE( record.texture05.empty() );
       REQUIRE( record.texture07 == "Actors\\Character\\Male\\MaleHead_S.dds" );
-      REQUIRE_FALSE( record.hasDODT );
-      for (unsigned int i = 0; i < 36; ++i)
-      {
-        REQUIRE( record.unknownDODT[i] == 0 );
-      }
+      REQUIRE_FALSE( record.unknownDODT.has_value() );
       REQUIRE( record.unknownDNAM == 0x0006 );
 
       // Writing should succeed.

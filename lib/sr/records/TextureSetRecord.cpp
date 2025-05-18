@@ -19,7 +19,6 @@
 */
 
 #include "TextureSetRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../mw/HelperIO.hpp"
@@ -28,7 +27,9 @@ namespace SRTP
 {
 
 TextureSetRecord::TextureSetRecord()
-: BasicRecord(), editorID(""),
+: BasicRecord(),
+  editorID(""),
+  unknownOBND(std::array<uint8_t, 12>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 })),
   texture00(""),
   texture01(""),
   texture02(""),
@@ -36,267 +37,220 @@ TextureSetRecord::TextureSetRecord()
   texture04(""),
   texture05(""),
   texture07(""),
-  hasDODT(false),
+  unknownDODT(std::nullopt),
   unknownDNAM(0)
 {
-  memset(unknownOBND, 0, 12);
-  memset(unknownDODT, 0, 36);
 }
 
 #ifndef SR_NO_RECORD_EQUALITY
 bool TextureSetRecord::equals(const TextureSetRecord& other) const
 {
-  if ((equalsBasic(other)) and (editorID==other.editorID)
-      and (texture00==other.texture00) and (texture01==other.texture01)
-      and (texture02==other.texture02) and (texture03==other.texture03)
-      and (texture04==other.texture04) and (texture05==other.texture05)
-      and (texture07==other.texture07)
-      and (unknownDNAM==other.unknownDNAM) and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (hasDODT==other.hasDODT))
-  {
-    if (hasDODT) return (memcmp(unknownDODT, other.unknownDODT, 36)==0);
-    return true;
-  }
-  return false;
+  return equalsBasic(other) && (editorID == other.editorID)
+      && (texture00 == other.texture00) && (texture01 == other.texture01)
+      && (texture02 == other.texture02) && (texture03 == other.texture03)
+      && (texture04 == other.texture04) && (texture05 == other.texture05)
+      && (texture07 == other.texture07) && (unknownDNAM == other.unknownDNAM)
+      && (unknownOBND == other.unknownOBND) && (unknownDODT == other.unknownDODT);
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t TextureSetRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ +2 /* 2 bytes for length */
-        +editorID.length()+1 /* length of name +1 byte for NUL termination */
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+        + editorID.length() + 1 /* length of name +1 byte for NUL termination */
         + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
-        +4 /* TX00 */ +2 /* 2 bytes for length */
-        +texture00.length()+1 /* length of name +1 byte for NUL termination */
-        +4 /* DNAM */ +2 /* 2 bytes for length */ +2 /* fixed size */;
+        + 4 /* TX00 */ + 2 /* 2 bytes for length */
+        + texture00.length() + 1 /* length of name +1 byte for NUL termination */
+        + 4 /* DNAM */ + 2 /* 2 bytes for length */ + 2 /* fixed size */;
   if (!texture01.empty())
   {
-    writeSize = writeSize +4 /* TX01 */ +2 /* 2 bytes for length */
-        +texture01.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* TX01 */ + 2 /* 2 bytes for length */
+        + texture01.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!texture02.empty())
   {
-    writeSize = writeSize +4 /* TX02 */ +2 /* 2 bytes for length */
-        +texture02.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* TX02 */ + 2 /* 2 bytes for length */
+        + texture02.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!texture03.empty())
   {
-    writeSize = writeSize +4 /* TX03 */ +2 /* 2 bytes for length */
-        +texture03.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* TX03 */ + 2 /* 2 bytes for length */
+        + texture03.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!texture04.empty())
   {
-    writeSize = writeSize +4 /* TX04 */ +2 /* 2 bytes for length */
-        +texture04.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* TX04 */ + 2 /* 2 bytes for length */
+        + texture04.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!texture05.empty())
   {
-    writeSize = writeSize +4 /* TX05 */ +2 /* 2 bytes for length */
-        +texture05.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* TX05 */ + 2 /* 2 bytes for length */
+        + texture05.length() + 1 /* length of name +1 byte for NUL termination */;
   }
   if (!texture07.empty())
   {
-    writeSize = writeSize +4 /* TX07 */ +2 /* 2 bytes for length */
-        +texture07.length()+1 /* length of name +1 byte for NUL termination */;
+    writeSize = writeSize + 4 /* TX07 */ + 2 /* 2 bytes for length */
+        + texture07.length() + 1 /* length of name +1 byte for NUL termination */;
   }
-  if (hasDODT)
+  if (unknownDODT.has_value())
   {
-    writeSize = writeSize +4 /* DODT */ +2 /* 2 bytes for length */ +36 /* fixed size */;
+    writeSize = writeSize + 4 /* DODT */ + 2 /* 2 bytes for length */ + 36 /* fixed size */;
   }
   return writeSize;
 }
 
 bool TextureSetRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cTXST, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  output.write(reinterpret_cast<const char*>(&cTXST), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+    return false;
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
+  // write OBND
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
   subLength = 12; /* fixed size */
-  output.write((const char*) &subLength, 2);
-  //write OBND's data
-  output.write((const char*) unknownOBND, 12);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
-  //write TX00
+  // write zeroeth texture (TX00)
   output.write((const char*) &cTX00, 4);
-  //TX00's length
-  subLength = texture00.length()+1;
-  output.write((const char*) &subLength, 2);
+  subLength = texture00.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   //write zeroeth texture
   output.write(texture00.c_str(), subLength);
 
   if (!texture01.empty())
   {
-    //write TX01
-    output.write((const char*) &cTX01, 4);
-    //TX01's length
-    subLength = texture01.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write first texture
+    // write first texture (TX01)
+    output.write(reinterpret_cast<const char*>(&cTX01), 4);
+    subLength = texture01.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(texture01.c_str(), subLength);
-  }//if tex01
+  }
 
   if (!texture02.empty())
   {
-    //write TX02
-    output.write((const char*) &cTX02, 4);
-    //TX02's length
-    subLength = texture02.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write second texture
+    // write second texture (TX02)
+    output.write(reinterpret_cast<const char*>(&cTX02), 4);
+    subLength = texture02.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(texture02.c_str(), subLength);
-  }//if tex02
+  }
 
   if (!texture03.empty())
   {
-    //write TX03
-    output.write((const char*) &cTX03, 4);
-    //TX03's length
-    subLength = texture03.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write third texture
+    // write third texture (TX03)
+    output.write(reinterpret_cast<const char*>(&cTX03), 4);
+    subLength = texture03.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(texture03.c_str(), subLength);
-  }//if tex03
+  }
 
   if (!texture04.empty())
   {
-    //write TX04
-    output.write((const char*) &cTX04, 4);
-    //TX04's length
-    subLength = texture04.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write 4th texture
+    // write 4th texture (TX04)
+    output.write(reinterpret_cast<const char*>(&cTX04), 4);
+    subLength = texture04.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(texture04.c_str(), subLength);
-  }//if tex04
+  }
 
   if (!texture05.empty())
   {
-    //write TX05
-    output.write((const char*) &cTX05, 4);
-    //TX05's length
-    subLength = texture05.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write fifth texture
+    // write fifth texture (TX05)
+    output.write(reinterpret_cast<const char*>(&cTX05), 4);
+    subLength = texture05.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(texture05.c_str(), subLength);
-  }//if tex05
+  }
 
   if (!texture07.empty())
   {
-    //write TX07
-    output.write((const char*) &cTX07, 4);
-    //TX07's length
-    subLength = texture07.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write seventh texture
+    // write seventh texture (TX07)
+    output.write(reinterpret_cast<const char*>(&cTX07), 4);
+    subLength = texture07.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(texture07.c_str(), subLength);
-  }//if tex07
+  }
 
-  if (hasDODT)
+  if (unknownDODT.has_value())
   {
-    //write DODT
-    output.write((const char*) &cDODT, 4);
-    //DODT's length
+    // write DODT
+    output.write(reinterpret_cast<const char*>(&cDODT), 4);
     subLength = 36; /* fixed size */
-    output.write((const char*) &subLength, 2);
-    //write DODT's data
-    output.write((const char*) unknownDODT, 36);
-  }//if DODT
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(unknownDODT.value().data()), 36);
+  }
 
-  //write DNAM
-  output.write((const char*) &cDNAM, 4);
-  //DNAM's length
+  // write DNAM
+  output.write(reinterpret_cast<const char*>(&cDNAM), 4);
   subLength = 2; /* fixed size */
-  output.write((const char*) &subLength, 2);
-  //write DNAM's data
-  output.write((const char*) (&unknownDNAM), 2);
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(&unknownDNAM), 2);
 
   return output.good();
 }
 #endif
 
-bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool TextureSetRecord::loadFromStream(std::istream& input,
+                                      [[maybe_unused]] const bool localized,
+                                      [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  if (!loadSizeAndUnknownValues(input, readSize))
+    return false;
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength>511)
-  {
-    std::cerr <<"Error: sub record EDID of TXST is longer than 511 characters!\n";
-    return false;
-  }
-  //read TXST's stuff
+  uint32_t bytesRead = 0;
+
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
   {
-    std::cerr << "Error while reading subrecord EDID of TXST!\n";
+    std::cerr << "Error while reading sub record EDID of TXST!\n";
     return false;
   }
-  editorID = std::string(buffer);
 
-  //read OBND
-  in_File.read((char*) &subRecName, 4);
+  // read OBND
+  uint32_t subRecName = 0;
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
-  if (subRecName!=cOBND)
+  if (subRecName != cOBND)
   {
     UnexpectedRecord(cOBND, subRecName);
     return false;
   }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
+  // OBND's length
+  uint16_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
-  if (subLength!=12)
+  if (subLength != 12)
   {
-    std::cerr <<"Error: sub record OBND of TXST has invalid length ("<<subLength
-              <<" bytes). Should be 12 bytes.\n";
+    std::cerr << "Error: Sub record OBND of TXST has invalid length ("
+              << subLength << " bytes). Should be 12 bytes.\n";
     return false;
   }
-  //read OBND's stuff
-  in_File.read((char*) unknownOBND, 12);
+  // read OBND's stuff
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of TXST!\n";
+    std::cerr << "Error while reading sub record OBND of TXST!\n";
     return false;
   }
 
-  //read TX00
-  if (!loadString512FromStream(in_File, texture00, buffer, cTX00, true, bytesRead))
+  // read TX00
+  if (!loadString512FromStream(input, texture00, buffer, cTX00, true, bytesRead))
     return false;
 
-  //DODT or DNAM next
+  // DODT or DNAM are next
   bool hasReadDNAM = false;
-  bool hasReadDODT = false;
-  hasDODT = false;
+  unknownDODT.reset();
   texture01.clear();
   texture02.clear();
   texture03.clear();
@@ -305,120 +259,121 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
   texture07.clear();
   while (bytesRead<readSize)
   {
-    //read next header
-    in_File.read((char*) &subRecName, 4);
+    // read next header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cDNAM:
            if (hasReadDNAM)
            {
-             std::cerr << "Error: record TXST seems to have more than one DNAM subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one DNAM sub record!\n";
              return false;
            }
-           //DNAM's length
-           in_File.read((char*) &subLength, 2);
+           // DNAM's length
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=2)
+           if (subLength != 2)
            {
-             std::cerr <<"Error: sub record DNAM of TXST has invalid length ("
-                       <<subLength <<" bytes). Should be two bytes.\n";
+             std::cerr << "Error: Sub record DNAM of TXST has invalid length ("
+                       << subLength << " bytes). Should be two bytes.\n";
              return false;
            }
-           //read DNAM's stuff
-           in_File.read((char*) &unknownDNAM, 2);
+           // read DNAM's data
+           input.read(reinterpret_cast<char*>(&unknownDNAM), 2);
            bytesRead += 2;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DNAM of TXST!\n";
+             std::cerr << "Error while reading sub record DNAM of TXST!\n";
              return false;
            }
            hasReadDNAM = true;
            break;
       case cDODT:
-           if (hasReadDODT)
+           if (unknownDODT.has_value())
            {
-             std::cerr << "Error: record TXST seems to have more than one DODT subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one DODT sub record!\n";
              return false;
            }
-           //DODT's length
-           in_File.read((char*) &subLength, 2);
+           // DODT's length
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=36)
+           if (subLength != 36)
            {
-             std::cerr <<"Error: sub record DODT of TXST has invalid length ("<<subLength
-                       <<" bytes). Should be 36 bytes.\n";
+             std::cerr << "Error: Sub record DODT of TXST has invalid length ("
+                       << subLength << " bytes). Should be 36 bytes.\n";
              return false;
            }
-           //read DODT's stuff
-           in_File.read((char*) &unknownDODT, 36);
+           // read DODT's stuff
+           unknownDODT = std::array<uint8_t, 36>({ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 });
+           input.read(reinterpret_cast<char*>(unknownDODT.value().data()), 36);
            bytesRead += 36;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DODT of TXST!\n";
+             std::cerr << "Error while reading sub record DODT of TXST!\n";
              return false;
            }
-           hasReadDODT = true;
-           hasDODT = true;
            break;
       case cTX01:
            if (!texture01.empty())
            {
-             std::cerr << "Error: record TXST seems to have more than one TX01 subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one TX01 sub record!\n";
              return false;
            }
-           //read TX01
-           if (!loadString512FromStream(in_File, texture01, buffer, cTX01, false, bytesRead))
+           // read TX01
+           if (!loadString512FromStream(input, texture01, buffer, cTX01, false, bytesRead))
              return false;
            break;
       case cTX02:
            if (!texture02.empty())
            {
-             std::cerr << "Error: record TXST seems to have more than one TX02 subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one TX02 sub record!\n";
              return false;
            }
-           //read TX02
-           if (!loadString512FromStream(in_File, texture02, buffer, cTX02, false, bytesRead))
+           // read TX02
+           if (!loadString512FromStream(input, texture02, buffer, cTX02, false, bytesRead))
              return false;
            break;
       case cTX03:
            if (!texture03.empty())
            {
-             std::cerr << "Error: record TXST seems to have more than one TX03 subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one TX03 sub record!\n";
              return false;
            }
-           //read TX03
-           if (!loadString512FromStream(in_File, texture03, buffer, cTX03, false, bytesRead))
+           // read TX03
+           if (!loadString512FromStream(input, texture03, buffer, cTX03, false, bytesRead))
              return false;
            break;
       case cTX04:
            if (!texture04.empty())
            {
-             std::cerr << "Error: record TXST seems to have more than one TX04 subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one TX04 sub record!\n";
              return false;
            }
-           //read TX04
-           if (!loadString512FromStream(in_File, texture04, buffer, cTX04, false, bytesRead))
+           // read TX04
+           if (!loadString512FromStream(input, texture04, buffer, cTX04, false, bytesRead))
              return false;
            break;
       case cTX05:
            if (!texture05.empty())
            {
-             std::cerr << "Error: record TXST seems to have more than one TX05 subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one TX05 sub record!\n";
              return false;
            }
-           //read TX05
-           if (!loadString512FromStream(in_File, texture05, buffer, cTX05, false, bytesRead))
+           // read TX05
+           if (!loadString512FromStream(input, texture05, buffer, cTX05, false, bytesRead))
              return false;
            break;
       case cTX07:
            if (!texture07.empty())
            {
-             std::cerr << "Error: record TXST seems to have more than one TX07 subrecord!\n";
+             std::cerr << "Error: Record TXST seems to have more than one TX07 sub record!\n";
              return false;
            }
-           //read TX07
-           if (!loadString512FromStream(in_File, texture07, buffer, cTX07, false, bytesRead))
+           // read TX07
+           if (!loadString512FromStream(input, texture07, buffer, cTX07, false, bytesRead))
              return false;
            break;
       default:
@@ -426,8 +381,8 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
                      << "TX03, TX04, TX05 or TX07 was not found. Instead, \""
                      << IntTo4Char(subRecName) << "\" was found.\n";
            return false;
-    }//swi
-  }//while
+    }
+  }
 
   if (!hasReadDNAM)
   {
@@ -435,7 +390,7 @@ bool TextureSetRecord::loadFromStream(std::istream& in_File, const bool localize
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t TextureSetRecord::getRecordType() const
@@ -443,4 +398,4 @@ uint32_t TextureSetRecord::getRecordType() const
   return cTXST;
 }
 
-} //namespace
+} // namespace

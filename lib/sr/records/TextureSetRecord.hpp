@@ -21,51 +21,67 @@
 #ifndef SR_TEXTURESETRECORD_HPP
 #define SR_TEXTURESETRECORD_HPP
 
+#include <array>
+#include <optional>
 #include <string>
 #include "BasicRecord.hpp"
 
 namespace SRTP
 {
 
+/** Holds information about a texture set. */
 struct TextureSetRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     TextureSetRecord();
 
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instances contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const TextureSetRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input    the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
-
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
     std::string editorID;
-    uint8_t unknownOBND[12];
+    std::array<uint8_t, 12> unknownOBND;
     std::string texture00;
     std::string texture01;
     std::string texture02;
@@ -73,11 +89,10 @@ struct TextureSetRecord: public BasicRecord
     std::string texture04;
     std::string texture05;
     std::string texture07;
-    bool hasDODT;
-    uint8_t unknownDODT[36];
+    std::optional<std::array<uint8_t, 36> > unknownDODT;
     uint16_t unknownDNAM;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_TEXTURESETRECORD_HPP

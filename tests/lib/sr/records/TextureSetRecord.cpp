@@ -768,6 +768,21 @@ TEST_CASE("TextureSetRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before DNAM can be read")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX01(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0DNAM\x02\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: length of DODT is not 36")
     {
       {
@@ -814,9 +829,39 @@ TEST_CASE("TextureSetRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before DODT can be read completely")
+    {
+      const auto data = "TXST\xE6\0\0\0\0\0\0\0\xDE\xD0\x0F\0\x0A\x66K\0%\0\x01\0EDID\x1C\0DecalPuddlesLargeSmallGroup\0OBND\x0C\0\xF8\xFF\xE2\xFF\xEC\xFF\x07\0\x1D\0\x13\0TX00\x18\0Puddle\\DecalPuddles.dds\0TX01\x1A\0Puddle\\DecalPuddles_N.dds\0TX02\x1A\0Puddle\\DecalPuddles_m.dds\0TX05\x1C\0Cubemaps\\QuickSkyDark_e.dds\0DODT$\0\0\0\x80\x43\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple TX01 paths")
     {
       const auto data = "TXST\xB6\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX01(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0TX01(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0DNAM\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before TX01 can be read completely")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX01(\0Clot"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -844,9 +889,39 @@ TEST_CASE("TextureSetRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before TX02 can be read completely")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX02(\0Clot"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple TX03 paths")
     {
       const auto data = "TXST\xB6\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX03(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0TX03(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0DNAM\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before TX03 can be read completely")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX03(\0Clot"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 
@@ -874,6 +949,21 @@ TEST_CASE("TextureSetRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before TX04 can be read completely")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX04(\0Clot"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple TX05 paths")
     {
       const auto data = "TXST\xB6\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX05(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0TX05(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0DNAM\x02\0\0\0"sv;
@@ -889,9 +979,54 @@ TEST_CASE("TextureSetRecord")
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
     }
 
+    SECTION("corrupt data: stream ends before TX05 can be read completely")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX05(\0Clot"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
     SECTION("corrupt data: multiple TX07 paths")
     {
       const auto data = "TXST\xB6\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX07(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0TX07(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0DNAM\x02\0\0\0"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: stream ends before TX07 can be read completely")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX07(\0Clot"sv;
+      std::istringstream stream;
+      stream.str(std::string(data));
+
+      // Skip TXST, because header is handled before loadFromStream.
+      stream.seekg(4);
+      REQUIRE( stream.good() );
+
+      // Reading should fail.
+      TextureSetRecord record;
+      REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+
+    SECTION("corrupt data: unsupported record type")
+    {
+      const auto data = "TXST\x88\0\0\0\0\0\0\0\xF8\xFA\x10\0\x0Chx\0'\0\x01\0EDID\x0E\0VaerminaRobes\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0TX00&\0Clothes\\Monk\\VaerminaVariantRobes.dds\0TX99(\0Clothes\\Monk\\VaerminaVariantRobes_n.dds\0DNAM\x02\0\0\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
 

@@ -140,7 +140,7 @@ ESMReaderAll::~ESMReaderAll()
 {
 }
 
-bool ESMReaderAll::needGroup(const GroupData& g_data) const
+bool ESMReaderAll::needGroup([[maybe_unused]] const GroupData& g_data) const
 {
   return true;
 }

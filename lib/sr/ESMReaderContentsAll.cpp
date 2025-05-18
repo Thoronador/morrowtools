@@ -135,7 +135,7 @@ ESMReaderContentsAll::ESMReaderContentsAll(ESMFileContents& storage)
 {
 }
 
-bool ESMReaderContentsAll::needGroup(const GroupData& g_data) const
+bool ESMReaderContentsAll::needGroup([[maybe_unused]] const GroupData& g_data) const
 {
   return true;
 }

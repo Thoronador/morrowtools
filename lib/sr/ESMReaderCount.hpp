@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -35,8 +35,6 @@ class ESMReaderCount: public ESMReader
   public:
     /* constructor */
     ESMReaderCount();
-
-    virtual ~ESMReaderCount();
 
     /* the map that counts the records. Key is the record name, value is the
        number that indicates how often that record was seen

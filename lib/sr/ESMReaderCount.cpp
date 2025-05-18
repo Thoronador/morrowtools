@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -30,10 +30,6 @@ ESMReaderCount::ESMReaderCount()
   resetStats();
 }
 
-ESMReaderCount::~ESMReaderCount()
-{
-}
-
 void ESMReaderCount::resetStats()
 {
   RecordCounter.clear();
@@ -42,7 +38,7 @@ void ESMReaderCount::resetStats()
   totalGroups = 0;
 }
 
-bool ESMReaderCount::needGroup(const GroupData& g_data) const
+bool ESMReaderCount::needGroup([[maybe_unused]] const GroupData& g_data) const
 {
   return true;
 }

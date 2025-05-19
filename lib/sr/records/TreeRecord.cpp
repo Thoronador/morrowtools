@@ -121,7 +121,7 @@ bool TreeRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cerr << "Error while writing subrecord MODT of TREE!\n";
+      std::cerr << "Error while writing sub record MODT of TREE!\n";
       return false;
     }
   }
@@ -167,10 +167,10 @@ bool TreeRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool TreeRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   if (isDeleted())
     return true;
@@ -180,11 +180,11 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
 
   // read editor ID (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   // read OBND
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cOBND)
   {
@@ -192,7 +192,7 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -201,11 +201,11 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
     return false;
   }
   // read OBND's stuff
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of TREE!\n";
+    std::cerr << "Error while reading sub record OBND of TREE!\n";
     return false;
   }
 
@@ -218,31 +218,31 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
   bool hasReadCNAM = false;
   while (bytesRead < readSize)
   {
-    // read next subrecord
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    // read next sub record header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cerr << "Error: TREE seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: TREE seems to have more than one MODL sub record.\n";
              return false;
            }
            // read model path (MODL)
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cerr << "Error: TREE seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: TREE seems to have more than one MODT sub record.\n";
              return false;
            }
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
-             std::cerr << "Error while reading subrecord MODT of TREE!\n";
+             std::cerr << "Error while reading sub record MODT of TREE!\n";
              return false;
            }
            bytesRead = bytesRead + 2 /*length value*/ + unknownMODT.size() /*data size*/;
@@ -250,45 +250,45 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cPFIG:
            if (ingredientFormID != 0)
            {
-             std::cerr << "Error: TREE seems to have more than one PFIG subrecord.\n";
+             std::cerr << "Error: TREE seems to have more than one PFIG sub record.\n";
              return false;
            }
            // read PFIG
-           if (!loadUint32SubRecordFromStream(in_File, cPFIG, ingredientFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cPFIG, ingredientFormID, false))
              return false;
            bytesRead += 6;
            // check content
            if (ingredientFormID == 0)
            {
-             std::cerr << "Error: Subrecord PFIG of TREE is zero!\n";
+             std::cerr << "Error: Sub record PFIG of TREE is zero!\n";
              return false;
            }
            break;
       case cSNAM:
            if (harvestSoundFormID != 0)
            {
-             std::cerr << "Error: TREE seems to have more than one SNAM subrecord.\n";
+             std::cerr << "Error: TREE seems to have more than one SNAM sub record.\n";
              return false;
            }
            // read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, harvestSoundFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cSNAM, harvestSoundFormID, false))
              return false;
            bytesRead += 6;
            // check content
            if (harvestSoundFormID == 0)
            {
-             std::cerr << "Error: Subrecord SNAM of TREE is zero!\n";
+             std::cerr << "Error: Sub record SNAM of TREE is zero!\n";
              return false;
            }
            break;
       case cPFPC:
            if (hasReadPFPC)
            {
-             std::cerr << "Error: TREE seems to have more than one PFCP subrecord.\n";
+             std::cerr << "Error: TREE seems to have more than one PFCP sub record.\n";
              return false;
            }
            // read PFCP
-           if (!loadUint32SubRecordFromStream(in_File, cPFPC, unknownPFPC, false))
+           if (!loadUint32SubRecordFromStream(input, cPFPC, unknownPFPC, false))
              return false;
            bytesRead += 6;
            hasReadPFPC = true;
@@ -296,21 +296,21 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: TREE seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: TREE seems to have more than one FULL sub record.\n";
              return false;
            }
            // read FULL
-           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cCNAM:
            if (hasReadCNAM)
            {
-             std::cerr << "Error: TREE seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: TREE seems to have more than one CNAM sub record.\n";
              return false;
            }
            // CNAM's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 48)
            {
@@ -319,11 +319,11 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            // read CNAM's stuff
-           in_File.read(reinterpret_cast<char*>(unknownCNAM.data()), 48);
+           input.read(reinterpret_cast<char*>(unknownCNAM.data()), 48);
            bytesRead += 48;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord CNAM of TREE!\n";
+             std::cerr << "Error while reading sub record CNAM of TREE!\n";
              return false;
            }
            hasReadCNAM = true;
@@ -341,11 +341,11 @@ bool TreeRecord::loadFromStream(std::istream& in_File, const bool localized, con
   // presence checks
   if (modelPath.empty() || !hasReadPFPC || !hasReadCNAM)
   {
-    std::cerr << "Error while reading TREE record: at least one required subrecord is missing!\n";
+    std::cerr << "Error while reading TREE record: At least one required sub record is missing!\n";
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t TreeRecord::getRecordType() const

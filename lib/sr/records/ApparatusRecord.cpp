@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -85,7 +85,7 @@ bool ApparatusRecord::saveToStream(std::ostream& output) const
   // write FULL
   if (!name.saveToStream(output, cFULL))
   {
-    std::cerr << "Error while writing subrecord FULL of APPA!\n";
+    std::cerr << "Error while writing sub record FULL of APPA!\n";
     return false;
   }
 
@@ -98,7 +98,7 @@ bool ApparatusRecord::saveToStream(std::ostream& output) const
   // write description (DESC)
   if (!description.saveToStream(output, cDESC))
   {
-    std::cerr << "Error while writing subrecord DESC of APPA!\n";
+    std::cerr << "Error while writing sub record DESC of APPA!\n";
     return false;
   }
 
@@ -114,10 +114,10 @@ bool ApparatusRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool ApparatusRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
@@ -125,11 +125,11 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
 
   // read editor ID (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   // read object bounds (OBND)
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cOBND)
   {
@@ -137,7 +137,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -146,38 +146,38 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
     return false;
   }
   // read OBND's stuff
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of APPA!\n";
+    std::cerr << "Error while reading sub record OBND of APPA!\n";
     return false;
   }
 
   // read FULL
-  if (!name.loadFromStream(in_File, cFULL, true, bytesRead, localized, table, buffer))
+  if (!name.loadFromStream(input, cFULL, true, bytesRead, localized, table, buffer))
   {
-    std::cerr << "Error while reading subrecord FULL of APPA!\n";
+    std::cerr << "Error while reading sub record FULL of APPA!\n";
     return false;
   }
 
   // read QUAL
-  if (!loadUint32SubRecordFromStream(in_File, cQUAL, quality, true))
+  if (!loadUint32SubRecordFromStream(input, cQUAL, quality, true))
   {
-    std::cerr << "Error while reading subrecord QUAL of APPA!\n";
+    std::cerr << "Error while reading sub record QUAL of APPA!\n";
     return false;
   }
   bytesRead += 10;
 
   // read DESC
-  if (!description.loadFromStream(in_File, cDESC, true, bytesRead, localized, table, buffer))
+  if (!description.loadFromStream(input, cDESC, true, bytesRead, localized, table, buffer))
   {
-    std::cerr << "Error while reading subrecord DESC of APPA!\n";
+    std::cerr << "Error while reading sub record DESC of APPA!\n";
     return false;
   }
 
   // read DATA
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cDATA)
   {
@@ -185,7 +185,7 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
     return false;
   }
   // DATA's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 8)
   {
@@ -194,16 +194,16 @@ bool ApparatusRecord::loadFromStream(std::istream& in_File, const bool localized
     return false;
   }
   // read DATA's stuff
-  in_File.read(reinterpret_cast<char*>(&value), 4);
-  in_File.read(reinterpret_cast<char*>(&weight), 4);
+  input.read(reinterpret_cast<char*>(&value), 4);
+  input.read(reinterpret_cast<char*>(&weight), 4);
   bytesRead += 8;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord DATA of APPA!\n";
+    std::cerr << "Error while reading sub record DATA of APPA!\n";
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t ApparatusRecord::getRecordType() const

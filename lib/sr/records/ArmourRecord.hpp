@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -69,13 +69,13 @@ struct ArmourRecord: public BasicRecord
 
     /** \brief Loads the record from the given input stream.
      *
-     * \param in_File    the input stream
+     * \param input     the input stream
      * \param localized  whether the file to read from is localized or not
      * \param table      the associated string table for localized files
      * \return Returns true on success (record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
     /** \brief Gets the record's type, usually its header.
      *
@@ -86,8 +86,8 @@ struct ArmourRecord: public BasicRecord
     std::string editorID;
     BinarySubRecord unknownVMAD;
     std::array<uint8_t, 12> unknownOBND;
-    LocalizedString name; // subrecord FULL
-    uint32_t enchantingFormID; // subrecord EITM
+    LocalizedString name; // sub record FULL
+    uint32_t enchantingFormID; // sub record EITM
     std::string modelPath; /**< path to male armour model */
     BinarySubRecord unknownMO2T;
     BinarySubRecord unknownMO2S;
@@ -96,21 +96,21 @@ struct ArmourRecord: public BasicRecord
     BinarySubRecord unknownMO4S;
     BinarySubRecord unknownBODT;
     BinarySubRecord unknownBOD2;
-    uint32_t equipTypeFormID; // subrecord ETYP
-    uint32_t blockBashImpactDataSetFormID; // subrecord BIDS
-    uint32_t alternateBlockMaterialFormID; // subrecord BAMT
-    uint32_t pickupSoundFormID; // subrecord YNAM
-    uint32_t putdownSoundFormID; // subrecord ZNAM
+    uint32_t equipTypeFormID; // sub record ETYP
+    uint32_t blockBashImpactDataSetFormID; // sub record BIDS
+    uint32_t alternateBlockMaterialFormID; // sub record BAMT
+    uint32_t pickupSoundFormID; // sub record YNAM
+    uint32_t putdownSoundFormID; // sub record ZNAM
     uint32_t unknownRNAM;
     std::vector<uint32_t> keywords;
-    LocalizedString description; // subrecord DESC
-    std::vector<uint32_t> models; // subrecords MODL
-    // subrecord DATA
+    LocalizedString description; // sub record DESC
+    std::vector<uint32_t> models; // sub records MODL
+    // sub record DATA
     uint32_t value;
     float weight;
     // end of DATA
     uint32_t unknownDNAM;
-    uint32_t templateArmorFormID; // subrecord TNAM
+    uint32_t templateArmorFormID; // sub record TNAM
 }; // struct
 
 } // namespace

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,13 +67,13 @@ struct ApparatusRecord: public BasicRecord
 
     /** \brief Loads the record from the given input stream.
      *
-     * \param in_File    the input stream
+     * \param input      the input stream
      * \param localized  whether the file to read from is localized or not
      * \param table      the associated string table for localized files
      * \return Returns true on success (record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
     /** \brief Gets the record's type, usually its header.
      *
@@ -83,13 +83,13 @@ struct ApparatusRecord: public BasicRecord
 
     std::string editorID; /**< ID of the record in the editor */
     std::array<uint8_t, 12> unknownOBND;
-    LocalizedString name; // subrecord FULL
-    uint32_t quality; // subrecord QUAL
-    LocalizedString description; // subrecord DESC
-    // subrecord DATA
+    LocalizedString name; // sub record FULL
+    uint32_t quality; // sub record QUAL
+    LocalizedString description; // sub record DESC
+    // sub record DATA
     uint32_t value;
     float    weight;
-    // end of DATA subrecord
+    // end of DATA sub record
 }; // struct
 
 } // namespace

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -248,10 +248,10 @@ bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool AlchemyPotionRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
@@ -259,11 +259,11 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
 
   // read editor ID (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   // read OBND
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cOBND)
   {
@@ -271,7 +271,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -280,11 +280,11 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
     return false;
   }
   // read OBND's stuff
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of ALCH!\n";
+    std::cerr << "Error while reading sub record OBND of ALCH!\n";
     return false;
   }
 
@@ -304,49 +304,49 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
   bool hasNonPushedEffect = false;
   while (bytesRead < readSize)
   {
-    // read next subrecord
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    // read next sub record header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: Record ALCH seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: Record ALCH seems to have more than one FULL sub record!\n";
              return false;
            }
-           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cKSIZ:
-           if (!loadKeywords(in_File, keywords, bytesRead))
+           if (!loadKeywords(input, keywords, bytesRead))
              return false;
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cerr << "Error: ALCH seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one MODL sub record!\n";
              return false;
            }
            // read model path
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            if (modelPath.empty())
            {
-             std::cerr << "Error: Subrecord MODL of ALCH is empty!\n";
+             std::cerr << "Error: Sub record MODL of ALCH is empty!\n";
              return false;
            }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cerr << "Error: ALCH seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one MODT sub record!\n";
              return false;
            }
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
-             std::cerr << "Error while reading subrecord MODT of ALCH!\n";
+             std::cerr << "Error while reading sub record MODT of ALCH!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMODT.size();
@@ -354,13 +354,13 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cerr << "Error: ALCH seems to have more than one MODS subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one MODS sub record!\n";
              return false;
            }
            // read MODS
-           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+           if (!unknownMODS.loadFromStream(input, cMODS, false))
            {
-             std::cerr << "Error while reading subrecord MODS of ALCH!\n";
+             std::cerr << "Error while reading sub record MODS of ALCH!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMODS.size();
@@ -368,75 +368,75 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
       case cYNAM:
            if (pickupSoundFormID != 0)
            {
-             std::cerr << "Error: ALCH seems to have more than one YNAM subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one YNAM sub record!\n";
              return false;
            }
            // read YNAM
-           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cYNAM, pickupSoundFormID, false))
              return false;
            bytesRead += 6;
            // check value
            if (pickupSoundFormID == 0)
            {
-             std::cerr << "Error: Subrecord YNAM of ALCH has value zero!\n";
+             std::cerr << "Error: Sub record YNAM of ALCH has value zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (putdownSoundFormID != 0)
            {
-             std::cerr << "Error: ALCH seems to have more than one ZNAM subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one ZNAM sub record!\n";
              return false;
            }
            // read ZNAM
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cZNAM, putdownSoundFormID, false))
              return false;
            bytesRead += 6;
            // check value
            if (putdownSoundFormID == 0)
            {
-             std::cerr << "Error: Subrecord ZNAM of ALCH has value zero!\n";
+             std::cerr << "Error: Sub record ZNAM of ALCH has value zero!\n";
              return false;
            }
            break;
       case cETYP:
            if (equipTypeFormID != 0)
            {
-             std::cerr << "Error: ALCH seems to have more than one ETYP subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one ETYP sub record!\n";
              return false;
            }
            // read ETYP
-           if (!loadUint32SubRecordFromStream(in_File, cETYP, equipTypeFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cETYP, equipTypeFormID, false))
              return false;
            bytesRead += 6;
            // check value
            if (equipTypeFormID == 0)
            {
-             std::cerr << "Error: Subrecord ETYP of ALCH has value zero!\n";
+             std::cerr << "Error: Sub record ETYP of ALCH has value zero!\n";
              return false;
            }
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cerr << "Error: ALCH seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one DATA sub record!\n";
              return false;
            }
            // DATA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: Subrecord DATA of ALCH has invalid length ("
+             std::cerr << "Error: Sub record DATA of ALCH has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
            // read DATA's stuff
-           in_File.read(reinterpret_cast<char*>(&weight), 4);
+           input.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DATA of ALCH!\n";
+             std::cerr << "Error while reading sub record DATA of ALCH!\n";
              return false;
            }
            hasReadDATA = true;
@@ -444,28 +444,28 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
       case cENIT:
            if (hasReadENIT)
            {
-             std::cerr << "Error: ALCH seems to have more than one ENIT subrecord!\n";
+             std::cerr << "Error: ALCH seems to have more than one ENIT sub record!\n";
              return false;
            }
            // ENIT's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 20)
            {
-             std::cerr << "Error: Subrecord ENIT of ALCH has invalid length ("
+             std::cerr << "Error: Sub record ENIT of ALCH has invalid length ("
                        << subLength << " bytes). Should be 20 bytes!\n";
              return false;
            }
            // read ENIT's stuff
-           in_File.read(reinterpret_cast<char*>(&value), 4);
-           in_File.read(reinterpret_cast<char*>(&flags), 4);
-           in_File.read(reinterpret_cast<char*>(&unknownThirdENIT), 4);
-           in_File.read(reinterpret_cast<char*>(&addictionChance), 4);
-           in_File.read(reinterpret_cast<char*>(&useSoundFormID), 4);
+           input.read(reinterpret_cast<char*>(&value), 4);
+           input.read(reinterpret_cast<char*>(&flags), 4);
+           input.read(reinterpret_cast<char*>(&unknownThirdENIT), 4);
+           input.read(reinterpret_cast<char*>(&addictionChance), 4);
+           input.read(reinterpret_cast<char*>(&useSoundFormID), 4);
            bytesRead += 20;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord ENIT of ALCH!\n";
+             std::cerr << "Error while reading sub record ENIT of ALCH!\n";
              return false;
            }
            hasReadENIT = true;
@@ -481,25 +481,25 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
            // new effect block
            tempEffect.unknownCTDA_CIS2s.clear();
            // EFID's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 4)
            {
-             std::cerr << "Error: Subrecord EFID of ALCH has invalid length ("
+             std::cerr << "Error: Sub record EFID of ALCH has invalid length ("
                        << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
            // read EFID's stuff
-           in_File.read(reinterpret_cast<char*>(&tempEffect.effectFormID), 4);
+           input.read(reinterpret_cast<char*>(&tempEffect.effectFormID), 4);
            bytesRead += 4;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord EFID of ALCH!\n";
+             std::cerr << "Error while reading sub record EFID of ALCH!\n";
              return false;
            }
 
            // read EFIT
-           in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+           input.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
            if (subRecName != cEFIT)
            {
@@ -507,22 +507,22 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              return false;
            }
            // EFIT's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 12)
            {
-             std::cerr << "Error: Subrecord EFIT of ALCH has invalid length ("
+             std::cerr << "Error: Sub record EFIT of ALCH has invalid length ("
                        << subLength << " bytes). Should be 12 bytes!\n";
              return false;
            }
            // read EFIT's stuff
-           in_File.read(reinterpret_cast<char*>(&tempEffect.magnitude), 4);
-           in_File.read(reinterpret_cast<char*>(&tempEffect.areaOfEffect), 4);
-           in_File.read(reinterpret_cast<char*>(&tempEffect.duration), 4);
+           input.read(reinterpret_cast<char*>(&tempEffect.magnitude), 4);
+           input.read(reinterpret_cast<char*>(&tempEffect.areaOfEffect), 4);
+           input.read(reinterpret_cast<char*>(&tempEffect.duration), 4);
            bytesRead += 12;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord EFIT of ALCH!\n";
+             std::cerr << "Error while reading sub record EFIT of ALCH!\n";
              return false;
            }
            hasNonPushedEffect = true;
@@ -535,15 +535,15 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
              return false;
            }
            // read CTDA's stuff
-           if (!tempCTDA.loadFromStream(in_File, bytesRead))
+           if (!tempCTDA.loadFromStream(input, bytesRead))
            {
-             std::cerr << "Error while reading subrecord CTDA of ALCH!\n";
+             std::cerr << "Error while reading sub record CTDA of ALCH!\n";
              return false;
            }
            tempEffect.unknownCTDA_CIS2s.push_back(CTDA_CIS2_compound(tempCTDA, ""));
            break;
       default:
-           std::cerr << "Error: Unexpected record type \""<<IntTo4Char(subRecName)
+           std::cerr << "Error: Unexpected record type \"" << IntTo4Char(subRecName)
                      << "\" found, but only KSIZ, MODL, MODT, MODS, YNAM, ZNAM,"
                      << " ETYP, DATA, ENIT, EFID or CTDA are allowed here!\n";
            return false;
@@ -560,7 +560,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
   // presence checks
   if (!hasReadDATA || !hasReadENIT)
   {
-    std::cerr << "Error: DATA or ENIT subrecord of ALCH is missing!\n";
+    std::cerr << "Error: DATA or ENIT sub record of ALCH is missing!\n";
     return false;
   }
   if (effects.empty())
@@ -569,7 +569,7 @@ bool AlchemyPotionRecord::loadFromStream(std::istream& in_File, const bool local
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t AlchemyPotionRecord::getRecordType() const

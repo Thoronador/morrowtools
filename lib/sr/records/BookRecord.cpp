@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -99,12 +99,12 @@ uint32_t BookRecord::getWriteSize() const
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
-               + unknownMODT.size() /* size of subrecord */;
+               + unknownMODT.size() /* size of sub record */;
   }
   if (unknownMODS.isPresent())
   {
     writeSize = writeSize + 4 /* MODS */ + 2 /* 2 bytes for length */
-               + unknownMODS.size() /* size of subrecord */;
+               + unknownMODS.size() /* size of sub record */;
   }
   if (pickupSoundFormID != 0)
   {
@@ -144,7 +144,7 @@ bool BookRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownVMAD.saveToStream(output, cVMAD))
     {
-      std::cerr << "Error while writing subrecord VMAD of BOOK!\n";
+      std::cerr << "Error while writing sub record VMAD of BOOK!\n";
       return false;
     }
   }
@@ -171,14 +171,14 @@ bool BookRecord::saveToStream(std::ostream& output) const
   // write MODT
   if (!unknownMODT.saveToStream(output, cMODT))
   {
-    std::cerr << "Error while writing subrecord MODT of BOOK!\n";
+    std::cerr << "Error while writing sub record MODT of BOOK!\n";
     return false;
   }
 
   // write MODS
   if (!unknownMODS.saveToStream(output, cMODS))
   {
-    std::cerr << "Error while writing subrecord MODS of BOOK!\n";
+    std::cerr << "Error while writing sub record MODS of BOOK!\n";
     return false;
   }
 
@@ -252,10 +252,10 @@ bool BookRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool BookRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   if (isDeleted())
     return true;
@@ -265,27 +265,27 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
 
   // read editor ID (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   // read OBND or VMAD
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName == cVMAD)
   {
-    if (!unknownVMAD.loadFromStream(in_File, cVMAD, false))
+    if (!unknownVMAD.loadFromStream(input, cVMAD, false))
     {
       std::cerr << "Error while reading subrecord VMAD of BOOK!\n";
       return false;
     }
     bytesRead = bytesRead + 2 + unknownVMAD.size();
     // read OBND's header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
   }
   else
   {
-    // no VMAD subrecord
+    // no VMAD sub record
     unknownVMAD.setPresence(false);
   }
 
@@ -295,7 +295,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -304,11 +304,11 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
     return false;
   }
   // read OBND
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of BOOK!\n";
+    std::cerr << "Error while reading sub record OBND of BOOK!\n";
     return false;
   }
 
@@ -327,27 +327,27 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
   while (bytesRead < readSize)
   {
     // read next header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cFULL:
            if (title.isPresent())
            {
-             std::cerr << "Error: BOOK seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one FULL sub record.\n";
              return false;
            }
-           if (!title.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!title.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cMODL:
            if (hasReadMODL)
            {
-             std::cerr << "Error: BOOK seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one MODL sub record.\n";
              return false;
            }
            // read model path (MODL)
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            // Check content, path must not be empty.
            if (modelPath.empty())
@@ -357,7 +357,7 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
            }
 
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, true))
+           if (!unknownMODT.loadFromStream(input, cMODT, true))
              return false;
            bytesRead += (4 + 2 + unknownMODT.size());
            hasReadMODL = true;
@@ -365,35 +365,35 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cMODS:
            if (unknownMODS.isPresent())
            {
-             std::cerr << "Error: BOOK seems to have more than one MODS subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one MODS sub record.\n";
              return false;
            }
-           if (!unknownMODS.loadFromStream(in_File, cMODS, false))
+           if (!unknownMODS.loadFromStream(input, cMODS, false))
              return false;
            bytesRead += (2 + unknownMODS.size());
            break;
       case cDESC:
            if (text.isPresent())
            {
-             std::cerr << "Error: BOOK seems to have more than one DESC subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one DESC sub record.\n";
              return false;
            }
            // read DESC
-           if (!text.loadFromStream(in_File, cDESC, false, bytesRead, localized, table, buffer))
+           if (!text.loadFromStream(input, cDESC, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cKSIZ:
-           if (!loadKeywords(in_File, keywords, bytesRead))
+           if (!loadKeywords(input, keywords, bytesRead))
              return false;
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cerr << "Error: BOOK seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one DATA sub record.\n";
              return false;
            }
            // DATA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 16)
            {
@@ -402,14 +402,14 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
              return false;
            }
            // read DATA
-           in_File.read(reinterpret_cast<char*>(&bookFlags), 4);
-           in_File.read(reinterpret_cast<char*>(&spellOrSkillID), 4);
-           in_File.read(reinterpret_cast<char*>(&bookValue), 4);
-           in_File.read(reinterpret_cast<char*>(&weight), 4);
+           input.read(reinterpret_cast<char*>(&bookFlags), 4);
+           input.read(reinterpret_cast<char*>(&spellOrSkillID), 4);
+           input.read(reinterpret_cast<char*>(&bookValue), 4);
+           input.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 16;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DATA of BOOK!\n";
+             std::cerr << "Error while reading sub record DATA of BOOK!\n";
              return false;
            }
            hasReadDATA = true;
@@ -417,27 +417,27 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cINAM:
            if (inventoryArtFormID != 0)
            {
-             std::cerr << "Error: BOOK seems to have more than one INAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one INAM sub record.\n";
              return false;
            }
            // read INAM
-           if (!loadUint32SubRecordFromStream(in_File, cINAM, inventoryArtFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cINAM, inventoryArtFormID, false))
              return false;
            bytesRead += 6;
            if (inventoryArtFormID == 0)
            {
-             std::cerr << "Error: Subrecord INAM of BOOK is zero!\n";
+             std::cerr << "Error: Sub record INAM of BOOK is zero!\n";
              return false;
            }
            break;
       case cCNAM:
            if (hasReadCNAM)
            {
-             std::cerr << "Error: BOOK seems to have more than one CNAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one CNAM sub record.\n";
              return false;
            }
            // read CNAM
-           if (!loadUint32SubRecordFromStream(in_File, cCNAM, unknownCNAM, false))
+           if (!loadUint32SubRecordFromStream(input, cCNAM, unknownCNAM, false))
              return false;
            bytesRead += 6;
            hasReadCNAM = true;
@@ -445,50 +445,50 @@ bool BookRecord::loadFromStream(std::istream& in_File, const bool localized, con
       case cYNAM:
            if (pickupSoundFormID != 0)
            {
-             std::cerr << "Error: BOOK seems to have more than one YNAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one YNAM sub record.\n";
              return false;
            }
            // read YNAM
-           if (!loadUint32SubRecordFromStream(in_File, cYNAM, pickupSoundFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cYNAM, pickupSoundFormID, false))
              return false;
            bytesRead += 6;
            if (pickupSoundFormID == 0)
            {
-             std::cerr << "Error: Subrecord YNAM of BOOK is zero!\n";
+             std::cerr << "Error: Sub record YNAM of BOOK is zero!\n";
              return false;
            }
            break;
       case cZNAM:
            if (putdownSoundFormID != 0)
            {
-             std::cerr << "Error: BOOK seems to have more than one ZNAM subrecord.\n";
+             std::cerr << "Error: BOOK seems to have more than one ZNAM sub record.\n";
              return false;
            }
            // read ZNAM
-           if (!loadUint32SubRecordFromStream(in_File, cZNAM, putdownSoundFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cZNAM, putdownSoundFormID, false))
              return false;
            bytesRead += 6;
            if (putdownSoundFormID == 0)
            {
-             std::cerr << "Error: Subrecord ZNAM of BOOK is zero!\n";
+             std::cerr << "Error: Sub record ZNAM of BOOK is zero!\n";
              return false;
            }
            break;
       default:
-           std::cerr << "Error: Found unexpected subrecord \""
+           std::cerr << "Error: Found unexpected sub record \""
                      << IntTo4Char(subRecName)
                      << "\", but only MODL, KSIZ, DATA, INAM, CNAM, YNAM or ZNAM are allowed here!\n";
            return false;
     }
   }
 
-  // check presence of all required subrecords
+  // check presence of all required sub records
   if (!hasReadMODL || !text.isPresent() || !hasReadDATA || !hasReadCNAM)
   {
-    std::cerr << "Error: At least one required subrecord of BOOK was not found!\n";
+    std::cerr << "Error: At least one required sub record of BOOK was not found!\n";
     return false;
   }
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t BookRecord::getRecordType() const

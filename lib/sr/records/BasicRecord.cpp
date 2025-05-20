@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -237,13 +237,13 @@ bool BasicRecord::loadKeywords(std::istream& input, std::vector<uint32_t>& keywo
   return true;
 }
 
-bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len, uint8_t * target, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const
+bool BasicRecord::loadBufferFromStream(std::istream& input, const uint16_t len, uint8_t * target, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const
 {
   if (withHeader)
   {
     uint32_t subRecName = 0;
     // read header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     if (subRecName != subHeader)
     {
@@ -253,7 +253,7 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
   }
   // sub record's length
   uint16_t subLength = 0;
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != len)
   {
@@ -262,9 +262,9 @@ bool BasicRecord::loadBufferFromStream(std::istream& in_File, const uint16_t len
               << subLength << " bytes). Should be " << len << " bytes!\n";
     return false;
   }
-  in_File.read(reinterpret_cast<char*>(target), len);
+  input.read(reinterpret_cast<char*>(target), len);
   bytesRead += len;
-  if (!in_File.good())
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record " << IntTo4Char(subHeader)
               << " of " << IntTo4Char(getRecordType()) << "!\n";

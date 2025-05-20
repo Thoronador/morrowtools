@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -60,13 +60,13 @@ struct BasicRecord
 
     /** \brief Loads the record from the given input stream.
      *
-     * \param in_File    the input stream
+     * \param input      the input stream
      * \param localized  whether the file to read from is localized or not
      * \param table      the associated string table for localized files
      * \return Returns true on success (record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table) = 0;
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table) = 0;
 
     /** \brief Gets the record's type, usually its header.
      *
@@ -144,18 +144,18 @@ struct BasicRecord
      * \return Returns the size in bytes that the record would need. Size of the
      *         header is not included.
      * \remarks
-     *     This function has to be reimplemented for every new record type.
+     *     This function has to be re-implemented for every new record type.
      */
     virtual uint32_t getWriteSize() const = 0;
     #endif
 
-    /** \brief Tries to load a 4 byte long subrecord from the stream.
+    /** \brief Tries to load a 4 byte long sub record from the stream.
      *
      * \param input       the input stream
-     * \param subHeader   the expected header of that subrecord
+     * \param subHeader   the expected header of that sub record
      * \param target      the uint32_t that will be used to store the read data
      * \param withHeader  if set to true, the header is read, too. Otherwise
-     *                    just the subrecord's content is read.
+     *                    just the sub record's content is read.
      * \return Returns true on success (data was loaded successfully).
      *         Returns false, if an error occurred.
      */
@@ -166,9 +166,9 @@ struct BasicRecord
      * \param input       the input stream
      * \param target      the string that will be used to store the read data
      * \param buffer      a pre-allocated array of char that can hold at least 512 bytes
-     * \param subHeader   the expected header of that subrecord
+     * \param subHeader   the expected header of that sub record
      * \param withHeader  if set to true, the header is read, too. Otherwise
-     *                    just the subrecord's content is read.
+     *                    just the sub record's content is read.
      * \param bytesRead   the variable that holds the number of bytes read so far
      * \return Returns true on success (data was loaded successfully).
      *         Returns false, if an error occurred.
@@ -189,18 +189,18 @@ struct BasicRecord
 
     /** \brief Tries to load a fixed length buffer from the stream.
      *
-     * \param in_File     the input stream
+     * \param input       the input stream
      * \param len         expected length of the buffer in bytes
      * \param target      the pre-allocated buffer that will be used to store the
      *                    read data, has to have a length of at least len bytes
-     * \param subHeader   the expected header of that subrecord
+     * \param subHeader   the expected header of that sub record
      * \param withHeader  if set to true, the header is read, too. Otherwise
-     *                    just the subrecord's content is read.
+     *                    just the sub record's content is read.
      * \param bytesRead   the variable that holds the number of bytes read so far
      * \return Returns true on success (data was loaded successfully).
      *         Returns false, if an error occurred.
      */
-    bool loadBufferFromStream(std::istream& in_File, const uint16_t len, uint8_t * target, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
+    bool loadBufferFromStream(std::istream& input, const uint16_t len, uint8_t * target, const uint32_t subHeader, const bool withHeader, uint32_t& bytesRead) const;
 }; // struct
 
 } // namespace

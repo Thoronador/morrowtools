@@ -134,7 +134,7 @@ set(lib_sr_tests_sources
     records/CTDA_CISx_compound.cpp
     records/CameraShotRecord.cpp
     records/CellRecord.cpp
-    records/CellRecord_SubrecordXCLC.cpp
+    records/CellRecord_SubRecordXCLC.cpp
     records/ComponentData.cpp
     records/ContainerRecord.cpp
     records/DestructionData.cpp

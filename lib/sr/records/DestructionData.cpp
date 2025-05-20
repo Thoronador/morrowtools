@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013, 2021  Thoronador
+    Copyright (C) 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -160,28 +160,28 @@ bool DestructionData::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recordType, char * buffer, uint32_t& bytesRead)
+bool DestructionData::loadFromStream(std::istream& input, const uint32_t recordType, char * buffer, uint32_t& bytesRead)
 {
   // DEST's length
   uint16_t subLength = 0;
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 8)
   {
-    std::cerr << "Error: Subrecord DEST of " << IntTo4Char(recordType)
+    std::cerr << "Error: Sub record DEST of " << IntTo4Char(recordType)
               << " has invalid length (" << subLength
               << " bytes). Should be eight bytes.\n";
     return false;
   }
   // read DEST's data
-  in_File.read(reinterpret_cast<char*>(&health), 4);
-  in_File.read(reinterpret_cast<char*>(&stageCount), 1);
-  in_File.read(reinterpret_cast<char*>(&unknownTwo), 1);
-  in_File.read(reinterpret_cast<char*>(&unknownThreeFour), 2);
+  input.read(reinterpret_cast<char*>(&health), 4);
+  input.read(reinterpret_cast<char*>(&stageCount), 1);
+  input.read(reinterpret_cast<char*>(&unknownTwo), 1);
+  input.read(reinterpret_cast<char*>(&unknownThreeFour), 2);
   bytesRead += 8;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord DEST of "
+    std::cerr << "Error while reading sub record DEST of "
               << IntTo4Char(recordType) << "!\n";
     return false;
   }
@@ -194,7 +194,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
   {
     // read next record header
     uint32_t innerRecordName = 0;
-    in_File.read(reinterpret_cast<char*>(&innerRecordName), 4);
+    input.read(reinterpret_cast<char*>(&innerRecordName), 4);
     bytesRead += 4;
     switch (innerRecordName)
     {
@@ -202,11 +202,11 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            if (tempStage.unknownDSTD.isPresent())
            {
              std::cerr << "Error: " << IntTo4Char(recordType)
-                       << " seems to have more than one DSTD subrecord per stage!\n";
+                       << " seems to have more than one DSTD sub record per stage!\n";
              return false;
            }
            // read DSTD
-           if (!tempStage.unknownDSTD.loadFromStream(in_File, cDSTD, false))
+           if (!tempStage.unknownDSTD.loadFromStream(input, cDSTD, false))
              return false;
            bytesRead += (2 + tempStage.unknownDSTD.size());
            break;
@@ -214,11 +214,11 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            if (!tempStage.replacementModel.empty())
            {
              std::cerr << "Error: " << IntTo4Char(recordType)
-                       << " seems to have more than one DMDL subrecord per stage!\n";
+                       << " seems to have more than one DMDL sub record per stage!\n";
              return false;
            }
            // DMDL's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength > 511)
            {
@@ -228,11 +228,11 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            }
            // read string
            memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
+           input.read(buffer, subLength);
            bytesRead += subLength;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DMDL of "
+             std::cerr << "Error while reading sub record DMDL of "
                        << IntTo4Char(recordType) << "!\n";
              return false;
            }
@@ -240,7 +240,7 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            // check content
            if (tempStage.replacementModel.empty())
            {
-             std::cerr << "Error: Subrecord DMDL of " << IntTo4Char(recordType)
+             std::cerr << "Error: Sub record DMDL of " << IntTo4Char(recordType)
                        << " is empty!\n";
              return false;
            }
@@ -249,21 +249,21 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            if (tempStage.unknownDMDT.isPresent())
            {
              std::cerr << "Error: " << IntTo4Char(recordType)
-                       << " seems to have more than one DMDT subrecord per stage!\n";
+                       << " seems to have more than one DMDT sub record per stage!\n";
              return false;
            }
            // read DMDT
-           if (!tempStage.unknownDMDT.loadFromStream(in_File, cDMDT, false))
+           if (!tempStage.unknownDMDT.loadFromStream(input, cDMDT, false))
              return false;
            bytesRead += (2 + tempStage.unknownDMDT.size());
            break;
       case cDSTF:
            // DSTF's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 0)
            {
-             std::cerr << "Error: Subrecord DSTF of " << IntTo4Char(recordType)
+             std::cerr << "Error: Sub record DSTF of " << IntTo4Char(recordType)
                        << " has invalid length (" << subLength
                        << " bytes). Should be zero bytes.\n";
              return false;
@@ -279,14 +279,14 @@ bool DestructionData::loadFromStream(std::istream& in_File, const uint32_t recor
            tempStage.reset();
            break;
       default:
-           std::cerr << "Error: Found unexpected subrecord \""
+           std::cerr << "Error: Found unexpected sub record \""
                      << IntTo4Char(innerRecordName)
                      << "\", but only DSTD, DMDL, DMDT or DSTF are allowed here!\n";
            return false;
     }
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 void DestructionData::clear()

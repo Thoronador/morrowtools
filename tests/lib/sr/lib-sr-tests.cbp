@@ -282,7 +282,7 @@
 		<Unit filename="records/CTDA_CISx_compound.cpp" />
 		<Unit filename="records/CameraShotRecord.cpp" />
 		<Unit filename="records/CellRecord.cpp" />
-		<Unit filename="records/CellRecord_SubrecordXCLC.cpp" />
+		<Unit filename="records/CellRecord_SubRecordXCLC.cpp" />
 		<Unit filename="records/ComponentData.cpp" />
 		<Unit filename="records/ContainerRecord.cpp" />
 		<Unit filename="records/DestructionData.cpp" />

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013, 2021  Thoronador
+    Copyright (C) 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -117,25 +117,25 @@ struct DestructionData
 
     /** \brief Loads the DestructionData from the given input stream.
      *
-     * \param in_File      the input stream
+     * \param input        the input stream
      * \param recordType   type of the record the destruction data belongs to
      * \param buffer       a pre-allocated array of char that can hold at least 512 bytes
      * \param bytesRead    the variable that holds the number of bytes read so far
      * \return Returns true on success (data was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    bool loadFromStream(std::istream& in_File, const uint32_t recordType, char * buffer, uint32_t& bytesRead);
+    bool loadFromStream(std::istream& input, const uint32_t recordType, char * buffer, uint32_t& bytesRead);
 
     /** Clears all data members and sets the status to "not present". */
     void clear();
 
-    // subrecord DEST
+    // sub record DEST
     bool isPresent;
     uint32_t health;
     uint8_t  stageCount;
     uint8_t  unknownTwo;
     uint16_t unknownThreeFour;
-    // end of subrecord DEST
+    // end of sub record DEST
     std::vector<DestructionStage> stages;
 }; // struct
 

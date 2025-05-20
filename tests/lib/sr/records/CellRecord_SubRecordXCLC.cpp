@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,13 +21,13 @@
 #include "../../locate_catch.hpp"
 #include "../../../../lib/sr/records/CellRecord.hpp"
 
-TEST_CASE("CellRecord::SubrecordXCLC")
+TEST_CASE("CellRecord::SubRecordXCLC")
 {
   using namespace SRTP;
 
   SECTION("constructor")
   {
-    CellRecord::SubrecordXCLC record;
+    CellRecord::SubRecordXCLC record;
 
     REQUIRE_FALSE( record.presence );
     REQUIRE( record.locationX == 0 );
@@ -37,8 +37,8 @@ TEST_CASE("CellRecord::SubrecordXCLC")
 
   SECTION("equality")
   {
-    CellRecord::SubrecordXCLC a;
-    CellRecord::SubrecordXCLC b;
+    CellRecord::SubRecordXCLC a;
+    CellRecord::SubRecordXCLC b;
 
     SECTION("equal")
     {

@@ -230,6 +230,7 @@
 		<Unit filename="../../../lib/sr/records/quest/QSDTRecord.hpp" />
 		<Unit filename="../../../lib/sr/records/quest/QSTAEntry.cpp" />
 		<Unit filename="../../../lib/sr/records/quest/QSTAEntry.hpp" />
+		<Unit filename="../limited_streambuf.hpp" />
 		<Unit filename="../locate_catch.hpp" />
 		<Unit filename="DependencyElement.cpp" />
 		<Unit filename="ESMFileContents.cpp" />
@@ -264,6 +265,7 @@
 		<Unit filename="bsa_cli/commands/Info.cpp" />
 		<Unit filename="bsa_cli/commands/List.cpp" />
 		<Unit filename="bsa_cli/commands/Operations.cpp" />
+		<Unit filename="limited_streambuf.cpp" />
 		<Unit filename="main.cpp" />
 		<Unit filename="records/AcousticSpaceRecord.cpp" />
 		<Unit filename="records/ActionRecord.cpp" />

@@ -117,6 +117,7 @@ set(lib_sr_tests_sources
     bsa/BSAFileRecord.cpp
     bsa/BSAHash.cpp
     bsa/BSAHeader.cpp
+    limited_streambuf.cpp
     records/AcousticSpaceRecord.cpp
     records/ActionRecord.cpp
     records/ActivatorRecord.cpp

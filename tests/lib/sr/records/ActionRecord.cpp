@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2023  Dirk Stolle
+    Copyright (C) 2021, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/ActionRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("ActionRecord")
 {
@@ -257,6 +258,24 @@ TEST_CASE("ActionRecord")
       // Check written data.
       const std::string_view data = "AACT\0\0\0\0\x20\0\0\0\x65\x40\x09\0\x11\x60\x0C\0\x1F\0\x01\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      ActionRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x00094065;
+      record.headerRevision = 0x000C6011;
+      record.headerVersion = 31;
+      record.headerUnknown5 = 0x0001;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
     }
   }
 }

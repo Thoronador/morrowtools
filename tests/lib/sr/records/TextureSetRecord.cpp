@@ -21,6 +21,7 @@
 #include "../../locate_catch.hpp"
 #include <sstream>
 #include <string_view>
+#include "../../limited_streambuf.hpp"
 #include "../../../../lib/sr/records/TextureSetRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
@@ -1037,6 +1038,27 @@ TEST_CASE("TextureSetRecord")
       // Reading should fail.
       TextureSetRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+  }
+
+  SECTION("saveToStream")
+  {
+    SECTION("failure: cannot write header data")
+    {
+      TextureSetRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x0010FAF8;
+      record.headerRevision = 0x0078680C;
+      record.headerVersion = 39;
+      record.headerUnknown5 = 0x0001;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2023  Dirk Stolle
+    Copyright (C) 2021, 2023, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/AcousticSpaceRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("AcousticSpaceRecord")
 {
@@ -674,6 +675,24 @@ TEST_CASE("AcousticSpaceRecord")
       // Check written data.
       const std::string_view data = "ASPC\0\0\0\0\x20\0\0\0\x0D\xF9\x10\0\x05\x68\x27\x00\x27\x00\x02\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      AcousticSpaceRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x0010FE9E;
+      record.headerRevision = 0x00386812;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x0001;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
     }
   }
 }

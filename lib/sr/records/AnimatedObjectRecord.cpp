@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -87,7 +87,7 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cerr << "Error while writing subrecord MODT of ACTI!\n";
+      std::cerr << "Error while writing sub record MODT of ANIO!\n";
       return false;
     }
   }
@@ -105,19 +105,19 @@ bool AnimatedObjectRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool AnimatedObjectRecord::loadFromStream(std::istream& in_File,
+bool AnimatedObjectRecord::loadFromStream(std::istream& input,
                                           [[maybe_unused]] const bool localized,
                                           [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   uint32_t subRecName = 0;
   uint32_t bytesRead = 0;
 
   // read EDID
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   modelPath.clear();
@@ -125,8 +125,8 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File,
   unknownBNAM.clear();
   while (bytesRead < readSize)
   {
-    // read next record
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    // read next record header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -137,7 +137,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read model path
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            if (modelPath.empty())
            {
@@ -152,7 +152,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
              return false;
            bytesRead += (2 + unknownMODT.size());
            break;
@@ -163,7 +163,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read BNAM
-           if (!loadString512FromStream(in_File, unknownBNAM, buffer, cBNAM, false, bytesRead))
+           if (!loadString512FromStream(input, unknownBNAM, buffer, cBNAM, false, bytesRead))
              return false;
            if (unknownBNAM.empty())
            {
@@ -185,7 +185,7 @@ bool AnimatedObjectRecord::loadFromStream(std::istream& in_File,
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t AnimatedObjectRecord::getRecordType() const

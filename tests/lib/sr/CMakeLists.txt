@@ -86,20 +86,20 @@ set(lib_sr_tests_sources
     ../../../lib/sr/records/quest/QOBJEntry.cpp
     ../../../lib/sr/records/quest/QSDTRecord.cpp
     ../../../lib/sr/records/quest/QSTAEntry.cpp
-     ../../../apps/sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
-     ../../../apps/sr/bsa_cli/commands/CheckHashes.cpp
-     ../../../apps/sr/bsa_cli/commands/CommandFactory.cpp
-     ../../../apps/sr/bsa_cli/commands/Commands.cpp
-     ../../../apps/sr/bsa_cli/commands/Directories.cpp
-     ../../../apps/sr/bsa_cli/commands/DirectoryMetadata.cpp
-     ../../../apps/sr/bsa_cli/commands/ExtractAll.cpp
-     ../../../apps/sr/bsa_cli/commands/ExtractDirectory.cpp
-     ../../../apps/sr/bsa_cli/commands/ExtractFile.cpp
-     ../../../apps/sr/bsa_cli/commands/FileMetadata.cpp
-     ../../../apps/sr/bsa_cli/commands/Help.cpp
-     ../../../apps/sr/bsa_cli/commands/Info.cpp
-     ../../../apps/sr/bsa_cli/commands/List.cpp
-     ../../../apps/sr/bsa_cli/commands/Operations.cpp
+    ../../../apps/sr/bsa_cli/commands/ArgumentParsingUtilities.cpp
+    ../../../apps/sr/bsa_cli/commands/CheckHashes.cpp
+    ../../../apps/sr/bsa_cli/commands/CommandFactory.cpp
+    ../../../apps/sr/bsa_cli/commands/Commands.cpp
+    ../../../apps/sr/bsa_cli/commands/Directories.cpp
+    ../../../apps/sr/bsa_cli/commands/DirectoryMetadata.cpp
+    ../../../apps/sr/bsa_cli/commands/ExtractAll.cpp
+    ../../../apps/sr/bsa_cli/commands/ExtractDirectory.cpp
+    ../../../apps/sr/bsa_cli/commands/ExtractFile.cpp
+    ../../../apps/sr/bsa_cli/commands/FileMetadata.cpp
+    ../../../apps/sr/bsa_cli/commands/Help.cpp
+    ../../../apps/sr/bsa_cli/commands/Info.cpp
+    ../../../apps/sr/bsa_cli/commands/List.cpp
+    ../../../apps/sr/bsa_cli/commands/Operations.cpp
     DependencyElement.cpp
     ESMFileContents.cpp
     ESMReader.cpp

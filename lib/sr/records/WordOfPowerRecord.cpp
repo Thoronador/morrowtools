@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021  Thoronador
+    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -50,7 +50,9 @@ bool WordOfPowerRecord::equals(const WordOfPowerRecord& other) const
 uint32_t WordOfPowerRecord::getWriteSize() const
 {
   if (isDeleted())
+  {
     return 0;
+  }
   uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
         + editorID.length() + 1 /* length of name +1 byte for NUL termination */
         + translated.getWriteSize() /* TNAM */;
@@ -92,10 +94,10 @@ bool WordOfPowerRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool WordOfPowerRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool WordOfPowerRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
   {
     return false;
   }
@@ -104,31 +106,31 @@ bool WordOfPowerRecord::loadFromStream(std::istream& in_File, const bool localiz
 
   // read EDID
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
   {
     return false;
   }
 
   // read optional FULL
-  in_File.read((char*) &subRecName, 4);
+  input.read((char*) &subRecName, 4);
   bytesRead += 4;
   if (subRecName == cFULL)
   {
-    // FULL subrecord is present
+    // FULL sub record is present
     // read FULL
-    if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+    if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
     {
-      std::cerr << "Error while reading subrecord FULL of WOOP!\n";
+      std::cerr << "Error while reading sub record FULL of WOOP!\n";
       return false;
     }
 
     // read TNAM
-    in_File.read((char*) &subRecName, 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
   }
   else
   {
-    // full subrecord is not present
+    // full sub record is not present
     name.reset();
   }
 
@@ -140,9 +142,9 @@ bool WordOfPowerRecord::loadFromStream(std::istream& in_File, const bool localiz
     return false;
   }
   // read TNAM
-  if (!translated.loadFromStream(in_File, cTNAM, false, bytesRead, localized, table, buffer))
+  if (!translated.loadFromStream(input, cTNAM, false, bytesRead, localized, table, buffer))
   {
-    std::cerr << "Error while reading subrecord TNAM of WOOP!\n";
+    std::cerr << "Error while reading sub record TNAM of WOOP!\n";
     return false;
   }
 

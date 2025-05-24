@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -77,65 +77,55 @@ bool AcousticSpaceRecord::saveToStream(std::ostream& output) const
   if (isDeleted())
     return true;
 
-  // write EDID
+  // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
-  // EDID's length
   uint16_t subLength = editorID.length() + 1;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write editor ID
   output.write(editorID.c_str(), subLength);
 
   // write OBND
   output.write(reinterpret_cast<const char*>(&cOBND), 4);
-  // OBND's length
   subLength = 12;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write OBND
   output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (loopingSoundFormID != 0)
   {
-    // write SNAM
+    // write form ID of looping sound (SNAM)
     output.write(reinterpret_cast<const char*>(&cSNAM), 4);
-    // SNAM's length
     subLength = 4; // fixed size
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    // write form ID of looping sound
     output.write(reinterpret_cast<const char*>(&loopingSoundFormID), 4);
-  } // if has SNAM subrecord
+  }
 
   if (regionFormID != 0)
   {
-    // write RDAT
+    // write region form ID (RDAT)
     output.write(reinterpret_cast<const char*>(&cRDAT), 4);
-    // RDAT's length
     subLength = 4; // fixed size
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    // write region form ID
     output.write(reinterpret_cast<const char*>(&regionFormID), 4);
-  } // if has RDAT subrecord
+  }
 
   if (environmentTypeFormID != 0)
   {
-    // write BNAM
+    // write environment type (BNAM)
     output.write(reinterpret_cast<const char*>(&cBNAM), 4);
-    // BNAM's length
     subLength = 4; // fixed size
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    // write environment type
     output.write(reinterpret_cast<const char*>(&environmentTypeFormID), 4);
-  } // if has BNAM subrecord
+  }
 
   return output.good();
 }
 #endif
 
-bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
+bool AcousticSpaceRecord::loadFromStream(std::istream& input,
                                          [[maybe_unused]] const bool localized,
                                          [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
@@ -143,11 +133,11 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
 
   // read EDID
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   // read OBND
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cOBND)
   {
@@ -155,7 +145,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -164,9 +154,9 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
     return false;
   }
   // read OBND
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record OBND of ASPC!\n";
     return false;
@@ -178,7 +168,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
   while (bytesRead < readSize)
   {
     // read next header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -189,7 +179,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, loopingSoundFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cSNAM, loopingSoundFormID, false))
              return false;
            bytesRead += 6;
            // check value
@@ -206,7 +196,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read RDAT
-           if (!loadUint32SubRecordFromStream(in_File, cRDAT, regionFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cRDAT, regionFormID, false))
              return false;
            bytesRead += 6;
            // check value
@@ -223,7 +213,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read BNAM
-           if (!loadUint32SubRecordFromStream(in_File, cBNAM, environmentTypeFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cBNAM, environmentTypeFormID, false))
              return false;
            bytesRead += 6;
            // check value
@@ -240,7 +230,7 @@ bool AcousticSpaceRecord::loadFromStream(std::istream& in_File,
     } // swi
   } // while
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t AcousticSpaceRecord::getRecordType() const

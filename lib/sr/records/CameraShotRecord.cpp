@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -170,22 +170,20 @@ bool CameraShotRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool CameraShotRecord::loadFromStream(std::istream& in_File,
+bool CameraShotRecord::loadFromStream(std::istream& input,
                                       [[maybe_unused]] const bool localized,
                                       [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   if (isDeleted())
     return true;
-  uint32_t subRecName = 0;
-  uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
   // read editor ID (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   modelPath.clear();
@@ -194,8 +192,10 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
   imageSpaceModFormID = 0;
   while (bytesRead < readSize)
   {
+    uint32_t subRecName = 0;
+    uint16_t subLength = 0;
     // read next sub record's name
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch(subRecName)
     {
@@ -205,7 +205,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
              std::cerr << "Error: CAMS seems to have more than one MODL sub record!\n";
              return false;
            }
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
            {
              return false;
            }
@@ -221,7 +221,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
              std::cerr << "Error: CAMS seems to have more than one MODT sub record!\n";
              return false;
            }
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
              std::cerr << "Error while reading sub record MODT of CAMS!\n";
              return false;
@@ -235,7 +235,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // DATA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if ((subLength != 40) && (subLength != 44))
            {
@@ -244,19 +244,19 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // now load DATA
-           in_File.read(reinterpret_cast<char*>(&cameraAction), 4);
-           in_File.read(reinterpret_cast<char*>(&cameraLocation), 4);
-           in_File.read(reinterpret_cast<char*>(&cameraTarget), 4);
-           in_File.read(reinterpret_cast<char*>(&cameraFlags), 4);
-           in_File.read(reinterpret_cast<char*>(&timeMultPlayer), 4);
-           in_File.read(reinterpret_cast<char*>(&timeMultTarget), 4);
-           in_File.read(reinterpret_cast<char*>(&timeMultGlobal), 4);
-           in_File.read(reinterpret_cast<char*>(&maxTime), 4);
-           in_File.read(reinterpret_cast<char*>(&minTime), 4);
-           in_File.read(reinterpret_cast<char*>(&targetPercentBetweenActors), 4);
+           input.read(reinterpret_cast<char*>(&cameraAction), 4);
+           input.read(reinterpret_cast<char*>(&cameraLocation), 4);
+           input.read(reinterpret_cast<char*>(&cameraTarget), 4);
+           input.read(reinterpret_cast<char*>(&cameraFlags), 4);
+           input.read(reinterpret_cast<char*>(&timeMultPlayer), 4);
+           input.read(reinterpret_cast<char*>(&timeMultTarget), 4);
+           input.read(reinterpret_cast<char*>(&timeMultGlobal), 4);
+           input.read(reinterpret_cast<char*>(&maxTime), 4);
+           input.read(reinterpret_cast<char*>(&minTime), 4);
+           input.read(reinterpret_cast<char*>(&targetPercentBetweenActors), 4);
            if (subLength >= 44)
            {
-             in_File.read(reinterpret_cast<char*>(&nearTargetDistance), 4);
+             input.read(reinterpret_cast<char*>(&nearTargetDistance), 4);
              dataLen = DataLengthType::dlt44Byte;
              // check allowed range right here
              if ((nearTargetDistance > 2000.0f) || (nearTargetDistance < 0.0f))
@@ -273,7 +273,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
              dataLen = DataLengthType::dlt40Byte;
            }
            bytesRead += subLength;
-           if (!in_File.good())
+           if (!input.good())
            {
              std::cerr << "Error while reading sub record DATA of CAMS!\n";
              return false;
@@ -287,7 +287,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
            }
            if (cameraFlags > 0x3F)
            {
-             std::cerr << "Error while reading sub record DATA of CAMS: unknown"
+             std::cerr << "Error while reading sub record DATA of CAMS: Unknown"
                        << " flag values set!\n";
              return false;
            }
@@ -342,7 +342,7 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
              std::cerr << "Error: CAMS seems to have more than one MNAM sub record!\n";
              return false;
            }
-           if (!loadUint32SubRecordFromStream(in_File, cMNAM, imageSpaceModFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cMNAM, imageSpaceModFormID, false))
            {
              std::cerr << "Error while reading sub record MNAM of CAMS!\n";
              return false;
@@ -365,11 +365,11 @@ bool CameraShotRecord::loadFromStream(std::istream& in_File,
   // presence checks
   if (!hasReadDATA)
   {
-    std::cerr << "Error: At least one required sub record of CAMS is missing!\n";
+    std::cerr << "Error: Required sub record DATA of CAMS is missing!\n";
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t CameraShotRecord::getRecordType() const

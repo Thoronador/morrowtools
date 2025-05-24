@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2022, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -61,24 +61,22 @@ bool ActionRecord::saveToStream(std::ostream& output) const
   if (isDeleted())
     return true;
 
-  // write EDID
+  // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
-  // EDID's length
-  uint16_t subLength = editorID.length() + 1;
+  uint16_t subLength = editorID.length() + 1; /* length of id +1 byte for NUL */
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write editor ID
   output.write(editorID.c_str(), subLength);
 
   return output.good();
 }
 #endif
 
-bool ActionRecord::loadFromStream(std::istream& in_File,
+bool ActionRecord::loadFromStream(std::istream& input,
                                   [[maybe_unused]] const bool localized,
                                   [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   if (isDeleted())
     return true;
@@ -86,14 +84,14 @@ bool ActionRecord::loadFromStream(std::istream& in_File,
   uint16_t subLength = 0;
 
   // read EDID
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   if (subRecName != cEDID)
   {
     UnexpectedRecord(cEDID, subRecName);
     return false;
   }
   // EDID's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   if (subLength > 511)
   {
     std::cerr << "Error: Sub record EDID of AACT is longer than 511 characters!\n";
@@ -102,8 +100,8 @@ bool ActionRecord::loadFromStream(std::istream& in_File,
   // read EDID's stuff
   char buffer[512];
   memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  if (!in_File.good())
+  input.read(buffer, subLength);
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record EDID of AACT!\n";
     return false;

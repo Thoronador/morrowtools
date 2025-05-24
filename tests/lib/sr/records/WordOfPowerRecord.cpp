@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/WordOfPowerRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("WordOfPowerRecord")
 {
@@ -466,6 +467,24 @@ TEST_CASE("WordOfPowerRecord")
       // Check written data.
       const std::string_view data = "WOOP\0\0\0\0\x20\0\0\0\x67\x5F\x0E\0\x1B\x69\x55\0\x28\0\x03\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      WordOfPowerRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x000E5F67;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x0003;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/CameraShotRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("CameraShotRecord")
 {
@@ -1053,6 +1054,24 @@ TEST_CASE("CameraShotRecord")
       // Check written data.
       const std::string_view data = "CAMS\0\0\0\0\x20\0\0\0\x35\x77\x0E\0\x11\x68\x25\0\x28\0\x0C\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      CameraShotRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x000E7735;
+      record.headerRevision = 0x00256811;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x000C;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -44,7 +44,6 @@ TEST_CASE("LocalizedString")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
     StringTable table;
     uint32_t bytesRead = 0;
     char buffer[512];
@@ -117,8 +116,8 @@ TEST_CASE("LocalizedString")
 
       table.addString(0x0102347C, "foo bar baz");
 
-      // read FULL, because header is handled before loadFromStream.
-      stream_in.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip FULL, because header is handled before loadFromStream.
+      stream_in.seekg(4);
       REQUIRE( stream_in.good() );
 
       // Reading should succeed.
@@ -179,8 +178,8 @@ TEST_CASE("LocalizedString")
       std::istringstream stream_in;
       stream_in.str(std::string(data));
 
-      // read FULL, because header is handled before loadFromStream.
-      stream_in.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip FULL, because header is handled before loadFromStream.
+      stream_in.seekg(4);
       REQUIRE( stream_in.good() );
 
       // Reading should succeed.
@@ -292,8 +291,8 @@ TEST_CASE("LocalizedString")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read FULL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip FULL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

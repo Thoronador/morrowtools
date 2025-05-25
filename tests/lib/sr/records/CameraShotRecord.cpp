@@ -304,7 +304,6 @@ TEST_CASE("CameraShotRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
     StringTable dummy_table;
 
     SECTION("default: load record where DATA.size() == 40")
@@ -313,8 +312,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -360,8 +359,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -407,8 +406,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -431,8 +430,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -446,8 +445,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -461,8 +460,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -476,8 +475,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -491,8 +490,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -506,8 +505,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -521,8 +520,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -536,8 +535,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -551,8 +550,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -566,8 +565,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -581,8 +580,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -597,8 +596,8 @@ TEST_CASE("CameraShotRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CAMS, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CAMS, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -611,8 +610,8 @@ TEST_CASE("CameraShotRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CAMS, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CAMS, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -628,8 +627,8 @@ TEST_CASE("CameraShotRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CAMS, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CAMS, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -642,8 +641,8 @@ TEST_CASE("CameraShotRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CAMS, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CAMS, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -658,8 +657,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -673,8 +672,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -688,8 +687,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -703,8 +702,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -718,8 +717,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -733,8 +732,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -748,8 +747,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -763,8 +762,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -778,8 +777,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -793,8 +792,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -808,8 +807,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -823,8 +822,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -838,8 +837,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -853,8 +852,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -868,8 +867,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -883,8 +882,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -898,8 +897,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -913,8 +912,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -928,8 +927,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -943,8 +942,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -958,8 +957,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -974,8 +973,8 @@ TEST_CASE("CameraShotRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CAMS, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CAMS, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -988,8 +987,8 @@ TEST_CASE("CameraShotRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CAMS, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CAMS, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1004,8 +1003,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1019,8 +1018,8 @@ TEST_CASE("CameraShotRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CAMS, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

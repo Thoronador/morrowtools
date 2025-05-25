@@ -1072,5 +1072,32 @@ TEST_CASE("CameraShotRecord")
 
       REQUIRE_FALSE( record.saveToStream(stream) );
     }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const std::string_view data = "CAMS\x87\0\0\0\0\0\0\0\x4A\x08\0\x01\x11\x6E\x25\0\x28\0\0\0EDID\x0F\0F02bLeftFlyCam\0MODL\x1E\0Cameras\\MissileFlyByCam01.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0DATA\x2C\0\x01\0\0\0\x01\0\0\0\x01\0\0\0\x27\0\0\0\0\0\x80\x3F\xCD\xCC\xCC\x3D\0\0\0\x3F\0\0\x80\x40\xCD\xCC\xCC\x3D\0\0\0\0\0\0\0\0MNAM\x04\0\x01\x53\x03\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip CAMS, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      CameraShotRecord record;
+      StringTable dummy_table;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check MODT's data.
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<90> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
   }
 }

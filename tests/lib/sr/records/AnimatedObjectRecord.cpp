@@ -438,5 +438,32 @@ TEST_CASE("AnimatedObjectRecord")
 
       REQUIRE_FALSE( record.saveToStream(stream) );
     }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const auto data = "ANIO\x6E\0\0\0\0\x02\0\0\0\xFD\x10\0\x0D\x68\x61\0\x28\0\0\0EDID\x14\0AnimObjectIronSword\0MODL$\0AnimObjects\\AnimObjectIronSword.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0BNAM\x12\0AnimObjectUnequip\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip ANIO, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AnimatedObjectRecord record;
+      StringTable dummy_table;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data of MODT.
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<102> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
   }
 }

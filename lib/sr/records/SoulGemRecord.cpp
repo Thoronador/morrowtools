@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -42,12 +42,12 @@ SoulGemRecord::SoulGemRecord()
   modelPath(""),
   unknownMODT(BinarySubRecord()),
   keywords(std::vector<uint32_t>()),
-  // subrecord DATA
+  // sub record DATA
   value(0),
   weight(0.0f),
   // end of DATA
-  soulInside(0), // subrecord SOUL
-  capacity(0),   // subrecord SLCP
+  soulInside(0), // sub record SOUL
+  capacity(0),   // sub record SLCP
   linkedToFormID(0)
 {
 }
@@ -142,7 +142,7 @@ bool SoulGemRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cerr << "Error while writing subrecord MODT of SLGM!\n";
+      std::cerr << "Error while writing sub record MODT of SLGM!\n";
       return false;
     }
   }
@@ -201,10 +201,10 @@ bool SoulGemRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool SoulGemRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
     return false;
   if (isDeleted())
     return true;
@@ -214,11 +214,11 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
 
   // read editor ID (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
     return false;
 
   // read OBND
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cOBND)
   {
@@ -226,7 +226,7 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -235,11 +235,11 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
     return false;
   }
   // read OBND's stuff
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of SLGM!\n";
+    std::cerr << "Error while reading sub record OBND of SLGM!\n";
     return false;
   }
 
@@ -253,56 +253,56 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   linkedToFormID = 0;
   while (bytesRead < readSize)
   {
-    // read next subrecord
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    // read next sub record header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: SLGM seems to have more than one FULL subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one FULL sub record.\n";
              return false;
            }
-           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
              return false;
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cerr << "Error: SLGM seems to have more than one MODL subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one MODL sub record.\n";
              return false;
            }
            // read model path (MODL)
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
              return false;
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cerr << "Error: SLGM seems to have more than one MODT subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one MODT sub record.\n";
              return false;
            }
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
-             std::cerr << "Error while reading subrecord MODT of SLGM!\n";
+             std::cerr << "Error while reading sub record MODT of SLGM!\n";
              return false;
            }
            bytesRead = bytesRead + 2 /* length */ + unknownMODT.size() /* data size */;
            break;
       case cKSIZ:
-           if (!loadKeywords(in_File, keywords, bytesRead))
+           if (!loadKeywords(input, keywords, bytesRead))
              return false;
            break;
       case cDATA:
            if (hasReadDATA)
            {
-             std::cerr << "Error: SLGM seems to have more than one DATA subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one DATA sub record.\n";
              return false;
            }
            // DATA's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 8)
            {
@@ -311,12 +311,12 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            }
            // read DATA
-           in_File.read(reinterpret_cast<char*>(&value), 4);
-           in_File.read(reinterpret_cast<char*>(&weight), 4);
+           input.read(reinterpret_cast<char*>(&value), 4);
+           input.read(reinterpret_cast<char*>(&weight), 4);
            bytesRead += 8;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DATA of SLGM!\n";
+             std::cerr << "Error while reading sub record DATA of SLGM!\n";
              return false;
            }
            hasReadDATA = true;
@@ -324,11 +324,11 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cSOUL:
            if (hasReadSOUL)
            {
-             std::cerr << "Error: SLGM seems to have more than one SOUL subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one SOUL sub record.\n";
              return false;
            }
            // SOUL's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 1)
            {
@@ -337,11 +337,11 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            }
            // read SOUL
-           in_File.read(reinterpret_cast<char*>(&soulInside), 1);
+           input.read(reinterpret_cast<char*>(&soulInside), 1);
            bytesRead += 1;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord SOUL of SLGM!\n";
+             std::cerr << "Error while reading sub record SOUL of SLGM!\n";
              return false;
            }
            hasReadSOUL = true;
@@ -349,11 +349,11 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cSLCP:
            if (hasReadSLCP)
            {
-             std::cerr << "Error: SLGM seems to have more than one SLCP subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one SLCP sub record.\n";
              return false;
            }
            // SLCP's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 1)
            {
@@ -362,11 +362,11 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
              return false;
            }
            // read SLCP
-           in_File.read(reinterpret_cast<char*>(&capacity), 1);
+           input.read(reinterpret_cast<char*>(&capacity), 1);
            bytesRead += 1;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord SLCP of SLGM!\n";
+             std::cerr << "Error while reading sub record SLCP of SLGM!\n";
              return false;
            }
            hasReadSLCP = true;
@@ -374,17 +374,17 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
       case cNAM0:
            if (linkedToFormID != 0)
            {
-             std::cerr << "Error: SLGM seems to have more than one NAM0 subrecord.\n";
+             std::cerr << "Error: SLGM seems to have more than one NAM0 sub record.\n";
              return false;
            }
            // read NAM0
-           if (!loadUint32SubRecordFromStream(in_File, cNAM0, linkedToFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cNAM0, linkedToFormID, false))
              return false;
            bytesRead += 6;
            // check content
            if (linkedToFormID == 0)
            {
-             std::cerr << "Error: Subrecord NAM0 of SLGM is zero!\n";
+             std::cerr << "Error: Sub record NAM0 of SLGM is zero!\n";
              return false;
            }
            break;
@@ -400,11 +400,11 @@ bool SoulGemRecord::loadFromStream(std::istream& in_File, const bool localized, 
   // presence checks
   if (modelPath.empty() || !hasReadDATA || !hasReadSOUL || !hasReadSLCP)
   {
-    std::cerr << "Error while reading SLGM record: At least one required subrecord is missing!\n";
+    std::cerr << "Error while reading SLGM record: At least one required sub record is missing!\n";
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t SoulGemRecord::getRecordType() const

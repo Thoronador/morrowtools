@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/TreeRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("TreeRecord")
 {
@@ -843,6 +844,80 @@ TEST_CASE("TreeRecord")
       // Check written data.
       const std::string_view data = "TREE\0\0\0\0\x20\0\0\0\xF0\x91\x0B\0\x1B\x69\x55\0\x28\0\x07\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      TreeRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x000B91F0;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x0007;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
+    }
+
+    SECTION("failure: cannot write FULL to stream")
+    {
+      const std::string_view data = "TREE\xD3\0\0\0\0\0\0\0\xF0\x91\x0B\0\x1B\x69\x55\0\x28\0\x07\0EDID\x13\0TreeFloraThistle01\0OBND\x0C\0\xB0\xFF\xB8\xFF\xED\xFF\x47\0\x45\0\x72\0MODL\x1A\0Plants\\FloraThistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAPFIG\x04\0\xAA\x34\x01\0SNAM\x04\0\xD5\x19\x05\0PFPC\x04\0\x64\x64\x64\x64\x46ULL\x04\0\xAC\x22\0\0CNAM\x30\0\0\0\x80\x3F\0\0\x80\x3F\x0B\xD7\x23\x3D\x90\xC2\xF5\x3C\x0B\xD7\x23\x3D\x96\x43\x0B\x3D\0\0\0\x3F\0\0\0\x3F\xCD\xCC\xCC\x3E\0\0\x80\x3F\0\0\x20\x40\0\0\0\x3F"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip TREE, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      TreeRecord record;
+      StringTable dummy_table;
+      dummy_table.addString(0x000022AC, "foo");
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check name data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000022AC );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<178> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const std::string_view data = "TREE\xD3\0\0\0\0\0\0\0\xF0\x91\x0B\0\x1B\x69\x55\0\x28\0\x07\0EDID\x13\0TreeFloraThistle01\0OBND\x0C\0\xB0\xFF\xB8\xFF\xED\xFF\x47\0\x45\0\x72\0MODL\x1A\0Plants\\FloraThistle01.nif\0MODT\x24\0\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFAPFIG\x04\0\xAA\x34\x01\0SNAM\x04\0\xD5\x19\x05\0PFPC\x04\0\x64\x64\x64\x64\x46ULL\x04\0\xAC\x22\0\0CNAM\x30\0\0\0\x80\x3F\0\0\x80\x3F\x0B\xD7\x23\x3D\x90\xC2\xF5\x3C\x0B\xD7\x23\x3D\x96\x43\x0B\x3D\0\0\0\x3F\0\0\0\x3F\xCD\xCC\xCC\x3E\0\0\x80\x3F\0\0\x20\x40\0\0\0\x3F"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip TREE, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      TreeRecord record;
+      StringTable dummy_table;
+      dummy_table.addString(0x000022AC, "foo");
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check MODT's data.
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\x02\0\0\0\0\0\0\0\x38\x6E\xFF\x80\x64\x64\x73\0\x13\x4C\x1E\xFA\x9F\x7D\xBC\x2A\x64\x64\x73\0\x13\x4C\x1E\xFA"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<108> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
     }
   }
 }

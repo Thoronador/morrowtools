@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/SoulGemRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("SoulGemRecord")
 {
@@ -1016,6 +1017,80 @@ TEST_CASE("SoulGemRecord")
       // Check written data.
       const std::string_view data = "SLGM\0\0\0\0\x20\0\x02\0\0\xE5\x02\0\x1B\x69\x55\0\x28\0\x0C\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      SoulGemRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x0002E500;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x000C;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
+    }
+
+    SECTION("failure: cannot write FULL to stream")
+    {
+      const std::string_view data = "SLGM\xC8\0\0\0\0\0\x02\0\0\xE5\x02\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x0D\0SoulGemBlack\0OBND\x0C\0\xFD\xFF\xFD\xFF\xF5\xFF\x03\0\x03\0\x0B\0FULL\x04\0\x3A\x59\0\0MODL\x23\0Clutter\\SoulGem\\SoulGemBlack01.nif\0MODT\x30\0\x02\0\0\0\x03\0\0\0\0\0\0\0\xC7\x96\xA2\xC2\x64\x64\x73\0\xF7\xBB\x84\x5B\xFF\x77\x91\xE4\x64\x64\x73\0\xF7\xBB\x84\x5B\xA8\x37\x08\xC1\x64\x64\x73\0\x26\x2C\x33\x3BKSIZ\x04\0\x01\0\0\0KWDA\x04\0\xA3\x37\x09\0DATA\x08\0\x2C\x01\0\0\0\0\x80\x3FSOUL\x01\0\0SLCP\x01\0\x05NAM0\x04\0\x04\xE5\x02\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip SLGM, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      SoulGemRecord record;
+      StringTable dummy_table;
+      dummy_table.addString(0x0000593A, "foo");
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check name data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000593A );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<69> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const std::string_view data = "SLGM\xC8\0\0\0\0\0\x02\0\0\xE5\x02\0\x1B\x69\x55\0\x28\0\x0C\0EDID\x0D\0SoulGemBlack\0OBND\x0C\0\xFD\xFF\xFD\xFF\xF5\xFF\x03\0\x03\0\x0B\0FULL\x04\0\x3A\x59\0\0MODL\x23\0Clutter\\SoulGem\\SoulGemBlack01.nif\0MODT\x30\0\x02\0\0\0\x03\0\0\0\0\0\0\0\xC7\x96\xA2\xC2\x64\x64\x73\0\xF7\xBB\x84\x5B\xFF\x77\x91\xE4\x64\x64\x73\0\xF7\xBB\x84\x5B\xA8\x37\x08\xC1\x64\x64\x73\0\x26\x2C\x33\x3BKSIZ\x04\0\x01\0\0\0KWDA\x04\0\xA3\x37\x09\0DATA\x08\0\x2C\x01\0\0\0\0\x80\x3FSOUL\x01\0\0SLCP\x01\0\x05NAM0\x04\0\x04\xE5\x02\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip SLGM, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      SoulGemRecord record;
+      StringTable dummy_table;
+      dummy_table.addString(0x0000593A, "foo");
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check MODT's data.
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\x03\0\0\0\0\0\0\0\xC7\x96\xA2\xC2\x64\x64\x73\0\xF7\xBB\x84\x5B\xFF\x77\x91\xE4\x64\x64\x73\0\xF7\xBB\x84\x5B\xA8\x37\x08\xC1\x64\x64\x73\0\x26\x2C\x33\x3B"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<123> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
     }
   }
 }

@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2025  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/ShoutRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("ShoutRecord")
 {
@@ -175,7 +176,6 @@ TEST_CASE("ShoutRecord")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
     StringTable dummy_table;
     dummy_table.addString(0x000003B2, "foo");
     dummy_table.addString(0x000003AF, "bar");
@@ -186,8 +186,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -225,8 +225,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -263,8 +263,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -278,8 +278,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -293,8 +293,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -308,8 +308,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -323,8 +323,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -338,8 +338,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -353,8 +353,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -368,8 +368,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -383,8 +383,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -398,8 +398,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -413,8 +413,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -428,8 +428,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -443,8 +443,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -459,8 +459,8 @@ TEST_CASE("ShoutRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read SHOU, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip SHOU, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -473,8 +473,8 @@ TEST_CASE("ShoutRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read SHOU, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip SHOU, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -489,8 +489,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -504,8 +504,8 @@ TEST_CASE("ShoutRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read SHOU, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -605,6 +605,82 @@ TEST_CASE("ShoutRecord")
       // Check written data.
       const std::string_view data = "SHOU\0\0\0\0\x20\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      ShoutRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x00013E07;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x0005;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
+    }
+
+    SECTION("failure: cannot write FULL to stream")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0FULL\x04\0\xB2\x03\0\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      ShoutRecord record;
+      StringTable dummy_table;
+      dummy_table.addString(0x000003B2, "foo");
+      dummy_table.addString(0x000003AF, "bar");
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check name data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000003B2 );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<58> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write DESC to stream")
+    {
+      const std::string_view data = "SHOU\x70\0\0\0\0\0\0\0\x07\x3E\x01\0\x1B\x69\x55\0\x28\0\x05\0EDID\x16\0UnrelentingForceShout\0FULL\x04\0\xB2\x03\0\0MDOB\x04\0\xAC\x59\x0A\0DESC\x04\0\xAF\x03\0\0SNAM\x0C\0\x22\x3E\x01\0\x09\x3E\x01\0\0\0\x70\x41SNAM\x0C\0\x23\x3E\x01\0\x39\x3F\x01\0\0\0\xA0\x41SNAM\x0C\0\x24\x3E\x01\0\x3A\x3F\x01\0\0\0\x34\x42"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip SHOU, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      ShoutRecord record;
+      StringTable dummy_table;
+      dummy_table.addString(0x000003B2, "foo");
+      dummy_table.addString(0x000003AF, "bar");
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check name data.
+      REQUIRE( record.description.isPresent() );
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0x000003AF );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<78> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
     }
   }
 }

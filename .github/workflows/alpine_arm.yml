@@ -31,9 +31,11 @@ jobs:
           mkdir node20/bin
           ln -s /usr/bin/node node20/bin/node
       # Checks-out the repository under $GITHUB_WORKSPACE.
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Install packages
         run: |
           apk update

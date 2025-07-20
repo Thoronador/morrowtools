@@ -7,7 +7,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
-      - uses: actions/checkout@v4
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Install Debian packages
         run: |
           sudo apt-get update
@@ -51,11 +54,15 @@ jobs:
           path: |
             build/artifacts/*.exe
             build/artifacts/*.dll
+          if-no-files-found: error
   build_cross-win32_static:
     runs-on: ubuntu-24.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
-      - uses: actions/checkout@v4
+      - name: Git checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
       - name: Install Debian packages
         run: |
           sudo apt-get update
@@ -93,3 +100,4 @@ jobs:
           name: build-artifacts-static-linking
           path: |
             build/artifacts/*.exe
+          if-no-files-found: error

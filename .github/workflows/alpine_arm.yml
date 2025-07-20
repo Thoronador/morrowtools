@@ -26,7 +26,7 @@ jobs:
         run: |
           apk add nodejs
           sed -i 's~ID=alpine~ID=nopine~g' /etc/os-release
-          cd /host/home/runner/runners/*/externals/
+          cd /host/home/runner/actions-runner/*/externals/
           rm -rf node20/*
           mkdir node20/bin
           ln -s /usr/bin/node node20/bin/node

@@ -6,7 +6,7 @@ jobs:
   alpine:
     runs-on: ubuntu-24.04-arm
     container:
-      image: 'alpine:3.21'
+      image: 'alpine:3.22'
       # Needed for Monkey-patch step.
       volumes:
         - /:/host
@@ -31,7 +31,7 @@ jobs:
           mkdir node20/bin
           ln -s /usr/bin/node node20/bin/node
           # Fake Node.js 24 for actions/checkout@v5.
-          # Currently, Alpine 3.21 has Node.js 22.15.1, but that seems to work,
+          # Currently, Alpine 3.22 has Node.js 22.16.0, but that seems to work,
           # too, because it looks like checkout is not using any stuff specific
           # to Node.js 24.
           rm -rf node24/*

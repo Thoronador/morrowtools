@@ -80,7 +80,7 @@ jobs:
           cp build-static/apps/sr/formID_finder/formID_finder.exe artifacts/
           cp build-static/apps/sr/small_high_elves/small_high_elves.exe artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: msys2-artifacts-static-linking
           path: |
@@ -100,7 +100,7 @@ jobs:
           mv bsa-cli bsa-cli_$VERSION
           '/c/Program Files/7-Zip/7z.exe' a -r bsa-cli_${VERSION}_win64.zip bsa-cli_${VERSION}
       - name: Create bsa-cli artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: bsa-cli-win64
           if-no-files-found: error
@@ -121,7 +121,7 @@ jobs:
           mv formID_finder formID_finder_$VERSION
           '/c/Program Files/7-Zip/7z.exe' a -r formID_finder_${VERSION}_win64.zip formID_finder_$VERSION
       - name: Create Form ID finder artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: formID-finder-win64
           if-no-files-found: error

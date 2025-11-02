@@ -5,9 +5,9 @@ build_docker_image:
     - docker:27-dind
   script:
     - cd ci/
-    - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:12.2-deb12 . -f Dockerfile_cross_win64
+    - docker build -t $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:14.2-deb13 . -f Dockerfile_cross_win64
     - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
-    - docker push $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:12.2-deb12
+    - docker push $CI_REGISTRY/striezel/morrowtools/ci-cross-win64:14.2-deb13
     - docker logout $CI_REGISTRY
   # Only build new image when the Dockerfile or the GitLab CI configuration
   # changes.
@@ -17,7 +17,7 @@ build_docker_image:
       - .gitlab-ci.yml
 
 win64_cross:
-  image: registry.gitlab.com/striezel/morrowtools/ci-cross-win64:12.2-deb12
+  image: registry.gitlab.com/striezel/morrowtools/ci-cross-win64:14.2-deb13
   stage: test
   before_script:
     - apt-get update && apt-get -y upgrade

@@ -2,7 +2,7 @@
 #       to build the project by cross-compiling it for 64-bit Windows OS.
 
 # build stage
-FROM debian:12-slim AS builder
+FROM debian:13-slim AS builder
 LABEL maintainer="Dirk Stolle <striezel-dev@web.de>"
 # Always update any existing packages first.
 ENV DEBIAN_FRONTEND=noninteractive

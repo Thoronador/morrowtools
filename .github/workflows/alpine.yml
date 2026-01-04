@@ -57,7 +57,7 @@ jobs:
           cp build-static/apps/sr/formID_finder/formID_finder artifacts/
           cp build-static/apps/sr/small_high_elves/small_high_elves artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: alpine-artifacts-static-linking
           path: |
@@ -76,7 +76,7 @@ jobs:
           mv bsa-cli bsa-cli_$VERSION
           tar czf bsa-cli_${VERSION}_linux-amd64-generic.tar.gz bsa-cli_$VERSION
       - name: Create bsa-cli artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: bsa-cli_linux-amd64-generic
           path: |
@@ -95,7 +95,7 @@ jobs:
           mv bsafs bsafs_$VERSION
           tar czf bsafs_${VERSION}_linux-amd64-generic.tar.gz bsafs_$VERSION
       - name: Create bsafs artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: bsafs_linux-amd64-generic
           path: |
@@ -115,7 +115,7 @@ jobs:
           mv formID_finder formID_finder_$VERSION
           tar czf formID_finder_${VERSION}_linux-amd64-generic.tar.gz formID_finder_$VERSION
       - name: Create Form ID finder artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: formID-finder_linux-amd64-generic
           path: |

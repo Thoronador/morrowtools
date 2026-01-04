@@ -47,7 +47,7 @@ jobs:
           cp LICENSE artifacts/
           cp apps/sr/formID_finder_GUI/readme.md artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: formID-GUI-build-windows
           path: |
@@ -81,7 +81,7 @@ jobs:
           cp LICENSE artifacts/
           cp apps/sr/formID_finder_GUI/readme.md artifacts/
       - name: Archive build artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: formID-GUI-build-linux
           path: |

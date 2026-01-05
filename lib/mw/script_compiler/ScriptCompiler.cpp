@@ -5101,7 +5101,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
       std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
       return false;
     }
-    //push functio code
+    //push function code
     chunk.pushCode(CodeAddToLevCreature);
     //push list ID's length
     chunk.data.push_back(params[1].length());
@@ -5131,7 +5131,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
       std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
       return false;
     }
-    //push functio code
+    //push function code
     chunk.pushCode(CodeAddToLevItem);
     //push list ID's length
     chunk.data.push_back(params[1].length());
@@ -5567,7 +5567,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
       std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
       return false;
     }
-    //push functio code
+    //push function code
     chunk.pushCode(CodeRemoveFromLevCreature);
     //push list ID's length
     chunk.data.push_back(params[1].length());
@@ -5597,7 +5597,7 @@ bool ScriptFunctions_ThreeParameters(const std::vector<std::string>& params, Com
       std::cout << "ScriptCompiler: Error: \""<<params[3]<<"\" is no float value!\n";
       return false;
     }
-    //push functio code
+    //push function code
     chunk.pushCode(CodeRemoveFromLevItem);
     //push list ID's length
     chunk.data.push_back(params[1].length());

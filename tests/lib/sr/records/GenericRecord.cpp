@@ -30,7 +30,6 @@ TEST_CASE("GenericRecord")
   using namespace SRTP;
   using namespace std::string_view_literals;
 
-  uint32_t dummy = 0;
   StringTable dummy_table;
 
   SECTION("constructor")
@@ -65,8 +64,8 @@ TEST_CASE("GenericRecord")
         std::istringstream streamIn;
         streamIn.str(std::string(data));
 
-        // read AACT, because header is handled before loadFromStream.
-        streamIn.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip AACT, because header is handled before loadFromStream.
+        streamIn.seekg(4);
         // Reading should succeed.
         REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
         REQUIRE( record.getWriteSize() == record.size() );
@@ -78,8 +77,8 @@ TEST_CASE("GenericRecord")
         std::istringstream streamIn;
         streamIn.str(std::string(data));
 
-        // read AACT, because header is handled before loadFromStream.
-        streamIn.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip AACT, because header is handled before loadFromStream.
+        streamIn.seekg(4);
         // Reading should succeed.
         REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
         REQUIRE( record.getWriteSize() == record.size() );
@@ -102,8 +101,8 @@ TEST_CASE("GenericRecord")
       std::istringstream streamIn;
       streamIn.str(std::string(data));
 
-      // read AACT, because header is handled before loadFromStream.
-      streamIn.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      streamIn.seekg(4);
       REQUIRE( streamIn.good() );
 
       // Reading should succeed.
@@ -138,8 +137,8 @@ TEST_CASE("GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read AACT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -153,8 +152,8 @@ TEST_CASE("GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read AACT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -168,8 +167,8 @@ TEST_CASE("GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read AACT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -208,8 +207,8 @@ TEST_CASE("GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
       GenericRecord a;
-      // read AACT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
       REQUIRE( a.loadFromStream(stream, true, dummy_table) );
 
@@ -237,16 +236,16 @@ TEST_CASE("GenericRecord")
       const std::string_view data = "AACT\x19\0\0\0\0\0\0\0\x65\x40\x09\0\x11\x60\x0C\0\x1F\0\x01\0EDID\x13\0ActionShieldChange\0AACT\x19\0\0\0\0\0\0\0\x65\x40\x09\0\x11\x60\x0C\0\x1F\0\x01\0EDID\x13\0SixSevenEightNineO\0"sv;
       std::istringstream stream;
       stream.str(std::string(data));
-      // read AACT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       GenericRecord a;
       REQUIRE( a.loadFromStream(stream, true, dummy_table) );
 
       GenericRecord b;
-      // read AACT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      stream.seekg(4, std::ios_base::cur);
       REQUIRE( stream.good() );
 
       REQUIRE( b.loadFromStream(stream, true, dummy_table) );
@@ -275,8 +274,8 @@ TEST_CASE("GenericRecord")
       std::istringstream stream;
       stream.str(std::string(data));
       GenericRecord a;
-      // read AACT, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip AACT, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
       REQUIRE( a.loadFromStream(stream, true, dummy_table) );
 
@@ -297,8 +296,8 @@ TEST_CASE("GenericRecord")
     std::istringstream stream;
     stream.str(std::string(data));
     GenericRecord a;
-    // read AACT, because header is handled before loadFromStream.
-    stream.read(reinterpret_cast<char*>(&dummy), 4);
+    // Skip AACT, because header is handled before loadFromStream.
+    stream.seekg(4);
     REQUIRE( stream.good() );
 
     // load first AACT
@@ -306,7 +305,7 @@ TEST_CASE("GenericRecord")
     const auto firstPointer = a.data();
 
     // load second AACT
-    stream.read(reinterpret_cast<char*>(&dummy), 4);
+    stream.seekg(4, std::ios_base::cur);
     REQUIRE( a.loadFromStream(stream, true, dummy_table) );
     const auto secondPointer = a.data();
 

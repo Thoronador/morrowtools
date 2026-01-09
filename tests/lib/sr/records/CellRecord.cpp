@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -701,7 +701,6 @@ TEST_CASE("CellRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
     StringTable dummy_table;
     dummy_table.addString(0x0000ED3E, "foo");
     dummy_table.addString(0x00000155, "bar");
@@ -712,8 +711,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -772,8 +771,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -828,8 +827,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -888,8 +887,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -947,8 +946,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1008,8 +1007,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1084,8 +1083,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1145,8 +1144,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1207,8 +1206,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1268,8 +1267,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1333,8 +1332,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1397,8 +1396,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
@@ -1421,8 +1420,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1436,8 +1435,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1451,8 +1450,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1466,8 +1465,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1481,8 +1480,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1496,8 +1495,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1511,8 +1510,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1526,8 +1525,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1541,8 +1540,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1556,8 +1555,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1571,8 +1570,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1586,8 +1585,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1601,8 +1600,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1617,8 +1616,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1631,8 +1630,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1647,8 +1646,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1663,8 +1662,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1677,8 +1676,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1693,8 +1692,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1708,8 +1707,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1723,8 +1722,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1739,8 +1738,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1753,8 +1752,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1769,8 +1768,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1785,8 +1784,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1799,8 +1798,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1815,8 +1814,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1830,8 +1829,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1845,8 +1844,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1860,8 +1859,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1875,8 +1874,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1891,8 +1890,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1905,8 +1904,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1921,8 +1920,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1936,8 +1935,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1952,8 +1951,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1966,8 +1965,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -1982,8 +1981,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -1997,8 +1996,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2013,8 +2012,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2027,8 +2026,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2043,8 +2042,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2058,8 +2057,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2074,8 +2073,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2088,8 +2087,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2104,8 +2103,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2119,8 +2118,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2135,8 +2134,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2149,8 +2148,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2165,8 +2164,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2180,8 +2179,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2196,8 +2195,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2210,8 +2209,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2226,8 +2225,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2241,8 +2240,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2257,8 +2256,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2271,8 +2270,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2287,8 +2286,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2302,8 +2301,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2318,8 +2317,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2332,8 +2331,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2348,8 +2347,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2363,8 +2362,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2379,8 +2378,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2393,8 +2392,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2409,8 +2408,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2424,8 +2423,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2439,8 +2438,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2455,8 +2454,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2469,8 +2468,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2485,8 +2484,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2500,8 +2499,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2515,8 +2514,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2531,8 +2530,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2545,8 +2544,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2561,8 +2560,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2576,8 +2575,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2591,8 +2590,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2607,8 +2606,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2621,8 +2620,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2637,8 +2636,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2652,8 +2651,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2668,8 +2667,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2682,8 +2681,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2698,8 +2697,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2713,8 +2712,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2728,8 +2727,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2744,8 +2743,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2758,8 +2757,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2774,8 +2773,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2789,8 +2788,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2804,8 +2803,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2820,8 +2819,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2834,8 +2833,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2850,8 +2849,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2865,8 +2864,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2880,8 +2879,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2896,8 +2895,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2910,8 +2909,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -2926,8 +2925,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2941,8 +2940,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2956,8 +2955,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2971,8 +2970,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -2986,8 +2985,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -3001,8 +3000,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -3017,8 +3016,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -3031,8 +3030,8 @@ TEST_CASE("CellRecord")
         std::istringstream stream;
         stream.str(std::string(data));
 
-        // read CELL, because header is handled before loadFromStream.
-        stream.read(reinterpret_cast<char*>(&dummy), 4);
+        // Skip CELL, because header is handled before loadFromStream.
+        stream.seekg(4);
         REQUIRE( stream.good() );
 
         // Reading should fail.
@@ -3047,8 +3046,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -3062,8 +3061,8 @@ TEST_CASE("CellRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CELL, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CELL, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

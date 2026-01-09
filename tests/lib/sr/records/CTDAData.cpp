@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -84,7 +84,7 @@ TEST_CASE("CTDAData")
   {
     using namespace std::string_view_literals;
 
-    uint32_t dummy = 0;
+    uint32_t bytesRead = 0;
 
     SECTION("default: load record")
     {
@@ -92,15 +92,15 @@ TEST_CASE("CTDAData")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CTDA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CTDA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should succeed.
       CTDAData ctda;
-      dummy = 0;
-      REQUIRE( ctda.loadFromStream(stream, dummy) );
-      REQUIRE( dummy == 34 );
+      bytesRead = 0;
+      REQUIRE( ctda.loadFromStream(stream, bytesRead) );
+      REQUIRE( bytesRead == 34 );
       // Check data.
       REQUIRE( ctda.content[0] == 2 );
       REQUIRE( ctda.content[1] == 0 );
@@ -142,13 +142,13 @@ TEST_CASE("CTDAData")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CTDA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CTDA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
       CTDAData ctda;
-      REQUIRE_FALSE( ctda.loadFromStream(stream, dummy) );
+      REQUIRE_FALSE( ctda.loadFromStream(stream, bytesRead) );
     }
 
     SECTION("corrupt data: length of CTDA is less than 32")
@@ -157,13 +157,13 @@ TEST_CASE("CTDAData")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CTDA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CTDA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
       CTDAData ctda;
-      REQUIRE_FALSE( ctda.loadFromStream(stream, dummy) );
+      REQUIRE_FALSE( ctda.loadFromStream(stream, bytesRead) );
     }
 
     SECTION("corrupt data: stream ends before all data can be read")
@@ -172,13 +172,13 @@ TEST_CASE("CTDAData")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read CTDA, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip CTDA, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
       CTDAData ctda;
-      REQUIRE_FALSE( ctda.loadFromStream(stream, dummy) );
+      REQUIRE_FALSE( ctda.loadFromStream(stream, bytesRead) );
     }
   }
 

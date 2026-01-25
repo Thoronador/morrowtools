@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021  Dirk Stolle
+    Copyright (C) 2021, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -142,13 +142,12 @@ TEST_CASE("PerkRecord")
       std::istringstream streamIn;
       streamIn.str(std::string(data));
 
-      uint32_t dummy = 0;
       StringTable dummy_table;
       dummy_table.addString(0x000011A2, "Some name is here.");
       dummy_table.addString(0x000043F9, "This is the description.");
 
-      // read PERK, because header is handled before loadFromStream.
-      streamIn.read((char*) &dummy, 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      streamIn.seekg(4);
       REQUIRE( streamIn.good() );
 
       REQUIRE( record.loadFromStream(streamIn, true, dummy_table) );
@@ -207,7 +206,6 @@ TEST_CASE("PerkRecord")
 
   SECTION("loadFromStream")
   {
-    uint32_t dummy = 0;
     StringTable dummy_table;
 
     dummy_table.addString(0x000011A2, "Some name is here.");
@@ -219,8 +217,8 @@ TEST_CASE("PerkRecord")
       std::istringstream streamIn;
       streamIn.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      streamIn.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      streamIn.seekg(4);
       REQUIRE( streamIn.good() );
 
       // Reading should succeed.
@@ -259,8 +257,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -274,8 +272,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -289,8 +287,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -304,8 +302,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -319,8 +317,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -334,8 +332,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -349,8 +347,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -364,8 +362,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -379,8 +377,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.
@@ -394,8 +392,8 @@ TEST_CASE("PerkRecord")
       std::istringstream stream;
       stream.str(std::string(data));
 
-      // read PERK, because header is handled before loadFromStream.
-      stream.read(reinterpret_cast<char*>(&dummy), 4);
+      // Skip PERK, because header is handled before loadFromStream.
+      stream.seekg(4);
       REQUIRE( stream.good() );
 
       // Reading should fail.

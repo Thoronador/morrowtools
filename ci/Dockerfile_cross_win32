@@ -1,7 +1,7 @@
 # Note: This Dockerfile attempts to build the project by cross-compiling it
 #       for 32-bit Windows OS via MinGW.
 
-FROM debian:12-slim
+FROM debian:13-slim
 LABEL maintainer="Dirk Stolle <striezel-dev@web.de>"
 # Always update any existing packages first.
 ENV DEBIAN_FRONTEND=noninteractive
@@ -33,7 +33,8 @@ RUN mkdir -p /opt/morrowtools/build/artifacts && \
     cp apps/sr/conv_cams/conv_cams.exe artifacts/ && \
     cp apps/sr/formID_finder/formID_finder.exe artifacts/ && \
     cp apps/sr/small_high_elves/small_high_elves.exe artifacts/ && \
-    cp /usr/lib/gcc/i686-w64-mingw32/12-win32/libstdc++-6.dll artifacts/ && \
+    cp /usr/lib/gcc/i686-w64-mingw32/14-win32/libstdc++-6.dll artifacts/ && \
+    cp /usr/lib/gcc/i686-w64-mingw32/14-win32/libgcc_s_dw2-1.dll artifacts/ && \
     cp /usr/i686-w64-mingw32/lib/zlib1.dll artifacts/
 RUN apt-get install -y zip && \
     cd /opt/morrowtools/build && \

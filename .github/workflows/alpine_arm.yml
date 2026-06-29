@@ -9,7 +9,7 @@ jobs:
       image: 'alpine:3.24'
       # Needed for Monkey-patch step.
       volumes:
-        - /:/host
+        - /tmp:/__e/node24
     steps:
       # Git is required so that actions/checkout does a proper Git checkout.
       - name: Install Git in container
@@ -19,22 +19,16 @@ jobs:
           git config --global --add safe.directory "$GITHUB_WORKSPACE"
       - name: Monkey-patch Alpine Node.js into runner
         # This step is required because the actions refuse to run on ARM 64
-        # while in a container. So the OS ID is changed and the host's Node.js
-        # binary is replaced with the one from the container.
+        # while in an Alpine container. So the OS ID is changed and the host's
+        # Node.js binary is replaced with the one from the container.
         # Works for now, but may fail when Node or other stuff gets updated on
         # the runner's side.
         run: |
           apk add nodejs
           sed -i 's~ID=alpine~ID=nopine~g' /etc/os-release
-          cd /host/home/runner/actions-runner/*/externals/
-          rm -rf node20/*
-          mkdir node20/bin
-          ln -s /usr/bin/node node20/bin/node
-          # Fake Node.js 24 for actions/checkout@v7.
           # Currently, Alpine 3.24 has Node.js 24.17.0, so this should work.
-          rm -rf node24/*
-          mkdir node24/bin
-          ln -s /usr/bin/node node24/bin/node
+          mkdir -p /__e/node24/bin
+          ln -sf /usr/bin/node /__e/node24/bin/node
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - name: Checkout
         uses: actions/checkout@v7

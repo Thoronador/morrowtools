@@ -30,16 +30,14 @@ jobs:
           rm -rf node20/*
           mkdir node20/bin
           ln -s /usr/bin/node node20/bin/node
-          # Fake Node.js 24 for actions/checkout@v6.
-          # Currently, Alpine 3.22 has Node.js 22.16.0, but that seems to work,
-          # too, because it looks like checkout is not using any stuff specific
-          # to Node.js 24.
+          # Fake Node.js 24 for actions/checkout@v7.
+          # Currently, Alpine 3.24 has Node.js 24.17.0, so this should work.
           rm -rf node24/*
           mkdir node24/bin
           ln -s /usr/bin/node node24/bin/node
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
           persist-credentials: false

@@ -48,16 +48,16 @@ win64_cross:
       - build/artifacts/
 
 coverage:
-  image: debian:12-slim
+  image: debian:13-slim
   stage: test
   before_script:
     - apt-get update && apt-get -y upgrade
-    - apt-get install -y catch cmake g++-12 lcov libfuse3-dev liblz4-dev pkg-config zlib1g-dev
+    - apt-get install -y catch cmake g++-14 lcov libfuse3-dev liblz4-dev pkg-config zlib1g-dev
     - apt-get install -y libasan8 libubsan1
   script:
     # build
-    - export CXX=g++-12
-    - export CC=gcc-12
+    - export CXX=g++-14
+    - export CC=gcc-14
     - mkdir build-coverage
     - cd build-coverage
     - cmake -DCODE_COVERAGE=ON -DENABLE_SANITIZER=ON ../
@@ -65,7 +65,7 @@ coverage:
     # tests
     - ctest -V
     # collect code coverage data
-    - lcov -c --directory . --output-file main_coverage.info
+    - lcov -c --ignore-errors inconsistent,inconsistent --directory . --output-file main_coverage.info
     - lcov --remove main_coverage.info '/usr/include/*' '*tests/*' -o main_coverage_filtered.info
     - genhtml main_coverage_filtered.info --output-directory ../public
   coverage: /^[\t ]*lines\.*:\s*\d+.\d+\%/
@@ -76,7 +76,7 @@ coverage:
       - public
 
 pages:
-  image: debian:12-slim
+  image: debian:13-slim
   stage: deploy
   needs: ["coverage"]
   dependencies:

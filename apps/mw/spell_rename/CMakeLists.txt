@@ -52,3 +52,7 @@ endif ()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "9.0")
   target_link_libraries(spell_rename c++fs)
 endif ()
+
+include(GNUInstallDirs)
+install (TARGETS spell_rename
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

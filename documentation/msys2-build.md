@@ -25,7 +25,7 @@ into the prompt, then press enter.
 
 To build the Morrowind / Skyrim Tools Project from source you need a C++
 compiler, CMake, the Ninja build system, the zlib library, and the lz4 library.
-pkg-config is required to make it easier to find compiler options for the
+pkgconf is required to make it easier to find compiler options for the
 installed libraries. Additionally, the program uses Catch (C++ Automated Test
 Cases in Headers) to perform some tests.
 
@@ -35,7 +35,7 @@ system to get the latest source code directly from the Git repository.
 All of that can usually be installed be typing
 
 ```bash
-pacman -S git mingw-w64-x86_64-boost mingw-w64-x86_64-catch mingw-w64-x86_64-lz4 mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-zlib mingw-w64-x86_64-ninja mingw-w64-x86_64-pkg-config
+pacman -S git mingw-w64-x86_64-boost mingw-w64-x86_64-catch mingw-w64-x86_64-lz4 mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc mingw-w64-x86_64-zlib mingw-w64-x86_64-ninja mingw-w64-x86_64-pkgconf
 ```
 
 into the MSYS2 command prompt.

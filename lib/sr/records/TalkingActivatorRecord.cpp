@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021  Thoronador
+    Copyright (C) 2012, 2013, 2021, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -57,7 +57,9 @@ bool TalkingActivatorRecord::equals(const TalkingActivatorRecord& other) const
 uint32_t TalkingActivatorRecord::getWriteSize() const
 {
   if (isDeleted())
+  {
     return 0;
+  }
   uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
       + editorID.length() + 1 /* length of name +1 byte for NUL termination */
       + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
@@ -93,9 +95,13 @@ bool TalkingActivatorRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cTACT), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
+  {
     return false;
+  }
   if (isDeleted())
+  {
     return true;
+  }
 
   // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
@@ -113,7 +119,9 @@ bool TalkingActivatorRecord::saveToStream(std::ostream& output) const
   {
     // write FULL
     if (!name.saveToStream(output, cFULL))
+    {
       return false;
+    }
   }
 
   // write model path (MODL)
@@ -183,22 +191,26 @@ bool TalkingActivatorRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool TalkingActivatorRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
+  {
     return false;
+  }
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
   // read editor (EDID)
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
+  {
     return false;
+  }
 
   // read OBND
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cOBND)
   {
@@ -206,7 +218,7 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -216,11 +228,11 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   }
   // read OBND's stuff
   unknownOBND.fill(0);
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of TACT!\n";
+    std::cerr << "Error while reading sub record OBND of TACT!\n";
     return false;
   }
 
@@ -235,98 +247,108 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
 
   while (bytesRead < readSize)
   {
-    // read next subrecord header
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    // read next sub record header
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: Record TACT seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: Record TACT seems to have more than one FULL sub record!\n";
              return false;
            }
            // read FULL
-           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
+           {
              return false;
+           }
            // sanity check
            if ((name.getType() == LocalizedString::Type::Index) && (name.getIndex() == 0))
            {
-             std::cerr << "Error: Subrecord FULL of TACT has invalid value zero!\n";
+             std::cerr << "Error: Sub record FULL of TACT has invalid value zero!\n";
              return false;
            }
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cerr << "Error: Record TACT seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: Record TACT seems to have more than one MODL sub record!\n";
              return false;
            }
            // read model path (MODL)
-           if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, false, bytesRead))
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
+           {
              return false;
+           }
            // sanity check
            if (modelPath.empty())
            {
-             std::cerr << "Error: Subrecord MODL of TACT is empty!\n";
+             std::cerr << "Error: Sub record MODL of TACT is empty!\n";
              return false;
            }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cerr << "Error: Record TACT seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: Record TACT seems to have more than one MODT sub record!\n";
              return false;
            }
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
-             std::cerr << "Error while reading subrecord MODT of TACT!";
+             std::cerr << "Error while reading sub record MODT of TACT!";
              return false;
            }
            bytesRead += (2 + unknownMODT.size());
            break;
       case cKSIZ:
-           if (!loadKeywords(in_File, keywords, bytesRead))
+           if (!loadKeywords(input, keywords, bytesRead))
+           {
              return false;
+           }
            break;
       case cPNAM:
            if (hasReadPNAM)
            {
-             std::cerr << "Error: Record TACT seems to have more than one PNAM subrecord!\n";
+             std::cerr << "Error: Record TACT seems to have more than one PNAM sub record!\n";
              return false;
            }
            // read PNAM
-           if (!loadUint32SubRecordFromStream(in_File, cPNAM, unknownPNAM, false))
+           if (!loadUint32SubRecordFromStream(input, cPNAM, unknownPNAM, false))
+           {
              return false;
+           }
            bytesRead += 6;
            hasReadPNAM = true;
            break;
       case cSNAM:
            if (loopingSoundFormID != 0)
            {
-             std::cerr << "Error: Record TACT seems to have more than one SNAM subrecord!\n";
+             std::cerr << "Error: Record TACT seems to have more than one SNAM sub record!\n";
              return false;
            }
            // read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, loopingSoundFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cSNAM, loopingSoundFormID, false))
+           {
              return false;
+           }
            bytesRead += 6;
            // sanity check
            if (loopingSoundFormID == 0)
            {
-             std::cerr << "Error: Subrecord SNAM of TACT has invalid value zero!\n";
+             std::cerr << "Error: Sub record SNAM of TACT has invalid value zero!\n";
              return false;
            }
            break;
       case cFNAM:
            if (hasReadFNAM)
            {
-             std::cerr << "Error: Record TACT seems to have more than one FNAM subrecord!\n";
+             std::cerr << "Error: Record TACT seems to have more than one FNAM sub record!\n";
              return false;
            }
            // FNAM's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 2)
            {
@@ -335,11 +357,11 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
              return false;
            }
            // read FNAM's stuff
-           in_File.read(reinterpret_cast<char*>(&unknownFNAM), 2);
+           input.read(reinterpret_cast<char*>(&unknownFNAM), 2);
            bytesRead += 2;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord FNAM of TACT!\n";
+             std::cerr << "Error while reading sub record FNAM of TACT!\n";
              return false;
            }
            hasReadFNAM = true;
@@ -347,17 +369,19 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
       case cVNAM:
            if (voiceTypeFormID != 0)
            {
-             std::cerr << "Error: Record TACT seems to have more than one VNAM subrecord!\n";
+             std::cerr << "Error: Record TACT seems to have more than one VNAM sub record!\n";
              return false;
            }
            // read VNAM
-           if (!loadUint32SubRecordFromStream(in_File, cVNAM, voiceTypeFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cVNAM, voiceTypeFormID, false))
+           {
              return false;
+           }
            bytesRead += 6;
            // sanity check
            if (voiceTypeFormID == 0)
            {
-             std::cerr << "Error: Subrecord VNAM of TACT has invalid value zero!\n";
+             std::cerr << "Error: Sub record VNAM of TACT has invalid value zero!\n";
              return false;
            }
            break;
@@ -372,11 +396,11 @@ bool TalkingActivatorRecord::loadFromStream(std::istream& in_File, const bool lo
   // presence checks
   if (modelPath.empty() || !hasReadPNAM || !hasReadFNAM)
   {
-    std::cerr << "Error: At least one required subrecord of TACT is missing!\n";
+    std::cerr << "Error: At least one required sub record of TACT is missing!\n";
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t TalkingActivatorRecord::getRecordType() const

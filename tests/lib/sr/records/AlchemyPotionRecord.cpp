@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2024  Dirk Stolle
+    Copyright (C) 2021, 2024, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/AlchemyPotionRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("AlchemyPotionRecord")
 {
@@ -1318,6 +1319,9 @@ TEST_CASE("AlchemyPotionRecord")
 
   SECTION("saveToStream")
   {
+    StringTable dummy_table;
+    dummy_table.addString(0x000025A6, "foo");
+
     SECTION("save deleted record")
     {
       std::ostringstream stream;
@@ -1341,6 +1345,105 @@ TEST_CASE("AlchemyPotionRecord")
       // Check written data.
       const std::string_view data = "ALCH\0\0\0\0\x20\0\0\0\x5E\x4C\x03\0\x1B\x69\x55\0\x28\0\x0E\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      AlchemyPotionRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x00034C5E;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x000E;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
+    }
+
+    SECTION("failure: cannot write FULL to stream")
+    {
+      const std::string_view data = "ALCH\x41\x01\0\0\0\0\0\0\x5E\x4C\x03\0\x1B\x69\x55\0\x28\0\x0E\0EDID\x04\0Ale\0OBND\x0C\0\xFD\xFF\xFE\xFF\x02\0\x03\0\x03\0\x18\0FULL\x04\0\xA6\x25\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEA\xCD\x08\0MODL\x1F\0Clutter\\Ingredients\\Mead01.nif\0MODT\x6C\0\x02\0\0\0\x08\0\0\0\0\0\0\0\x63\xDF\x5C\x01\x64\x64\x73\0\xBF\xFA\x25\xDA\xB9\xFB\x95\xCF\x64\x64\x73\0\xBF\xFA\x25\xDA\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0\xCE\x35\x3C\x09\x64\x64\x73\0\x26\x2C\x33\x3B\xFD\x5A\x85\x62\x64\x64\x73\0\xBF\xFA\x25\xDA\xEA\x21\x64\xA7\x64\x64\x73\0\x60\x4D\xDD\x5C\x98\xA1\xD1\x7F\x64\x64\x73\0\x60\x4D\xDD\x5C\xF9\x0E\x5C\x2E\x64\x64\x73\0\x60\x4D\xDD\x5CYNAM\x04\0\xBD\xED\x03\0ZNAM\x04\0\xC0\xED\x03\0DATA\x04\0\0\0\0\x3F\x45NIT\x14\0\x05\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x35\x64\x0B\0EFID\x04\0\x16\xEB\x03\0EFIT\x0C\0\0\0\x70\x41\0\0\0\0\0\0\0\0EFID\x04\0\x45\xC6\x10\0EFIT\x0C\0\0\0\xF0\x41\0\0\0\0\x1E\0\0\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AlchemyPotionRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000025A6 );
+
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\x08\0\0\0\0\0\0\0\x63\xDF\x5C\x01\x64\x64\x73\0\xBF\xFA\x25\xDA\xB9\xFB\x95\xCF\x64\x64\x73\0\xBF\xFA\x25\xDA\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0\xCE\x35\x3C\x09\x64\x64\x73\0\x26\x2C\x33\x3B\xFD\x5A\x85\x62\x64\x64\x73\0\xBF\xFA\x25\xDA\xEA\x21\x64\xA7\x64\x64\x73\0\x60\x4D\xDD\x5C\x98\xA1\xD1\x7F\x64\x64\x73\0\x60\x4D\xDD\x5C\xF9\x0E\x5C\x2E\x64\x64\x73\0\x60\x4D\xDD\x5C"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<60> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const std::string_view data = "ALCH\x41\x01\0\0\0\0\0\0\x5E\x4C\x03\0\x1B\x69\x55\0\x28\0\x0E\0EDID\x04\0Ale\0OBND\x0C\0\xFD\xFF\xFE\xFF\x02\0\x03\0\x03\0\x18\0FULL\x04\0\xA6\x25\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEA\xCD\x08\0MODL\x1F\0Clutter\\Ingredients\\Mead01.nif\0MODT\x6C\0\x02\0\0\0\x08\0\0\0\0\0\0\0\x63\xDF\x5C\x01\x64\x64\x73\0\xBF\xFA\x25\xDA\xB9\xFB\x95\xCF\x64\x64\x73\0\xBF\xFA\x25\xDA\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0\xCE\x35\x3C\x09\x64\x64\x73\0\x26\x2C\x33\x3B\xFD\x5A\x85\x62\x64\x64\x73\0\xBF\xFA\x25\xDA\xEA\x21\x64\xA7\x64\x64\x73\0\x60\x4D\xDD\x5C\x98\xA1\xD1\x7F\x64\x64\x73\0\x60\x4D\xDD\x5C\xF9\x0E\x5C\x2E\x64\x64\x73\0\x60\x4D\xDD\x5CYNAM\x04\0\xBD\xED\x03\0ZNAM\x04\0\xC0\xED\x03\0DATA\x04\0\0\0\0\x3F\x45NIT\x14\0\x05\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x35\x64\x0B\0EFID\x04\0\x16\xEB\x03\0EFIT\x0C\0\0\0\x70\x41\0\0\0\0\0\0\0\0EFID\x04\0\x45\xC6\x10\0EFIT\x0C\0\0\0\xF0\x41\0\0\0\0\x1E\0\0\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AlchemyPotionRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data of MODT.
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\x08\0\0\0\0\0\0\0\x63\xDF\x5C\x01\x64\x64\x73\0\xBF\xFA\x25\xDA\xB9\xFB\x95\xCF\x64\x64\x73\0\xBF\xFA\x25\xDA\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0\xCE\x35\x3C\x09\x64\x64\x73\0\x26\x2C\x33\x3B\xFD\x5A\x85\x62\x64\x64\x73\0\xBF\xFA\x25\xDA\xEA\x21\x64\xA7\x64\x64\x73\0\x60\x4D\xDD\x5C\x98\xA1\xD1\x7F\x64\x64\x73\0\x60\x4D\xDD\x5C\xF9\x0E\x5C\x2E\x64\x64\x73\0\x60\x4D\xDD\x5C"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<147> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write effects to stream")
+    {
+      const std::string_view data = "ALCH\x41\x01\0\0\0\0\0\0\x5E\x4C\x03\0\x1B\x69\x55\0\x28\0\x0E\0EDID\x04\0Ale\0OBND\x0C\0\xFD\xFF\xFE\xFF\x02\0\x03\0\x03\0\x18\0FULL\x04\0\xA6\x25\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xEA\xCD\x08\0MODL\x1F\0Clutter\\Ingredients\\Mead01.nif\0MODT\x6C\0\x02\0\0\0\x08\0\0\0\0\0\0\0\x63\xDF\x5C\x01\x64\x64\x73\0\xBF\xFA\x25\xDA\xB9\xFB\x95\xCF\x64\x64\x73\0\xBF\xFA\x25\xDA\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0\xCE\x35\x3C\x09\x64\x64\x73\0\x26\x2C\x33\x3B\xFD\x5A\x85\x62\x64\x64\x73\0\xBF\xFA\x25\xDA\xEA\x21\x64\xA7\x64\x64\x73\0\x60\x4D\xDD\x5C\x98\xA1\xD1\x7F\x64\x64\x73\0\x60\x4D\xDD\x5C\xF9\x0E\x5C\x2E\x64\x64\x73\0\x60\x4D\xDD\x5CYNAM\x04\0\xBD\xED\x03\0ZNAM\x04\0\xC0\xED\x03\0DATA\x04\0\0\0\0\x3F\x45NIT\x14\0\x05\0\0\0\x03\0\0\0\0\0\0\0\0\0\0\0\x35\x64\x0B\0EFID\x04\0\x16\xEB\x03\0EFIT\x0C\0\0\0\x70\x41\0\0\0\0\0\0\0\0EFID\x04\0\x45\xC6\x10\0EFIT\x0C\0\0\0\xF0\x41\0\0\0\0\x1E\0\0\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip ALCH, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AlchemyPotionRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check some effect data.
+      REQUIRE( record.effects.size() == 2 );
+      REQUIRE( record.effects[0].effectFormID == 0x0003EB16 );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<312> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
     }
   }
 

@@ -174,7 +174,7 @@ bool LocalizedString::saveToStream(std::ostream& output, const uint32_t subHeade
          // write header
          output.write(reinterpret_cast<const char*>(&subHeader), 4);
          // subrecord's length
-         subLength = m_String.length()+1;
+         subLength = m_String.length() + 1;
          output.write(reinterpret_cast<const char*>(&subLength), 2);
          // write string
          output.write(m_String.c_str(), subLength);

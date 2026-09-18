@@ -77,7 +77,9 @@ bool AlchemyPotionRecord::equals(const AlchemyPotionRecord& other) const
 uint32_t AlchemyPotionRecord::getWriteSize() const
 {
   if (isDeleted())
+  {
     return 0;
+  }
   uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
         + editorID.length() + 1 /* length of name +1 byte for NUL termination */
         + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed length */
@@ -125,9 +127,13 @@ bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cALCH), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
+  {
     return false;
+  }
   if (isDeleted())
+  {
     return true;
+  }
 
   // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
@@ -144,7 +150,10 @@ bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
   if (name.isPresent())
   {
     if (!name.saveToStream(output, cFULL))
+    {
+      std::cerr << "Error while writing FULL of ALCH!\n";
       return false;
+    }
   }
 
   if (!keywords.empty())
@@ -177,7 +186,7 @@ bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cerr << "Error while writing MODT of ALCH!";
+      std::cerr << "Error while writing MODT of ALCH!\n";
       return false;
     }
   }
@@ -186,7 +195,7 @@ bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
   {
     if (!unknownMODS.saveToStream(output, cMODS))
     {
-      std::cerr << "Error while writing MODS of ALCH!";
+      std::cerr << "Error while writing MODS of ALCH!\n";
       return false;
     }
   }
@@ -200,7 +209,7 @@ bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&pickupSoundFormID), 4);
   }
 
-  if (putdownSoundFormID!=0)
+  if (putdownSoundFormID != 0)
   {
     // write putdown sound form ID (ZNAM)
     output.write(reinterpret_cast<const char*>(&cZNAM), 4);
@@ -209,7 +218,7 @@ bool AlchemyPotionRecord::saveToStream(std::ostream& output) const
     output.write(reinterpret_cast<const char*>(&putdownSoundFormID), 4);
   }
 
-  if (equipTypeFormID!=0)
+  if (equipTypeFormID != 0)
   {
     // write equip type form ID (ETYP)
     output.write(reinterpret_cast<const char*>(&cETYP), 4);

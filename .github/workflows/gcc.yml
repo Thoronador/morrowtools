@@ -71,7 +71,7 @@ jobs:
         if: matrix.version == 9
 
   gcc_lto_static:
-    runs-on: ubuntu-26.04
+    runs-on: ubuntu-24.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - name: Git checkout
@@ -81,11 +81,11 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake g++-15 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
-      - name: Build with GCC 15
+          sudo apt-get install -y catch2 cmake g++-13 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
+      - name: Build with GCC 13
         run: |
-          export CXX=g++-15
-          export CC=gcc-15
+          export CXX=g++-13
+          export CC=gcc-13
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build

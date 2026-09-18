@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2023  Dirk Stolle
+    Copyright (C) 2021, 2023, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/AddOnNodeRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("AddOnNodeRecord")
 {
@@ -580,6 +581,52 @@ TEST_CASE("AddOnNodeRecord")
       // Check written data.
       const std::string_view data = "ADDN\0\0\0\0\x20\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      AddOnNodeRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x0001C2B0;
+      record.headerRevision = 0x000E6713;
+      record.headerVersion = 39;
+      record.headerUnknown5 = 0x0002;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
+    }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const std::string_view data = "ADDN\x78\0\0\0\0\0\0\0\xB0\xC2\x01\0\x13\x67\x0E\0\x27\0\x02\0EDID\x10\0MPSFireWallBase\0OBND\x0C\0\0\x80\0\x80\0\x80\xFF\x7F\xFF\x7F\xFF\x7FMODL\x18\0MPS\\MPSFireWallBase.nif\0MODT\x18\0\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33\x44\x41TA\x04\0\x03\0\0\0DNAM\x04\0\0\0\x01\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip ADDN, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AddOnNodeRecord record;
+      StringTable dummy_table;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check MODT data.
+      REQUIRE( record.unknownMODT.isPresent() );
+      REQUIRE( record.unknownMODT.size() == 24 );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x12\x77\x91\x7C\x64\x64\x73\0\x38\x97\x3C\xEA\xA8\x21\xF6\x78\x64\x64\x73\0\x58\x2C\x55\x33"sv);
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<111> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
     }
   }
 

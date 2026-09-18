@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013, 2021, 2022  Dirk Stolle
+    Copyright (C) 2012, 2013, 2021, 2022, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -59,7 +59,9 @@ bool AddOnNodeRecord::equals(const AddOnNodeRecord& other) const
 uint32_t AddOnNodeRecord::getWriteSize() const
 {
   if (isDeleted())
+  {
     return 0;
+  }
   uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
     + editorID.length() + 1 /* length of name +1 byte for NUL termination */
     + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
@@ -82,38 +84,36 @@ bool AddOnNodeRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cADDN), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
+  {
     return false;
+  }
   if (isDeleted())
+  {
     return true;
+  }
 
-  // write EDID
+  // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
-  // EDID's length
   uint16_t subLength = editorID.length() + 1;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write editor ID
   output.write(editorID.c_str(), subLength);
 
   // write OBND
   output.write(reinterpret_cast<const char*>(&cOBND), 4);
-  // OBND's length
   subLength = 12; // fixed size
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write OBND's stuff
   output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
-  // write MODL
+  // write model path (MODL)
   output.write(reinterpret_cast<const char*>(&cMODL), 4);
-  // MODL's length
   subLength = modelPath.length() + 1;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write model path
   output.write(modelPath.c_str(), subLength);
 
   // write MODT
   if (!unknownMODT.saveToStream(output, cMODT))
   {
-    std::cerr << "Error while writing subrecord MODT of ADDN!\n";
+    std::cerr << "Error while writing sub record MODT of ADDN!\n";
     return false;
   }
 
@@ -128,10 +128,8 @@ bool AddOnNodeRecord::saveToStream(std::ostream& output) const
   {
     // write SNAM
     output.write(reinterpret_cast<const char*>(&cSNAM), 4);
-    // SNAM's length
     subLength = 4; // fixed size
     output.write(reinterpret_cast<const char*>(&subLength), 2);
-    // write SNAM
     output.write(reinterpret_cast<const char*>(&soundDescriptorFormID), 4);
   }
 
@@ -147,24 +145,28 @@ bool AddOnNodeRecord::saveToStream(std::ostream& output) const
 }
 #endif
 
-bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
+bool AddOnNodeRecord::loadFromStream(std::istream& input,
                                      [[maybe_unused]] const bool localized,
                                      [[maybe_unused]] const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize))
+  if (!loadSizeAndUnknownValues(input, readSize))
+  {
     return false;
+  }
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
   uint32_t bytesRead = 0;
 
   // read EDID
   char buffer[512];
-  if (!loadString512FromStream(in_File, editorID, buffer, cEDID, true, bytesRead))
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
+  {
     return false;
+  }
 
   // read OBND
-  in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName != cOBND)
   {
@@ -172,7 +174,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
     return false;
   }
   // OBND's length
-  in_File.read(reinterpret_cast<char*>(&subLength), 2);
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -182,17 +184,19 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
   }
   // read OBND's stuff
   unknownOBND.fill(0);
-  in_File.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
     std::cerr << "Error while reading sub record OBND of ADDN!\n";
     return false;
   }
 
   // read MODL
-  if (!loadString512FromStream(in_File, modelPath, buffer, cMODL, true, bytesRead))
+  if (!loadString512FromStream(input, modelPath, buffer, cMODL, true, bytesRead))
+  {
     return false;
+  }
 
   unknownMODT.setPresence(false);
   bool hasReadDATA = false;
@@ -201,7 +205,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
   while (bytesRead < readSize)
   {
     // read next sub record
-    in_File.read(reinterpret_cast<char*>(&subRecName), 4);
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
@@ -212,7 +216,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
              std::cerr << "Error while reading sub record MODT of ADDN!";
              return false;
@@ -226,8 +230,10 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read DATA
-           if (!loadUint32SubRecordFromStream(in_File, cDATA, unknownDATA, false))
+           if (!loadUint32SubRecordFromStream(input, cDATA, unknownDATA, false))
+           {
              return false;
+           }
            bytesRead += 6;
            hasReadDATA = true;
            break;
@@ -238,8 +244,10 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read SNAM
-           if (!loadUint32SubRecordFromStream(in_File, cSNAM, soundDescriptorFormID, false))
+           if (!loadUint32SubRecordFromStream(input, cSNAM, soundDescriptorFormID, false))
+           {
              return false;
+           }
            bytesRead += 6;
            if (soundDescriptorFormID == 0)
            {
@@ -254,7 +262,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // DNAM's length
-           in_File.read(reinterpret_cast<char*>(&subLength), 2);
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 4)
            {
@@ -263,8 +271,8 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
              return false;
            }
            // read DNAM
-           in_File.read(reinterpret_cast<char*>(&MasterParticleSystemCap), 2);
-           in_File.read(reinterpret_cast<char*>(&flags), 2);
+           input.read(reinterpret_cast<char*>(&MasterParticleSystemCap), 2);
+           input.read(reinterpret_cast<char*>(&flags), 2);
            bytesRead += 4;
            hasReadDNAM = true;
            break;
@@ -283,7 +291,7 @@ bool AddOnNodeRecord::loadFromStream(std::istream& in_File,
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t AddOnNodeRecord::getRecordType() const

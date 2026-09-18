@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Thoronador
+    Copyright (C) 2012, 2013, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 #ifndef SR_PROJECTILERECORD_HPP
 #define SR_PROJECTILERECORD_HPP
 
+#include <array>
+#include <optional>
 #include <string>
 #include <vector>
 #include "BasicRecord.hpp"
@@ -33,65 +35,74 @@ namespace SRTP
 struct ProjectileRecord: public BasicRecord
 {
   public:
-    /* constructor */
+    /** Constructor, creates an empty record. */
     ProjectileRecord();
 
-    /* destructor */
-    virtual ~ProjectileRecord();
-
     #ifndef SR_NO_RECORD_EQUALITY
-    /* returns true, if the other record contains the same data */
+    /** \brief Checks whether another instance contains the same data.
+     *
+     * \param other   the other record to compare with
+     * \return Returns true, if @other contains the same data as instance.
+     *         Returns false otherwise.
+     */
     bool equals(const ProjectileRecord& other) const;
     #endif
 
     #ifndef SR_UNSAVEABLE_RECORDS
-    /* returns the size in bytes that the record's data would occupy in a file
-       stream, NOT including the header data
-    */
+    /** \brief Gets the size in bytes that the record's data would occupy in a file
+     *         stream, NOT including the header data.
+     *
+     * \return Returns the size in bytes that the record would need. Size of the
+     *         header is not included.
+     */
     virtual uint32_t getWriteSize() const;
 
-    /* writes the record to the given output stream and returns true on success
-
-      parameters:
-          output   - the output stream
-    */
+    /** \brief Writes the record to the given output stream.
+     *
+     * \param output  the output stream
+     * \return Returns true on success (record was written to stream).
+     *         Returns false, if an error occurred.
+     */
     virtual bool saveToStream(std::ostream& output) const;
     #endif
 
-    /* loads the record from the given input stream and returns true on success
+    /** \brief Loads the record from the given input stream.
+     *
+     * \param input      the input stream
+     * \param localized  whether the file to read from is localized or not
+     * \param table      the associated string table for localized files
+     * \return Returns true on success (record was loaded from stream).
+     *         Returns false, if an error occurred.
+     */
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
-      parameters:
-          in_File   - the input stream
-          localized - whether the file to read from is localized or not
-          table     - the associated string table for localized files
-    */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
-
-    /* returns the record's type, usually its header */
+    /** \brief Gets the record's type, usually its header.
+     *
+     * \return Returns the record's type.
+     */
     virtual uint32_t getRecordType() const;
 
     struct DSTD_DSTF_record
     {
-      uint8_t unknownDSTD[20];
+      std::array<uint8_t, 20> unknownDSTD;
 
       /* equality operator */
       bool operator==(const DSTD_DSTF_record& other) const;
-    };//struct
+    }; // struct
 
     std::string editorID;
-    uint8_t unknownOBND[12];
+    std::array<uint8_t, 12> unknownOBND;
     LocalizedString name;
     std::string modelPath;
     BinarySubRecord unknownMODT;
-    bool hasDEST;
-    uint64_t unknownDEST;
+    std::optional<uint64_t> unknownDEST;
     std::vector<DSTD_DSTF_record> unknownDSTD_DSTFs;
-    BinarySubRecord unknownDATA;//subrecord DATA
+    BinarySubRecord unknownDATA; // sub record DATA
     std::string unknownNAM1;
     BinarySubRecord unknownNAM2;
     uint32_t unknownVNAM;
-}; //struct
+}; // struct
 
-} //namespace
+} // namespace
 
 #endif // SR_PROJECTILERECORD_HPP

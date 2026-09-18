@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2012, 2013  Dirk Stolle
+    Copyright (C) 2012, 2013, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 */
 
 #include "ProjectileRecord.hpp"
-#include <cstring>
 #include <iostream>
 #include "../SR_Constants.hpp"
 #include "../../mw/HelperIO.hpp"
@@ -30,50 +29,43 @@ namespace SRTP
 /* equality operator for DSTD_DSTF_record */
 bool ProjectileRecord::DSTD_DSTF_record::operator==(const ProjectileRecord::DSTD_DSTF_record& other) const
 {
-  return (memcmp(unknownDSTD, other.unknownDSTD, 20)==0);
+  return (unknownDSTD == other.unknownDSTD);
 }
 
 /* ProjectileRecord's functions */
 
 ProjectileRecord::ProjectileRecord()
 : BasicRecord(), editorID(""),
+  unknownOBND(std::array<uint8_t, 12>{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }),
   name(LocalizedString()),
   modelPath(""),
-  hasDEST(false), unknownDEST(0),
+  unknownDEST(std::nullopt),
   unknownDSTD_DSTFs(std::vector<DSTD_DSTF_record>()),
   unknownNAM1(""),
   unknownVNAM(0)
 {
-  memset(unknownOBND, 0, 12);
   unknownMODT.setPresence(false);
   unknownDATA.setPresence(false);
   unknownNAM2.setPresence(false);
 }
 
-ProjectileRecord::~ProjectileRecord()
-{
-  //empty
-}
-
 #ifndef SR_NO_RECORD_EQUALITY
 bool ProjectileRecord::equals(const ProjectileRecord& other) const
 {
-  return ((equalsBasic(other)) and (editorID==other.editorID)
-      and (memcmp(unknownOBND, other.unknownOBND, 12)==0)
-      and (name==other.name)
-      and (modelPath==other.modelPath) and (unknownMODT==other.unknownMODT)
-      and (hasDEST==other.hasDEST) and ((unknownDEST==other.unknownDEST) or (!hasDEST))
-      and (unknownDSTD_DSTFs==other.unknownDSTD_DSTFs) and (unknownDATA==other.unknownDATA)
-      and (unknownNAM1==other.unknownNAM1) and (unknownNAM2==other.unknownNAM2)
-      and (unknownVNAM==other.unknownVNAM));
+  return ((equalsBasic(other)) && (editorID == other.editorID)
+      && (unknownOBND == other.unknownOBND) && (name == other.name)
+      && (modelPath == other.modelPath) && (unknownMODT == other.unknownMODT)
+      && (unknownDEST == other.unknownDEST)
+      && (unknownDSTD_DSTFs == other.unknownDSTD_DSTFs) && (unknownDATA == other.unknownDATA)
+      && (unknownNAM1 == other.unknownNAM1) && (unknownNAM2 == other.unknownNAM2)
+      && (unknownVNAM == other.unknownVNAM));
 }
 #endif
 
 #ifndef SR_UNSAVEABLE_RECORDS
 uint32_t ProjectileRecord::getWriteSize() const
 {
-  uint32_t writeSize;
-  writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
+  uint32_t writeSize = 4 /* EDID */ + 2 /* 2 bytes for length */
         + editorID.length() + 1 /* length of string +1 byte for NUL-termination */
         + 4 /* OBND */ + 2 /* 2 bytes for length */ + 12 /* fixed size */
         + 4 /* DATA */ + 2 /* 2 bytes for length */ + unknownDATA.size() /* size */
@@ -86,22 +78,22 @@ uint32_t ProjectileRecord::getWriteSize() const
   }
   if (!modelPath.empty())
   {
-    writeSize = writeSize +4 /* MODL */ +2 /* 2 bytes for length */
-        +modelPath.length()+1 /* length of string +1 byte for NUL-termination */;
+    writeSize = writeSize + 4 /* MODL */ + 2 /* 2 bytes for length */
+        + modelPath.length() + 1 /* length of string +1 byte for NUL-termination */;
   }
   if (unknownMODT.isPresent())
   {
     writeSize = writeSize + 4 /* MODT */ + 2 /* 2 bytes for length */
                + unknownMODT.size();
   }
-  if (hasDEST)
+  if (unknownDEST.has_value())
   {
-    writeSize = writeSize +4 /* DEST */ +2 /* 2 bytes for length */ +8 /* fixed size */;
+    writeSize = writeSize + 4 /* DEST */ + 2 /* 2 bytes for length */ + 8 /* fixed size */;
   }
   if (!unknownDSTD_DSTFs.empty())
   {
-    writeSize = writeSize +unknownDSTD_DSTFs.size()*(4 /* DSTD */ +2 /* 2 bytes for length */ +20 /* fixed size */
-               +4 /* DSTF */ +2 /* 2 bytes for length */ +0 /* fixed size */);
+    writeSize = writeSize + unknownDSTD_DSTFs.size() * (4 /* DSTD */ + 2 /* 2 bytes for length */ + 20 /* fixed size */
+               + 4 /* DSTF */ + 2 /* 2 bytes for length */ + 0 /* fixed size */);
   }
   if (unknownNAM2.isPresent())
   {
@@ -113,177 +105,148 @@ uint32_t ProjectileRecord::getWriteSize() const
 
 bool ProjectileRecord::saveToStream(std::ostream& output) const
 {
-  output.write((const char*) &cPROJ, 4);
-  if (!saveSizeAndUnknownValues(output, getWriteSize())) return false;
+  output.write(reinterpret_cast<const char*>(&cPROJ), 4);
+  if (!saveSizeAndUnknownValues(output, getWriteSize()))
+  {
+    return false;
+  }
 
-  //write EDID
-  output.write((const char*) &cEDID, 4);
-  //EDID's length
-  uint16_t subLength = editorID.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write editor ID
+  // write editor ID (EDID)
+  output.write(reinterpret_cast<const char*>(&cEDID), 4);
+  uint16_t subLength = editorID.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(editorID.c_str(), subLength);
 
-  //write OBND
-  output.write((const char*) &cOBND, 4);
-  //OBND's length
-  subLength = 12; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write OBND's stuff
-  output.write((const char*) unknownOBND, 12);
+  // write OBND
+  output.write(reinterpret_cast<const char*>(&cOBND), 4);
+  subLength = 12; // fixed size
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
+  output.write(reinterpret_cast<const char*>(unknownOBND.data()), 12);
 
   if (name.isPresent())
   {
-    //write FULL
+    // write FULL
     if (!name.saveToStream(output, cFULL))
+    {
       return false;
-  }//if hasFULL
+    }
+  }
 
   if (!modelPath.empty())
   {
-    //write MODL
-    output.write((const char*) &cMODL, 4);
-    //MODL's length
-    subLength = modelPath.length()+1;
-    output.write((const char*) &subLength, 2);
-    //write model path
+    // write model path (MODL)
+    output.write(reinterpret_cast<const char*>(&cMODL), 4);
+    subLength = modelPath.length() + 1;
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
     output.write(modelPath.c_str(), subLength);
-  }//if model path
+  }
 
   if (unknownMODT.isPresent())
   {
     if (!unknownMODT.saveToStream(output, cMODT))
     {
-      std::cerr << "Error while writing subrecord MODT of PROJ!\n";
+      std::cerr << "Error while writing sub record MODT of PROJ!\n";
       return false;
     }
-  }//if MODT
+  }
 
-  if (hasDEST)
+  if (unknownDEST.has_value())
   {
-    //write DEST
-    output.write((const char*) &cDEST, 4);
-    //DEST's length
-    subLength = 8; //fixed size
-    output.write((const char*) &subLength, 2);
-    //write DEST's stuff
-    output.write((const char*) &unknownDEST, 4);
-  }//if hasDEST
+    // write DEST
+    output.write(reinterpret_cast<const char*>(&cDEST), 4);
+    subLength = 8; // fixed size
+    output.write(reinterpret_cast<const char*>(&subLength), 2);
+    output.write(reinterpret_cast<const char*>(&unknownDEST.value()), 4);
+  }
 
   if (!unknownDSTD_DSTFs.empty())
   {
-    const uint32_t count = unknownDSTD_DSTFs.size();
-    unsigned int i;
-    for (i=0; i<count; ++i)
+    const auto count = unknownDSTD_DSTFs.size();
+    for (decltype(unknownDSTD_DSTFs)::size_type i = 0; i < count; ++i)
     {
-      //write DSTD
-      output.write((const char*) &cDSTD, 4);
-      //DSTD's length
-      subLength = 20; //fixed size
-      output.write((const char*) &subLength, 2);
+      // write DSTD
+      output.write(reinterpret_cast<const char*>(&cDSTD), 4);
+      subLength = 20; // fixed size
+      output.write(reinterpret_cast<const char*>(&subLength), 2);
       //write DSTD's stuff
-      output.write((const char*) (unknownDSTD_DSTFs[i].unknownDSTD), 20);
+      output.write(reinterpret_cast<const char*>(unknownDSTD_DSTFs[i].unknownDSTD.data()), 20);
 
-      //write DSTF
-      output.write((const char*) &cDSTF, 4);
-      //DSTF's length
-      subLength = 0;
-      output.write((const char*) &subLength, 2);
-      //zero length, nothing to write
-    }//for
-  }//if DSTD_DSTF
+      // write DSTF
+      output.write(reinterpret_cast<const char*>(&cDSTF), 4);
+      subLength = 0; // always zero, DSTF is an end marker
+      output.write(reinterpret_cast<const char*>(&subLength), 2);
+      // zero length, nothing to write
+    }
+  }
 
-  //write DATA
+  // write DATA
   if (unknownDATA.isPresent())
   {
     if (!unknownDATA.saveToStream(output, cDATA))
     {
-      std::cerr << "Error while writing subrecord DATA of PROJ!\n";
+      std::cerr << "Error while writing sub record DATA of PROJ!\n";
       return false;
     }
-  }//if DATA
+  }
   else
   {
-    std::cerr << "Error while writing subrecord DATA of PROJ: no DATA subrecord present!\n";
+    std::cerr << "Error while writing sub record DATA of PROJ: no DATA sub record present!\n";
     return false;
   }
 
-  //write NAM1
-  output.write((const char*) &cNAM1, 4);
-  //NAM1's length
-  subLength = unknownNAM1.length()+1;
-  output.write((const char*) &subLength, 2);
-  //write NAM1 path
+  // write NAM1 path (NAM1)
+  output.write(reinterpret_cast<const char*>(&cNAM1), 4);
+  subLength = unknownNAM1.length() + 1;
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write(unknownNAM1.c_str(), subLength);
 
   if (unknownNAM2.isPresent())
   {
     if (!unknownNAM2.saveToStream(output, cNAM2))
     {
-      std::cerr << "Error while writing subrecord NAM2 of PROJ!\n";
+      std::cerr << "Error while writing sub record NAM2 of PROJ!\n";
       return false;
     }
-  }//if NAM2
+  }
 
-  //write VNAM
-  output.write((const char*) &cVNAM, 4);
-  //VNAM's length
-  subLength = 4; //fixed size
-  output.write((const char*) &subLength, 2);
-  //write VNAM's stuff
+  // write VNAM
+  output.write(reinterpret_cast<const char*>(&cVNAM), 4);
+  subLength = 4; // fixed size
+  output.write(reinterpret_cast<const char*>(&subLength), 2);
   output.write((const char*) &unknownVNAM, 4);
 
   return output.good();
 }
 #endif
 
-bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localized, const StringTable& table)
+bool ProjectileRecord::loadFromStream(std::istream& input, const bool localized, const StringTable& table)
 {
   uint32_t readSize = 0;
-  if (!loadSizeAndUnknownValues(in_File, readSize)) return false;
-  uint32_t subRecName;
-  uint16_t subLength;
-  subRecName = subLength = 0;
-  uint32_t bytesRead;
+  if (!loadSizeAndUnknownValues(input, readSize))
+  {
+    return false;
+  }
 
-  //read EDID
-  in_File.read((char*) &subRecName, 4);
-  bytesRead = 4;
-  if (subRecName!=cEDID)
-  {
-    UnexpectedRecord(cEDID, subRecName);
-    return false;
-  }
-  //EDID's length
-  in_File.read((char*) &subLength, 2);
-  bytesRead += 2;
-  if (subLength > 511)
-  {
-    std::cerr << "Error: Sub record EDID of PROJ is longer than 511 characters!\n";
-    return false;
-  }
-  //read EDID's stuff
+  uint32_t bytesRead = 0;
+
+  // read editor ID (EDID)
   char buffer[512];
-  memset(buffer, 0, 512);
-  in_File.read(buffer, subLength);
-  bytesRead += subLength;
-  if (!in_File.good())
+  if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
   {
-    std::cerr << "Error while reading subrecord PROJ of AMMO!\n";
     return false;
   }
-  editorID = std::string(buffer);
 
-  //read OBND
-  in_File.read((char*) &subRecName, 4);
+  // read OBND
+  uint32_t subRecName = 0;
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
-  if (subRecName!=cOBND)
+  if (subRecName != cOBND)
   {
     UnexpectedRecord(cOBND, subRecName);
     return false;
   }
-  //OBND's length
-  in_File.read((char*) &subLength, 2);
+  uint16_t subLength = 0;
+  input.read(reinterpret_cast<char*>(&subLength), 2);
   bytesRead += 2;
   if (subLength != 12)
   {
@@ -291,19 +254,18 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
               << subLength << " bytes). Should be 12 bytes!\n";
     return false;
   }
-  //read OBND's stuff
-  in_File.read((char*) unknownOBND, 12);
+  input.read(reinterpret_cast<char*>(unknownOBND.data()), 12);
   bytesRead += 12;
-  if (!in_File.good())
+  if (!input.good())
   {
-    std::cerr << "Error while reading subrecord OBND of PROJ!\n";
+    std::cerr << "Error while reading sub record OBND of PROJ!\n";
     return false;
   }
 
   name.reset();
   modelPath.clear();
   unknownMODT.setPresence(false);
-  hasDEST = false; unknownDEST = 0;
+  unknownDEST.reset();
   unknownDSTD_DSTFs.clear();
   DSTD_DSTF_record tempDSTD_DSTF;
   bool hasReadNAM1 = false;
@@ -311,103 +273,92 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
   unknownNAM2.setPresence(false);
   bool hasReadVNAM = false; unknownVNAM = 0;
 
-  while (bytesRead<readSize)
+  while (bytesRead < readSize)
   {
-    //read next subrecord name
-    in_File.read((char*) &subRecName, 4);
+    // read next sub record name
+    input.read(reinterpret_cast<char*>(&subRecName), 4);
     bytesRead += 4;
     switch (subRecName)
     {
       case cFULL:
            if (name.isPresent())
            {
-             std::cerr << "Error: Record PROJ seems to have more than one FULL subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one FULL sub record!\n";
              return false;
            }
-           //read FULL
-           if (!name.loadFromStream(in_File, cFULL, false, bytesRead, localized, table, buffer))
+           // read FULL
+           if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
            {
-             std::cerr << "Error while reading subrecord FULL of PROJ!\n";
+             std::cerr << "Error while reading sub record FULL of PROJ!\n";
              return false;
            }
            break;
       case cMODL:
            if (!modelPath.empty())
            {
-             std::cerr << "Error: Record PROJ seems to have more than one MODL subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one MODL sub record!\n";
              return false;
            }
-           //MODL's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength > 511)
+           // read model path
+           if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
            {
-             std::cerr << "Error: Sub record MODL of PROJ is longer than 511 characters!\n";
              return false;
            }
-           //read MODL's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord MODL of PROJ!\n";
-             return false;
-           }
-           modelPath = std::string(buffer);
+           // check content
            if (modelPath.empty())
            {
-             std::cerr << "Error: MODL subrecord of PROJ is empty!\n";
+             std::cerr << "Error: MODL sub record of PROJ is empty!\n";
              return false;
            }
            break;
       case cMODT:
            if (unknownMODT.isPresent())
            {
-             std::cerr << "Error: Record PROJ seems to have more than one MODT subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one MODT sub record!\n";
              return false;
            }
            // read MODT
-           if (!unknownMODT.loadFromStream(in_File, cMODT, false))
+           if (!unknownMODT.loadFromStream(input, cMODT, false))
            {
-             std::cerr << "Error while reading subrecord MODT of PROJ!\n";
+             std::cerr << "Error while reading sub record MODT of PROJ!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownMODT.size();
            break;
       case cDEST:
-           if (hasDEST)
+           if (unknownDEST.has_value())
            {
-             std::cerr << "Error: Record PROJ seems to have more than one DEST subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one DEST sub record!\n";
              return false;
            }
-           //DEST's length
-           in_File.read((char*) &subLength, 2);
+           // DEST's length
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
-           if (subLength!=8)
+           if (subLength != 8)
            {
              std::cerr << "Error: Sub record DEST of PROJ has invalid length("
                        << subLength << " bytes). Should be eight bytes!\n";
              return false;
            }
-           //read DEST's stuff
-           in_File.read((char*) &unknownDEST, 8);
+           // read DEST's stuff
+           unknownDEST = 0;
+           input.read(reinterpret_cast<char*>(&unknownDEST.value()), 8);
            bytesRead += 8;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DEST of PROJ!\n";
+             std::cerr << "Error while reading sub record DEST of PROJ!\n";
+             unknownDEST.reset();
              return false;
            }
-           hasDEST = true;
            break;
       case cDSTD:
-           if (!hasDEST)
+           if (!unknownDEST.has_value())
            {
-             std::cerr << "Error: Record PROJ seems to have a DSTF subrecord but no DEST subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have a DSTF sub record but no DEST sub record!\n";
              return false;
            }
-           //DSTD's length
-           in_File.read((char*) &subLength, 2);
+           // DSTD's length
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 20)
            {
@@ -415,25 +366,25 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
                        << subLength << " bytes). Should be 20 bytes!\n";
              return false;
            }
-           //read DSTD's stuff
-           in_File.read((char*) tempDSTD_DSTF.unknownDSTD, 20);
+           // read DSTD's stuff
+           input.read(reinterpret_cast<char*>(tempDSTD_DSTF.unknownDSTD.data()), 20);
            bytesRead += 20;
-           if (!in_File.good())
+           if (!input.good())
            {
-             std::cerr << "Error while reading subrecord DSTD of PROJ!\n";
+             std::cerr << "Error while reading sub record DSTD of PROJ!\n";
              return false;
            }
 
-           //read DSTF
-           in_File.read((char*) &subRecName, 4);
+           // read DSTF
+           input.read(reinterpret_cast<char*>(&subRecName), 4);
            bytesRead += 4;
-           if (subRecName!=cDSTF)
+           if (subRecName != cDSTF)
            {
              UnexpectedRecord(cDSTF, subRecName);
              return false;
            }
-           //DSTF's length
-           in_File.read((char*) &subLength, 2);
+           // DSTF's length
+           input.read(reinterpret_cast<char*>(&subLength), 2);
            bytesRead += 2;
            if (subLength != 0)
            {
@@ -446,13 +397,13 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cDATA:
            if (unknownDATA.isPresent())
            {
-             std::cerr << "Error: Record PROJ seems to have more than one DATA subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one DATA sub record!\n";
              return false;
            }
            // read DATA
-           if (!unknownDATA.loadFromStream(in_File, cDATA, false))
+           if (!unknownDATA.loadFromStream(input, cDATA, false))
            {
-             std::cerr << "Error while reading subrecord DATA of PROJ!\n";
+             std::cerr << "Error while reading sub record DATA of PROJ!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownDATA.size();
@@ -468,44 +419,31 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cNAM1:
            if (hasReadNAM1)
            {
-             std::cerr << "Error: Record PROJ seems to have more than one NAM1 subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one NAM1 sub record!\n";
              return false;
            }
-           //NAM1's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength > 511)
+           // read NAM1's stuff
+           if (!loadString512FromStream(input, unknownNAM1, buffer, cNAM1, false, bytesRead))
            {
-             std::cerr << "Error: Sub record NAM1 of PROJ is longer than 511 characters!\n";
              return false;
            }
-           //read NAM1's stuff
-           memset(buffer, 0, 512);
-           in_File.read(buffer, subLength);
-           bytesRead += subLength;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord NAM1 of PROJ!\n";
-             return false;
-           }
-           unknownNAM1 = std::string(buffer);
            hasReadNAM1 = true;
            break;
       case cNAM2:
            if (!hasReadNAM1)
            {
-             std::cerr << "Error: Record PROJ seems to have a NAM2 subrecord but no NAM1 subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have a NAM2 sub record but no NAM1 sub record!\n";
              return false;
            }
            if (unknownNAM2.isPresent())
            {
-             std::cerr << "Error: Record PROJ seems to have more than one NAM2 subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one NAM2 sub record!\n";
              return false;
            }
            // read NAM2
-           if (!unknownNAM2.loadFromStream(in_File, cNAM2, false))
+           if (!unknownNAM2.loadFromStream(input, cNAM2, false))
            {
-             std::cerr << "Error while reading subrecord NAM2 of PROJ!\n";
+             std::cerr << "Error while reading sub record NAM2 of PROJ!\n";
              return false;
            }
            bytesRead = bytesRead + 2 + unknownNAM2.size();
@@ -513,26 +451,15 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
       case cVNAM:
            if (hasReadVNAM)
            {
-             std::cerr << "Error: Record PROJ seems to have more than one VNAM subrecord!\n";
+             std::cerr << "Error: Record PROJ seems to have more than one VNAM sub record!\n";
              return false;
            }
-           //VNAM's length
-           in_File.read((char*) &subLength, 2);
-           bytesRead += 2;
-           if (subLength != 4)
+           // read VNAM's content
+           if (!loadUint32SubRecordFromStream(input, cVNAM, unknownVNAM, false))
            {
-             std::cerr << "Error: Sub record VNAM of PROJ has invalid length("
-                       << subLength << " bytes). Should be four bytes!\n";
              return false;
            }
-           //read VNAM's stuff
-           in_File.read((char*) &unknownVNAM, 4);
-           bytesRead += 4;
-           if (!in_File.good())
-           {
-             std::cerr << "Error while reading subrecord VNAM of PROJ!\n";
-             return false;
-           }
+           bytesRead += 6;
            hasReadVNAM = true;
            break;
       default:
@@ -540,17 +467,17 @@ bool ProjectileRecord::loadFromStream(std::istream& in_File, const bool localize
                      << "\" found, but only FULL, MODL, MODT, DEST, DSTD, DATA, NAM1, NAM2 or VNAM are allowed!\n";
            return false;
            break;
-    }//swi
-  }//while
+    }
+  }
 
-  //presence checks
-  if (!(hasReadNAM1 and unknownDATA.isPresent() and hasReadVNAM))
+  // presence checks
+  if (!(hasReadNAM1 && unknownDATA.isPresent() && hasReadVNAM))
   {
-    std::cerr << "Error: At least one of the required subrecords of PROJ is missing!\n";
+    std::cerr << "Error: At least one of the required sub records of PROJ is missing!\n";
     return false;
   }
 
-  return in_File.good();
+  return input.good();
 }
 
 uint32_t ProjectileRecord::getRecordType() const
@@ -558,4 +485,4 @@ uint32_t ProjectileRecord::getRecordType() const
   return cPROJ;
 }
 
-} //namespace
+} // namespace

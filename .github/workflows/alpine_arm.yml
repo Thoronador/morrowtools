@@ -4,7 +4,7 @@ on: push
 
 jobs:
   alpine:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-26.04-arm
     container:
       image: 'alpine:3.24'
       # Needed for Monkey-patch step.

@@ -4,7 +4,7 @@ on: push
 
 jobs:
   sanitizer:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - name: Git checkout
@@ -14,12 +14,12 @@ jobs:
       - name: Install Debian packages
         run: |
           sudo apt-get update
-          sudo apt-get install -y catch2 cmake g++-14 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
+          sudo apt-get install -y catch2 cmake g++-16 libfuse3-dev liblz4-dev pkg-config zlib1g-dev
           sudo apt-get install -y libasan8 libubsan1
-      - name: Build with GCC 14 and sanitizers enabled
+      - name: Build with GCC 16 and sanitizers enabled
         run: |
-          export CXX=g++-14
-          export CC=gcc-14
+          export CXX=g++-16
+          export CC=gcc-16
           cd $GITHUB_WORKSPACE
           mkdir build
           cd build

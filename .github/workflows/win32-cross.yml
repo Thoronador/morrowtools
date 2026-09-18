@@ -4,7 +4,7 @@ on: push
 
 jobs:
   build_cross-win32_dynamic:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - name: Git checkout
@@ -56,7 +56,7 @@ jobs:
             build/artifacts/*.dll
           if-no-files-found: error
   build_cross-win32_static:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - name: Git checkout

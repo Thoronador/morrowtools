@@ -55,7 +55,7 @@ jobs:
           if-no-files-found: error
 
   linux:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-26.04
     steps:
       # Checks-out the repository under $GITHUB_WORKSPACE.
       - name: Git checkout

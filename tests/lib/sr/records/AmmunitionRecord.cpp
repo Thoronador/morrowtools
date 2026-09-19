@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the test suite for Skyrim Tools Project.
-    Copyright (C) 2021, 2025  Dirk Stolle
+    Copyright (C) 2021, 2025, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/AmmunitionRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("AmmunitionRecord")
 {
@@ -1057,6 +1058,10 @@ TEST_CASE("AmmunitionRecord")
 
   SECTION("saveToStream")
   {
+    StringTable dummy_table;
+    dummy_table.addString(0x00012470, "foo");
+    dummy_table.addString(0x0000004A, "bar");
+
     SECTION("save deleted record")
     {
       std::ostringstream stream;
@@ -1080,6 +1085,101 @@ TEST_CASE("AmmunitionRecord")
       // Check written data.
       const std::string_view data = "AMMO\0\0\0\0\x20\0\0\0\xF0\x91\x0B\0\x1B\x69\x55\0\x28\0\x07\0"sv;
       REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      AmmunitionRecord record;
+      // Set some header data.
+      record.headerFlags = 0;
+      record.headerFormID = 0x0010EC8C;
+      record.headerRevision = 0x001E276C;
+      record.headerVersion = 44;
+      record.headerUnknown5 = 0x0003;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
+    }
+
+    SECTION("failure: cannot write FULL to stream")
+    {
+      const auto data = "AMMO\x82\0\0\0\0\0\0\0\x8C\xEC\x10\0\x6C\x27\x1E\0\x2C\0\x03\0EDID\x14\0DwarvenSphereBolt02\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0p$\x01\0YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0w\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x14\0\x36\xB9\x07\0\x06\0\0\0\0\0pA\0\0\0\0\xCD\xCC\xCC="sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip AMMO, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AmmunitionRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x00012470 );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<75> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const auto data = "AMMO\xD2\0\0\0\0\0\0\0\x3A\x08\0\x05\x1E-\x1E\0,\0\x01\0EDID\x15\0ccBGSSSE037_IronBolt\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0J\0\0\0MODL3\0CreationClub\\\x42GSSSE037\\Weapons\\Iron\\IronBolt01.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0w\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x02\0\0\0KWDA\x08\0\xE7\x17\x09\0\x18\xE7\x01\0DATA\x14\0;\x08\0\x05\0\0\0\0\0\0\0A\x01\0\0\0\xCD\xCC\xCC="sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip AMMO, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AmmunitionRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<147> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write DESC to stream")
+    {
+      const auto data = "AMMO\x82\0\0\0\0\0\0\0\x8C\xEC\x10\0\x6C\x27\x1E\0\x2C\0\x03\0EDID\x14\0DwarvenSphereBolt02\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0p$\x01\0YNAM\x04\0\xB7\xE7\x03\0ZNAM\x04\0w\xE8\x03\0DESC\x04\0\0\0\0\0KSIZ\x04\0\x01\0\0\0KWDA\x04\0\xE7\x17\x09\0DATA\x14\0\x36\xB9\x07\0\x06\0\0\0\0\0pA\0\0\0\0\xCD\xCC\xCC="sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip AMMO, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      AmmunitionRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.description.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.description.getIndex() == 0 );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<107> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
     }
   }
 }

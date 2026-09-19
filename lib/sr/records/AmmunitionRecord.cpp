@@ -106,9 +106,13 @@ bool AmmunitionRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cAMMO), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
+  {
     return false;
+  }
   if (isDeleted())
+  {
     return true;
+  }
 
   // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
@@ -126,7 +130,10 @@ bool AmmunitionRecord::saveToStream(std::ostream& output) const
   {
     // write FULL
     if (!name.saveToStream(output, cFULL))
+    {
+      std::cerr << "Error while writing sub record FULL of AMMO!\n";
       return false;
+    }
   }
 
   if (!modelPath.empty())
@@ -206,9 +213,13 @@ bool AmmunitionRecord::loadFromStream(std::istream& input, const bool localized,
 {
   uint32_t readSize = 0;
   if (!loadSizeAndUnknownValues(input, readSize))
+  {
     return false;
+  }
   if (isDeleted())
+  {
     return true;
+  }
   uint32_t subRecName = 0;
   uint16_t subLength = 0;
   uint32_t bytesRead = 0;
@@ -216,7 +227,9 @@ bool AmmunitionRecord::loadFromStream(std::istream& input, const bool localized,
   // read editor ID (EDID)
   char buffer[512];
   if (!loadString512FromStream(input, editorID, buffer, cEDID, true, bytesRead))
+  {
     return false;
+  }
 
   // read OBND
   input.read(reinterpret_cast<char*>(&subRecName), 4);
@@ -268,7 +281,9 @@ bool AmmunitionRecord::loadFromStream(std::istream& input, const bool localized,
            }
            // read FULL
            if (!name.loadFromStream(input, cFULL, false, bytesRead, localized, table, buffer))
+           {
              return false;
+           }
            break;
       case cMODL:
            if (!modelPath.empty())
@@ -278,7 +293,9 @@ bool AmmunitionRecord::loadFromStream(std::istream& input, const bool localized,
            }
            // read model path (MODL)
            if (!loadString512FromStream(input, modelPath, buffer, cMODL, false, bytesRead))
+           {
              return false;
+           }
            if (modelPath.empty())
            {
              std::cerr << "Error: Sub record MODL of AMMO is empty!\n";
@@ -307,7 +324,9 @@ bool AmmunitionRecord::loadFromStream(std::istream& input, const bool localized,
            }
            // read YNAM
            if (!loadUint32SubRecordFromStream(input, cYNAM, pickupSoundFormID, false))
+           {
              return false;
+           }
            bytesRead += 6;
            if (pickupSoundFormID == 0)
            {
@@ -323,7 +342,9 @@ bool AmmunitionRecord::loadFromStream(std::istream& input, const bool localized,
            }
            // read ZNAM
            if (!loadUint32SubRecordFromStream(input, cZNAM, putdownSoundFormID, false))
+           {
              return false;
+           }
            bytesRead += 6;
            if (putdownSoundFormID == 0)
            {
@@ -339,11 +360,15 @@ bool AmmunitionRecord::loadFromStream(std::istream& input, const bool localized,
            }
            // read DESC
            if (!description.loadFromStream(input, cDESC, false, bytesRead, localized, table, buffer))
+           {
              return false;
+           }
            break;
       case cKSIZ:
            if (!loadKeywords(input, keywords, bytesRead))
+           {
              return false;
+           }
            break;
       case cDATA:
            if (hasReadDATA)

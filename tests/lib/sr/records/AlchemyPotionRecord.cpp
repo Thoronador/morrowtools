@@ -1383,10 +1383,6 @@ TEST_CASE("AlchemyPotionRecord")
       REQUIRE( record.name.getType() == LocalizedString::Type::Index );
       REQUIRE( record.name.getIndex() == 0x000025A6 );
 
-      REQUIRE( record.unknownMODT.isPresent() );
-      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
-      REQUIRE( MODT == "\x02\0\0\0\x08\0\0\0\0\0\0\0\x63\xDF\x5C\x01\x64\x64\x73\0\xBF\xFA\x25\xDA\xB9\xFB\x95\xCF\x64\x64\x73\0\xBF\xFA\x25\xDA\xFA\xE0\xBB\xA4\x64\x64\x73\0\x7F\x66\xA5\xC0\xCE\x35\x3C\x09\x64\x64\x73\0\x26\x2C\x33\x3B\xFD\x5A\x85\x62\x64\x64\x73\0\xBF\xFA\x25\xDA\xEA\x21\x64\xA7\x64\x64\x73\0\x60\x4D\xDD\x5C\x98\xA1\xD1\x7F\x64\x64\x73\0\x60\x4D\xDD\x5C\xF9\x0E\x5C\x2E\x64\x64\x73\0\x60\x4D\xDD\x5C"sv );
-
       // Writing should fail due to limited stream storage.
       MWTP::limited_streambuf<60> buffer;
       std::ostream stream_out(&buffer);

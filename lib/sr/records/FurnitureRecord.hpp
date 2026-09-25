@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2013, 2021  Thoronador
+    Copyright (C) 2013, 2021, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -68,13 +68,13 @@ struct FurnitureRecord: public BasicRecord
 
     /** \brief Loads the record from the given input stream.
      *
-     * \param in_File    the input stream
-     * \param localized  whether the file to read from is localized or not
+     * \param input      the input stream
+     * \param localized  whether the stream to read from is localized or not
      * \param table      the associated string table for localized files
      * \return Returns true on success (record was loaded from stream).
      *         Returns false, if an error occurred.
      */
-    virtual bool loadFromStream(std::istream& in_File, const bool localized, const StringTable& table);
+    virtual bool loadFromStream(std::istream& input, const bool localized, const StringTable& table);
 
     /** \brief Gets the record's type, usually its header.
      *
@@ -85,7 +85,7 @@ struct FurnitureRecord: public BasicRecord
     std::string editorID;
     BinarySubRecord unknownVMAD;
     BinarySubRecord unknownOBND;
-    LocalizedString name; // subrecord FULL
+    LocalizedString name; // sub record FULL
     std::string modelPath;
     BinarySubRecord unknownMODT;
     BinarySubRecord unknownMODS;
@@ -93,7 +93,7 @@ struct FurnitureRecord: public BasicRecord
     std::vector<uint32_t> keywords;
     uint32_t unknownPNAM;
     uint16_t unknownFNAM;
-    uint32_t interactionKeywordFormID; // subrecord KNAM
+    uint32_t interactionKeywordFormID; // sub record KNAM
     uint32_t unknownMNAM;
     uint16_t unknownWBDT;
     std::vector<uint32_t> unknownENAMs;

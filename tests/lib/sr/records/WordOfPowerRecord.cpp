@@ -486,5 +486,63 @@ TEST_CASE("WordOfPowerRecord")
 
       REQUIRE_FALSE( record.saveToStream(stream) );
     }
+
+    SECTION("failure: cannot write FULL to stream")
+    {
+      const std::string_view data = "WOOP\x2D\0\0\0\0\0\0\0\x67\x5F\x0E\0\x1B\x69\x55\0\x28\0\x03\0EDID\x13\0HowlCallOfTheWild3\0FULL\x04\0\xA2\x05\0\0TNAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip WOOP, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      StringTable dummy_table;
+      dummy_table.addString(0x000005A2, "foo bar");
+
+      // Reading should succeed.
+      WordOfPowerRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000005A2 );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<57> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write TNAM to stream")
+    {
+      const std::string_view data = "WOOP\x2D\0\0\0\0\0\0\0\x67\x5F\x0E\0\x1B\x69\x55\0\x28\0\x03\0EDID\x13\0HowlCallOfTheWild3\0FULL\x04\0\xA2\x05\0\0TNAM\x04\0\0\0\0\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip WOOP, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      StringTable dummy_table;
+      dummy_table.addString(0x000005A2, "foo bar");
+
+      // Reading should succeed.
+      WordOfPowerRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x000005A2 );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<66> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
   }
 }

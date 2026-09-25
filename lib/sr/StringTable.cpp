@@ -114,9 +114,9 @@ bool StringTable::readTable(const std::string& FileName, DataType stringType)
   uint32_t dataSize = 0;
 
   // read number of entries
-  input.read((char*) &count, 4);
+  input.read(reinterpret_cast<char*>(&count), 4);
   // read data size
-  input.read((char*)&dataSize, 4);
+  input.read(reinterpret_cast<char*>(&dataSize), 4);
   if (!input.good())
   {
     std::cerr << "StringTable: Error while reading header!\n";

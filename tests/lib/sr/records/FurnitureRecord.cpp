@@ -24,6 +24,7 @@
 #include "../../../../lib/sr/records/FurnitureRecord.hpp"
 #include "../../../../lib/sr/SR_Constants.hpp"
 #include "../../../../lib/sr/StringTable.hpp"
+#include "../../limited_streambuf.hpp"
 
 TEST_CASE("FurnitureRecord")
 {
@@ -1253,6 +1254,133 @@ TEST_CASE("FurnitureRecord")
       // Reading should fail.
       FurnitureRecord record;
       REQUIRE_FALSE( record.loadFromStream(stream, true, dummy_table) );
+    }
+  }
+
+  SECTION("saveToStream")
+  {
+    StringTable dummy_table;
+    dummy_table.addString(0x0000275C, "foo");
+
+    SECTION("save deleted record")
+    {
+      std::ostringstream stream;
+
+      FurnitureRecord record;
+      // Fill data.
+      // -- header
+      record.headerFlags = 0x00800000 | BasicRecord::cDeletedFlag;
+      record.headerFormID = 0x0006411B;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x0009;
+      // -- record data
+      record.editorID = "InvisibleChairMarker";
+
+      // Record should be deleted.
+      REQUIRE( record.isDeleted() );
+
+      // Writing should succeed.
+      REQUIRE( record.saveToStream(stream) );
+      // Check written data.
+      const std::string_view data = "FURN\0\0\0\0\x20\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0"sv;
+      REQUIRE( stream.str() == data );
+    }
+
+    SECTION("failure: cannot write header data")
+    {
+      FurnitureRecord record;
+      // Set some header data.
+      record.headerFlags = 0x00800000;
+      record.headerFormID = 0x0006411B;
+      record.headerRevision = 0x0055691B;
+      record.headerVersion = 40;
+      record.headerUnknown5 = 0x0009;
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<15> buffer;
+      std::ostream stream(&buffer);
+      REQUIRE( stream.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream) );
+    }
+
+    SECTION("failure: cannot write OBND to stream")
+    {
+      const std::string_view data = "FURN\xAA\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip FURN, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      FurnitureRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.unknownOBND.isPresent() );
+      const auto OBND = std::string_view(reinterpret_cast<const char*>(record.unknownOBND.data()), record.unknownOBND.size());
+      REQUIRE( OBND == "\0\0\0\0\0\0\0\0\0\0\0\0"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<63> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write FULL to stream")
+    {
+      const std::string_view data = "FURN\xAA\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip FURN, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      FurnitureRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.name.isPresent() );
+      REQUIRE( record.name.getType() == LocalizedString::Type::Index );
+      REQUIRE( record.name.getIndex() == 0x0000275C );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<77> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
+    }
+
+    SECTION("failure: cannot write MODT to stream")
+    {
+      const std::string_view data = "FURN\xAA\0\0\0\0\0\x80\0\x1B\x41\x06\0\x1B\x69\x55\0\x28\0\x09\0EDID\x15\0InvisibleChairMarker\0OBND\x0C\0\0\0\0\0\0\0\0\0\0\0\0\0FULL\x04\0\x5C\x27\0\0MODL\x23\0Furniture\\ChairInvisibleSingle.nif\0MODT\x0C\0\x02\0\0\0\0\0\0\0\0\0\0\0PNAM\x04\0\0\0\0\0FNAM\x02\0\0\0KNAM\x04\0\x94\x37\x01\0MNAM\x04\0\x01\0\0\x40WBDT\x02\0\0\xFF\x46NPR\x04\0\x01\0\x0D\0"sv;
+      std::istringstream stream_in;
+      stream_in.str(std::string(data));
+
+      // Skip FURN, because header is handled before loadFromStream.
+      stream_in.seekg(4);
+      REQUIRE( stream_in.good() );
+
+      // Reading should succeed.
+      FurnitureRecord record;
+      REQUIRE( record.loadFromStream(stream_in, true, dummy_table) );
+      // Check data.
+      REQUIRE( record.unknownMODT.isPresent() );
+      const auto MODT = std::string_view(reinterpret_cast<const char*>(record.unknownMODT.data()), record.unknownMODT.size());
+      REQUIRE( MODT == "\x02\0\0\0\0\0\0\0\0\0\0\0"sv );
+
+      // Writing should fail due to limited stream storage.
+      MWTP::limited_streambuf<132> buffer;
+      std::ostream stream_out(&buffer);
+      REQUIRE( stream_out.good() );
+
+      REQUIRE_FALSE( record.saveToStream(stream_out) );
     }
   }
 }

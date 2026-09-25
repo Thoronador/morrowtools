@@ -1,7 +1,7 @@
 /*
  -------------------------------------------------------------------------------
     This file is part of the Skyrim Tools Project.
-    Copyright (C) 2011, 2012, 2013, 2021, 2025  Dirk Stolle
+    Copyright (C) 2011, 2012, 2013, 2021, 2025, 2026  Dirk Stolle
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,28 +67,36 @@ bool WordOfPowerRecord::saveToStream(std::ostream& output) const
 {
   output.write(reinterpret_cast<const char*>(&cWOOP), 4);
   if (!saveSizeAndUnknownValues(output, getWriteSize()))
+  {
     return false;
+  }
   if (isDeleted())
+  {
     return true;
+  }
 
-  // write EDID
+  // write editor ID (EDID)
   output.write(reinterpret_cast<const char*>(&cEDID), 4);
-  // EDID's length
-  uint16_t subLength = editorID.length()+1;
+  uint16_t subLength = editorID.length() + 1;
   output.write(reinterpret_cast<const char*>(&subLength), 2);
-  // write editor ID
   output.write(editorID.c_str(), subLength);
 
   if (name.isPresent())
   {
     // write FULL
     if (!name.saveToStream(output, cFULL))
+    {
+      std::cerr << "Error while writing sub record FULL of WOOP!\n";
       return false;
+    }
   }
 
   // write TNAM
   if (!translated.saveToStream(output, cTNAM))
+  {
+    std::cerr << "Error while writing sub record TNAM of WOOP!\n";
     return false;
+  }
 
   return output.good();
 }
@@ -112,7 +120,7 @@ bool WordOfPowerRecord::loadFromStream(std::istream& input, const bool localized
   }
 
   // read optional FULL
-  input.read((char*) &subRecName, 4);
+  input.read(reinterpret_cast<char*>(&subRecName), 4);
   bytesRead += 4;
   if (subRecName == cFULL)
   {
